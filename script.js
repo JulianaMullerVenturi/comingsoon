@@ -34,14 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const ds3_base_y = 290;
 
     // Inner Shadow 1 (Normal) Base State
-    // Massively increased offset so the inner shadow casts significantly far downwards
+    // Slightly increased offset so the inner shadow casts a bit further downwards
     const is1_base_x = 85; 
-    const is1_base_y = 450; 
+    const is1_base_y = 250; 
 
     // Inner Shadow 2 (Normal) Base State
-    // Massively increased offset 
+    // Slightly increased offset 
     const is2_base_x = 95;
-    const is2_base_y = 550;
+    const is2_base_y = 280;
 
     // Viewbox logic metrics for unit normalization
     const svgViewBoxW = 406.78;
@@ -94,9 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ds1Blur.setAttribute('stdDeviation', 60 / avgScale); 
         ds2Blur.setAttribute('stdDeviation', 38 / avgScale); // Increased spread slightly from 30
         ds3Blur.setAttribute('stdDeviation', 100 / avgScale);
-        // Increased blur constraints to accommodate the massively stretched inner shadows
-        is1Blur.setAttribute('stdDeviation', 60 / avgScale);
-        is2Blur.setAttribute('stdDeviation', 30 / avgScale);
+        // Restored exactly to original tight crisp inner bounds
+        is1Blur.setAttribute('stdDeviation', 20 / avgScale);
+        is2Blur.setAttribute('stdDeviation', 10 / avgScale);
     }
 
     cacheLayout();
