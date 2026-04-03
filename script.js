@@ -36,12 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inner Shadow 1 (Normal) Base State
     // Updated x from 7 to 85 to simulate lateral light physics
     const is1_base_x = 85; 
-    const is1_base_y = 175;
+    const is1_base_y = 220; // Increased to reach further down
 
     // Inner Shadow 2 (Normal) Base State
     // Updated x from 2 to 95 to simulate lateral light physics
     const is2_base_x = 95;
-    const is2_base_y = 195;
+    const is2_base_y = 250; // Increased to reach further down
 
     // Viewbox logic metrics for unit normalization
     const svgViewBoxW = 406.78;
