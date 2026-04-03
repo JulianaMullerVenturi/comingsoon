@@ -64,7 +64,7 @@ body, html {
 
 .drop-shadow-2 {
     z-index: 20;
-    mix-blend-mode: screen; /* Changed from difference to screen to prevent dark green shifts */
+    mix-blend-mode: normal; /* Cap the brightness strictly at #0DC7F3 without additive blooming */
 }
 
 .main-vector {
