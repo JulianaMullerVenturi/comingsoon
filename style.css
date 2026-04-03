@@ -55,7 +55,7 @@ body, html {
 .drop-shadow-3 {
     z-index: 5;
     mix-blend-mode: screen;
-    opacity: 0.4; /* Ambient fade for trailing shadow */
+    opacity: 0.65; /* Increased opacity for a more visible, saturated ambient trail */
 }
 
 .drop-shadow-1 {
