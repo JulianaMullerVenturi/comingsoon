@@ -160,7 +160,7 @@
                 </g>
                 <!-- Inner Shadow 1 (Normal) -->
                 <!-- Base Configuration -> x: 7, y: 175, blur: 40, color: #02568B -->
-                <filter id="gcp-inner-shadow-1" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                <filter id="gcp-inner-shadow-1" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <!-- Dynamic dx/dy populated by JS -->
                     <feOffset dx="7" dy="175" id="gcp-is1-offset"/>
                     <!-- Blur remains static based on mapping, or can be scaled -->
@@ -175,7 +175,7 @@
 
                 <!-- Inner Shadow 2 (Normal) -->
                 <!-- Base -> x: 2, y: 195, blur: 20, color: #009CFF -->
-                <filter id="gcp-inner-shadow-2" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                <filter id="gcp-inner-shadow-2" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <feOffset dx="2" dy="195" id="gcp-is2-offset"/>
                     <feGaussianBlur stdDeviation="20" id="gcp-is2-blur" result="offset-blur"/>
                     <feComposite operator="out" in="SourceAlpha" in2="offset-blur" result="inverse"/>
@@ -192,7 +192,7 @@
                 </radialGradient>
 
                 <!-- Drop Shadow 1 (Overlay) Filter -->
-                <filter id="gcp-drop-shadow-1-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                <filter id="gcp-drop-shadow-1-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <feOffset dx="-92" dy="188" in="SourceAlpha" id="gcp-ds1-offset" result="offset"/>
                     <feGaussianBlur stdDeviation="87.5" in="offset" id="gcp-ds1-blur" result="blur"/>
                     <feFlood flood-color="#0888E7" result="color"/>
@@ -200,7 +200,7 @@
                 </filter>
 
                 <!-- Drop Shadow 2 (Core) Filter -->
-                <filter id="gcp-drop-shadow-2-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                <filter id="gcp-drop-shadow-2-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <feOffset dx="0" dy="78" in="SourceAlpha" id="gcp-ds2-offset" result="offset"/>
                     <feGaussianBlur stdDeviation="47.5" in="offset" id="gcp-ds2-blur" result="blur"/>
                     <feFlood flood-color="#0DC7F3" result="color"/>
@@ -208,7 +208,7 @@
                 </filter>
 
                 <!-- Drop Shadow 3 (Far Background Glow) Filter -->
-                <filter id="gcp-drop-shadow-3-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                <filter id="gcp-drop-shadow-3-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <feOffset dx="0" dy="0" in="SourceAlpha" id="gcp-ds3-offset" result="offset"/>
                     <!-- Extremely blurred for high visibility and wide spread -->
                     <feGaussianBlur stdDeviation="180" in="offset" id="gcp-ds3-blur" result="blur"/>
@@ -221,17 +221,17 @@
 
         <!-- Drop Shadow 3 Layer (Ambient Trail) -->
         <svg class="layer drop-shadow-3" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
-            <use href="#gcp-shape" filter="url(#gcp-drop-shadow-3-filter)" />
+            <use href="#gcp-shape" fill="black" filter="url(#gcp-drop-shadow-3-filter)" />
         </svg>
 
         <!-- Drop Shadow 1 Layer (Halo) -->
         <svg class="layer drop-shadow-1" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
-            <use href="#gcp-shape" filter="url(#gcp-drop-shadow-1-filter)" />
+            <use href="#gcp-shape" fill="black" filter="url(#gcp-drop-shadow-1-filter)" />
         </svg>
 
         <!-- Drop Shadow 2 Layer (Core Highlight) -->
         <svg class="layer drop-shadow-2" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
-            <use href="#gcp-shape" filter="url(#gcp-drop-shadow-2-filter)" />
+            <use href="#gcp-shape" fill="black" filter="url(#gcp-drop-shadow-2-filter)" />
         </svg>
 
         <!-- Main Fill Layer -->
@@ -241,12 +241,12 @@
 
         <!-- Inner Shadow 1 Layer -->
         <svg class="layer inner-shadow-1-layer" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
-            <use href="#gcp-shape" filter="url(#gcp-inner-shadow-1-filter)" />
+            <use href="#gcp-shape" fill="black" filter="url(#gcp-inner-shadow-1-filter)" />
         </svg>
 
         <!-- Inner Shadow 2 Layer -->
         <svg class="layer inner-shadow-2-layer" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
-            <use href="#gcp-shape" filter="url(#gcp-inner-shadow-2-filter)" />
+            <use href="#gcp-shape" fill="black" filter="url(#gcp-inner-shadow-2-filter)" />
         </svg>
     </div>
 

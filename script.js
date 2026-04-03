@@ -171,6 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const elipse = document.getElementById('elipse');
+
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -179,6 +181,12 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(() => {
                 mainModel.updateFrame(mouseX, mouseY);
                 gcpModel.updateFrame(mouseX, mouseY);
+
+                // Update CSS Elipse Cursor position
+                if (elipse) {
+                    elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+                }
+
                 isTicking = false;
             });
             isTicking = true;
@@ -191,5 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gcpModel.cacheLayout();
         mainModel.updateFrame(mouseX, mouseY);
         gcpModel.updateFrame(mouseX, mouseY);
+        if (elipse) {
+            elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+        }
     }, 100);
 });
