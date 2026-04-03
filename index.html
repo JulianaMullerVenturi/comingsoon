@@ -36,8 +36,8 @@
                     <feOffset dx="2" dy="195" id="is2-offset"/>
                     <feGaussianBlur stdDeviation="20" id="is2-blur" result="offset-blur"/>
                     <feComposite operator="out" in="SourceAlpha" in2="offset-blur" result="inverse"/>
-                    <!-- Saturated deeper blue flood color -->
-                    <feFlood flood-color="#0055FF" result="color"/>
+                    <!-- Restored original cyan-blue flood color -->
+                    <feFlood flood-color="#009CFF" result="color"/>
                     <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
                 </filter>
                 
