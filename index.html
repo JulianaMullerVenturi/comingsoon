@@ -127,10 +127,6 @@
         <svg style="width: 0; height: 0; position: absolute;" aria-hidden="true" focusable="false">
             <defs>
                 <g id="gcp-shape">
-                    <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
-  <defs>
-    
-  </defs>
   <g>
     <path d="M325.33,1168.52v-151.08h51.91c9.14,0,17.44,1.94,24.9,5.8,7.45,3.87,13.4,9.29,17.83,16.25s6.65,15.02,6.65,24.16-2.22,17.02-6.65,24.05c-4.43,7.04-10.38,12.49-17.83,16.35-7.46,3.87-15.76,5.8-24.9,5.8h-39.25v-21.95h39.88c5.49,0,10.13-1.16,13.93-3.48s6.72-5.34,8.76-9.07c2.04-3.72,3.06-7.63,3.06-11.71s-1.02-7.95-3.06-11.61-4.96-6.68-8.76-9.07c-3.8-2.39-8.44-3.59-13.93-3.59h-29.33v129.13h-23.21v.02h0Z"/>
     <path d="M475.44,1171.78c-7.62,0-14.29-1.5-20.01-4.49s-10.24-7.11-13.58-12.35-5-11.26-5-18.07c0-7.48,1.94-13.81,5.82-18.99,3.88-5.17,9.05-9.12,15.51-11.84,6.46-2.72,13.64-4.08,21.54-4.08,4.49,0,8.57.31,12.25.92,3.67.61,6.94,1.33,9.8,2.14,2.86.82,5.1,1.7,6.74,2.66v-5.51c0-6.8-2.45-12.25-7.35-16.33s-11.23-6.13-18.99-6.13c-5.31,0-10.34,1.19-15.11,3.57s-8.65,5.61-11.64,9.7l-14.9-11.64c2.99-4.22,6.63-7.82,10.92-10.82,4.29-2.99,9.08-5.31,14.39-6.94,5.31-1.63,10.95-2.45,16.94-2.45,14.97,0,26.54,3.71,34.7,11.13,8.17,7.42,12.25,17.79,12.25,31.13v65.12h-21.23v-12.86h-1.23c-1.91,2.72-4.39,5.31-7.45,7.76s-6.64,4.46-10.72,6.02-8.64,2.35-13.68,2.35h.03ZM479.32,1153.82c5.72,0,10.75-1.36,15.11-4.08s7.79-6.29,10.31-10.72c2.52-4.42,3.78-9.22,3.78-14.39-3.13-1.77-6.81-3.23-11.02-4.39-4.22-1.15-8.78-1.74-13.68-1.74-8.85,0-15.18,1.77-18.98,5.31-3.81,3.54-5.72,7.96-5.72,13.27,0,4.9,1.8,8.91,5.41,12.04,3.6,3.13,8.54,4.7,14.8,4.7h0Z"/>
@@ -160,7 +156,7 @@
                 </g>
                 <!-- Inner Shadow 1 (Normal) -->
                 <!-- Base Configuration -> x: 7, y: 175, blur: 40, color: #02568B -->
-                <filter id="gcp-inner-shadow-1" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+                <filter id="gcp-inner-shadow-1-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <!-- Dynamic dx/dy populated by JS -->
                     <feOffset dx="7" dy="175" id="gcp-is1-offset"/>
                     <!-- Blur remains static based on mapping, or can be scaled -->
@@ -175,7 +171,7 @@
 
                 <!-- Inner Shadow 2 (Normal) -->
                 <!-- Base -> x: 2, y: 195, blur: 20, color: #009CFF -->
-                <filter id="gcp-inner-shadow-2" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+                <filter id="gcp-inner-shadow-2-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <feOffset dx="2" dy="195" id="gcp-is2-offset"/>
                     <feGaussianBlur stdDeviation="20" id="gcp-is2-blur" result="offset-blur"/>
                     <feComposite operator="out" in="SourceAlpha" in2="offset-blur" result="inverse"/>
@@ -186,7 +182,7 @@
                 
                 <!-- Radial Light Fill (Point Light Simulator) -->
                 <!-- Statically sweeping from focal epicenter (#3FE0FF) to ambient shadow base (#139DDE) -->
-                <radialGradient id="gcp-dynamic-gradient" cx="203" cy="203" r="500" gradientUnits="userSpaceOnUse">
+                <radialGradient id="gcp-dynamic-gradient" cx="670.5" cy="670.5" r="500" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stop-color="#3FE0FF"/>
                     <stop offset="100%" stop-color="#139DDE"/>
                 </radialGradient>
