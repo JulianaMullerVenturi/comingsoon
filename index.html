@@ -68,8 +68,8 @@
                     <feOffset dx="0" dy="0" in="SourceAlpha" id="ds3-offset" result="offset"/>
                     <!-- Extremely blurred for high visibility and wide spread -->
                     <feGaussianBlur stdDeviation="180" in="offset" id="ds3-blur" result="blur"/>
-                    <!-- Saturated electric blue flood color -->
-                    <feFlood flood-color="#0044FF" result="color"/>
+                    <!-- Vibrant but slightly de-saturated mid-blue flood color -->
+                    <feFlood flood-color="#1070FF" result="color"/>
                     <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
                 </filter>
             </defs>
