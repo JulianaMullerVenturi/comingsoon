@@ -59,7 +59,7 @@ body, html {
 
 .drop-shadow-1 {
     z-index: 10;
-    mix-blend-mode: screen; /* Distinct luminous blue halo */
+    mix-blend-mode: normal; /* Normal mode to prevent additive blowout entirely */
 }
 
 .drop-shadow-2 {
