@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Elements
             this.mainVector = this.container.querySelector('.main-vector');
             this.dynamicGradient = document.getElementById(config.gradientId);
-            this.gradientStop2 = this.dynamicGradient ? this.dynamicGradient.querySelectorAll('stop')[1] : null;
             
             this.is1Offset = document.getElementById(config.ids.is1Offset);
             this.is2Offset = document.getElementById(config.ids.is2Offset);
@@ -28,9 +27,38 @@ document.addEventListener('DOMContentLoaded', () => {
             this.svgViewBoxW = config.viewBoxW;
             this.svgViewBoxH = config.viewBoxH;
 
-            // Physics variables - normalized to viewBox scale
-            this.SENSITIVITY = 0.12; // Base responsiveness
-            this.MAX_DRIFT = 200;    // Max distance in viewBox units
+            // Base mapping coordinates
+            this.MAPPED_X = 500;
+            this.MAPPED_Y = -500;
+
+            // Optional configs for scaling effect differences between models
+            this.blurScale = config.blurScale || 1;
+            this.movementScale = config.movementScale || 1;
+            this.innerBlurScale = config.innerBlurScale || this.blurScale;
+            this.innerMovementScale = config.innerMovementScale || this.movementScale;
+            this.fadeLightOnDistance = config.fadeLightOnDistance || false;
+            this.lightRadiusPx = config.lightRadiusPx || null;
+            this.lightCoreRadiusPx = config.lightCoreRadiusPx || 0;
+            this.innerLightRadiusPx = config.innerLightRadiusPx !== undefined ? config.innerLightRadiusPx : this.lightRadiusPx;
+            this.innerLightCoreRadiusPx = config.innerLightCoreRadiusPx !== undefined ? config.innerLightCoreRadiusPx : this.lightCoreRadiusPx;
+            this.gradientRadiusPx = config.gradientRadiusPx || null;
+            this.minOuterIntensity = config.minOuterIntensity !== undefined ? config.minOuterIntensity : (config.minIntensity || 0);
+            this.minInnerIntensity = config.minInnerIntensity !== undefined ? config.minInnerIntensity : (config.minIntensity || 0);
+            this.is1MaxOpacity = config.is1MaxOpacity !== undefined ? config.is1MaxOpacity : 0.8;
+            this.is2MaxOpacity = config.is2MaxOpacity !== undefined ? config.is2MaxOpacity : 0.9;
+
+            // Physics variables
+            this.ds1_base_x = config.ds1_base_x !== undefined ? config.ds1_base_x : 95; 
+            this.ds1_base_y = config.ds1_base_y !== undefined ? config.ds1_base_y : 190;
+            this.ds2_base_x = config.ds2_base_x !== undefined ? config.ds2_base_x : 45; 
+            this.ds2_base_y = config.ds2_base_y !== undefined ? config.ds2_base_y : 90;
+            this.ds3_base_x = config.ds3_base_x !== undefined ? config.ds3_base_x : 145; 
+            this.ds3_base_y = config.ds3_base_y !== undefined ? config.ds3_base_y : 290;
+            
+            this.is1_base_x = config.is1_base_x !== undefined ? config.is1_base_x : 85; 
+            this.is1_base_y = config.is1_base_y !== undefined ? config.is1_base_y : 250;
+            this.is2_base_x = config.is2_base_x !== undefined ? config.is2_base_x : 105; 
+            this.is2_base_y = config.is2_base_y !== undefined ? config.is2_base_y : 305;
 
             this.rect = null;
             this.cx = 0; this.cy = 0;
@@ -59,14 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 visualScale = this.rect.height / this.svgViewBoxH;
                 this.visualWidth = this.svgViewBoxW * visualScale;
                 this.visualHeight = this.rect.height;
-                this.visualLeft = this.rect.left + this.rect.width - this.visualWidth;
+                this.visualLeft = this.rect.left + this.rect.width - this.visualWidth; // xMax aligns to right
                 this.visualTop = this.rect.top;
             } else {
                 visualScale = this.rect.width / this.svgViewBoxW;
                 this.visualWidth = this.rect.width;
                 this.visualHeight = this.svgViewBoxH * visualScale;
                 this.visualLeft = this.rect.left;
-                this.visualTop = this.rect.top + (this.rect.height - this.visualHeight) / 2;
+                this.visualTop = this.rect.top + (this.rect.height - this.visualHeight) / 2; // YMid aligns to center
             }
 
             this.cx = this.visualLeft + this.visualWidth / 2;
@@ -75,74 +103,115 @@ document.addEventListener('DOMContentLoaded', () => {
             this.scaleY = visualScale;
             this.avgScale = visualScale;
 
-            if(this.ds1Blur) this.ds1Blur.setAttribute('stdDeviation', 65 / this.avgScale); 
-            if(this.ds2Blur) this.ds2Blur.setAttribute('stdDeviation', 40 / this.avgScale);
-            if(this.ds3Blur) this.ds3Blur.setAttribute('stdDeviation', 110 / this.avgScale);
-            if(this.is1Blur) this.is1Blur.setAttribute('stdDeviation', 20 / this.avgScale);
-            if(this.is2Blur) this.is2Blur.setAttribute('stdDeviation', 10 / this.avgScale);
+            if(this.ds1Blur) this.ds1Blur.setAttribute('stdDeviation', 60 / this.avgScale); 
+            if(this.ds2Blur) this.ds2Blur.setAttribute('stdDeviation', 38 / this.avgScale);
+            if(this.ds3Blur) this.ds3Blur.setAttribute('stdDeviation', 100 / this.avgScale);
+            if(this.is1Blur) this.is1Blur.setAttribute('stdDeviation', (20 * this.innerBlurScale) / this.avgScale);
+            if(this.is2Blur) this.is2Blur.setAttribute('stdDeviation', (10 * this.innerBlurScale) / this.avgScale);
         }
 
         updateFrame(mouseX, mouseY) {
             if (!this.rect || !this.ds1Offset) return;
 
-            // 1. Calculate Distances and Factors
             const dx = mouseX - this.cx;
             const dy = mouseY - this.cy;
-            const distance = Math.sqrt(dx*dx + dy*dy);
-            
-            // Interaction Thresholds (Screen Pixels)
-            const highlightRadius = Math.max(this.visualWidth, this.visualHeight) * 0.8;
-            const fadeRadius = highlightRadius * 3;
 
-            // Calculate Factor for Proximity Highlighting (0 to 1)
-            let proximityFactor = 0;
-            if (distance < highlightRadius) {
-                proximityFactor = 1;
-            } else if (distance < fadeRadius) {
-                proximityFactor = 1 - ((distance - highlightRadius) / (fadeRadius - highlightRadius));
+            // Fix direction bug: always map against global window center to keep movement logic identical
+            const globalCx = window.innerWidth / 2;
+            const globalCy = window.innerHeight / 2;
+            const mappedDx = this.MAPPED_X - globalCx;
+            const mappedDy = this.MAPPED_Y - globalCy;
+
+            let factorX = mappedDx !== 0 ? (dx / mappedDx) : 0;
+            let factorY = mappedDy !== 0 ? (dy / mappedDy) : 0;
+
+            this.ds1Offset.setAttribute('dx', (this.ds1_base_x * factorX * this.movementScale) / this.scaleX);
+            this.ds1Offset.setAttribute('dy', (this.ds1_base_y * factorY * this.movementScale) / this.scaleY);
+
+            this.ds2Offset.setAttribute('dx', (this.ds2_base_x * factorX * this.movementScale) / this.scaleX);
+            this.ds2Offset.setAttribute('dy', (this.ds2_base_y * factorY * this.movementScale) / this.scaleY);
+
+            this.ds3Offset.setAttribute('dx', (this.ds3_base_x * factorX * this.movementScale) / this.scaleX);
+            this.ds3Offset.setAttribute('dy', (this.ds3_base_y * factorY * this.movementScale) / this.scaleY);
+
+            this.is1Offset.setAttribute('dx', (this.is1_base_x * factorX * this.innerMovementScale) / this.scaleX);
+            this.is1Offset.setAttribute('dy', (this.is1_base_y * factorY * this.innerMovementScale) / this.scaleY);
+
+            this.is2Offset.setAttribute('dx', (this.is2_base_x * factorX * this.innerMovementScale) / this.scaleX);
+            this.is2Offset.setAttribute('dy', (this.is2_base_y * factorY * this.innerMovementScale) / this.scaleY);
+
+            // Fade out ALL light (drop shadows & inner shadows) when cursor moves away
+            if (this.fadeLightOnDistance) {
+                const d = Math.sqrt(dx * dx + dy * dy);
+                const fadeRadius = this.lightRadiusPx || 150;
+                const coreRadius = this.lightCoreRadiusPx || 0;
+                
+                let intensity;
+                if (d <= coreRadius) {
+                    intensity = 1;
+                } else {
+                    intensity = 1 - ((d - coreRadius) / (fadeRadius - coreRadius));
+                }
+                
+                let outerIntensity = intensity;
+                if (outerIntensity < this.minOuterIntensity) outerIntensity = this.minOuterIntensity;
+                if (outerIntensity > 1) outerIntensity = 1;
+
+                const innerFadeRadius = this.innerLightRadiusPx || 150;
+                const innerCoreRadius = this.innerLightCoreRadiusPx || 0;
+                let innerBaseRaw;
+                if (d <= innerCoreRadius) {
+                    innerBaseRaw = 1;
+                } else {
+                    innerBaseRaw = 1 - ((d - innerCoreRadius) / (innerFadeRadius - innerCoreRadius));
+                }
+
+                let baseInnerIntensity = innerBaseRaw;
+                if (baseInnerIntensity < this.minInnerIntensity) baseInnerIntensity = this.minInnerIntensity;
+                if (baseInnerIntensity > 1) baseInnerIntensity = 1;
+
+                // Outer light (drop shadows)
+                const ds1 = this.container.querySelector('.drop-shadow-1');
+                const ds2 = this.container.querySelector('.drop-shadow-2');
+                const ds3 = this.container.querySelector('.drop-shadow-3');
+                
+                if (ds1) ds1.style.opacity = 0.6 * outerIntensity;
+                if (ds2) ds2.style.opacity = 0.75 * outerIntensity;
+                if (ds3) ds3.style.opacity = 0.95 * outerIntensity;
+
+                // Inner light (inner shadows)
+                const inner1 = this.container.querySelector('.inner-shadow-1-layer');
+                const inner2 = this.container.querySelector('.inner-shadow-2-layer');
+                
+                let finalInnerOpacity = baseInnerIntensity;
+                
+                // Create a massive sweet spot to reveal pure #3FE0FF across the entire logo
+                const hoverRadius = 160; 
+                const hoverCoreRadius = 60; // Huge 120px diameter zero-opacity core
+                
+                if (d <= hoverCoreRadius) {
+                    finalInnerOpacity = 0;
+                } else if (d < hoverRadius) {
+                    const fade = (d - hoverCoreRadius) / (hoverRadius - hoverCoreRadius);
+                    finalInnerOpacity = baseInnerIntensity * Math.pow(fade, 2);
+                }
+
+                if (inner1) inner1.style.opacity = this.is1MaxOpacity * finalInnerOpacity;
+                if (inner2) inner2.style.opacity = this.is2MaxOpacity * finalInnerOpacity;
             }
 
-            // 2. Update Shadows (Opposite Direction, responsive but attached)
-            // We use a non-linear scaling to keep them "attached" but trailing
-            const shadowX = -dx * this.SENSITIVITY;
-            const shadowY = -dy * this.SENSITIVITY;
-
-            // Apply to Drop Shadows
-            this.ds1Offset.setAttribute('dx', (shadowX * 1.5) / this.scaleX);
-            this.ds1Offset.setAttribute('dy', (shadowY * 1.8) / this.scaleY);
-            
-            this.ds2Offset.setAttribute('dx', (shadowX * 0.8) / this.scaleX);
-            this.ds2Offset.setAttribute('dy', (shadowY * 1.2) / this.scaleY);
-
-            this.ds3Offset.setAttribute('dx', (shadowX * 2.5) / this.scaleX);
-            this.ds3Offset.setAttribute('dy', (shadowY * 3.0) / this.scaleY);
-
-            // Apply to Inner Shadows (Inverted trailing for depth)
-            this.is1Offset.setAttribute('dx', (-shadowX * 0.6) / this.scaleX);
-            this.is1Offset.setAttribute('dy', (-shadowY * 0.6) / this.scaleY);
-            
-            this.is2Offset.setAttribute('dx', (-shadowX * 0.4) / this.scaleX);
-            this.is2Offset.setAttribute('dy', (-shadowY * 0.4) / this.scaleY);
-
-            // 3. Update Dynamic Gradient Color (Highlighting)
-            if (this.gradientStop2) {
-                // Interpolate from #139DDE (base) to #3FE0FF (highlight)
-                // #139DDE -> R:19, G:157, B:222
-                // #3FE0FF -> R:63, G:224, B:255
-                const r = Math.round(19 + (63 - 19) * proximityFactor);
-                const g = Math.round(157 + (224 - 157) * proximityFactor);
-                const b = Math.round(222 + (255 - 222) * proximityFactor);
-                this.gradientStop2.setAttribute('stop-color', `rgb(${r},${g},${b})`);
-            }
-
-            // 4. Update Gradient Position (Flashlight)
             const sx = ((mouseX - this.visualLeft) / this.visualWidth) * this.svgViewBoxW;
             const sy = ((mouseY - this.visualTop) / this.visualHeight) * this.svgViewBoxH;
 
             this.dynamicGradient.setAttribute('cx', sx);
             this.dynamicGradient.setAttribute('cy', sy);
 
-            const screenRadius = Math.max(window.innerWidth, window.innerHeight) * 1.8;
+            let screenRadius;
+            if (this.gradientRadiusPx) {
+                screenRadius = this.gradientRadiusPx;
+            } else {
+                screenRadius = Math.max(window.innerWidth, window.innerHeight) * 1.8;
+            }
             const svgRadius = screenRadius / this.avgScale;
             this.dynamicGradient.setAttribute('r', svgRadius);
         }
@@ -154,6 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
         viewBoxW: 406.78,
         viewBoxH: 407,
         gradientId: 'dynamic-gradient',
+        ds3_base_x: 60,  // Shift the bluer shadow off-center
+        ds3_base_y: 420, // Elongate the bluer shadow trail
         ids: {
             is1Offset: 'is1-offset', is2Offset: 'is2-offset',
             ds1Offset: 'ds1-offset', ds2Offset: 'ds2-offset', ds3Offset: 'ds3-offset',
@@ -167,6 +238,21 @@ document.addEventListener('DOMContentLoaded', () => {
         viewBoxW: 1341,
         viewBoxH: 1341,
         gradientId: 'gcp-dynamic-gradient',
+        blurScale: 1, // Let ds blur naturally base scale
+        movementScale: 0.35, // Restrict ds travel distance to keep trails closer to logo
+        innerBlurScale: 0.08, // Sharper inner shadow
+        innerMovementScale: 0.22, // Deepen inner shadow intersection
+        fadeLightOnDistance: true,
+        lightRadiusPx: 800, // Large physical radius for soft fade
+        lightCoreRadiusPx: 120, // Remains perfectly 100% intensity until 120px away
+        innerLightRadiusPx: 1400, // Inner shadows survive massively longer distances across the screen
+        innerLightCoreRadiusPx: 400, // Defines the core zone where interior bounds stay physically 100% bright without decay
+        minOuterIntensity: 0.45, // Significantly higher floor for drop shadows on right side of screen
+        minInnerIntensity: 0, // Fade fully to 0 so the internal graphic evaluates purely to #02568B
+        is1MaxOpacity: 0, // Disable entirely. Massive internal bevel matrices structurally collide natively inside tiny line-art vectors
+        is2MaxOpacity: 0, // Disable entirely. Gradient radius tracking perfectly solves internal shading dynamically now
+        ds3_base_x: 60,  // Shift the bluer shadow off-center for GCP too
+        ds3_base_y: 450, // Even more exaggerated trail for the smaller logo
         ids: {
             is1Offset: 'gcp-is1-offset', is2Offset: 'gcp-is2-offset',
             ds1Offset: 'gcp-ds1-offset', ds2Offset: 'gcp-ds2-offset', ds3Offset: 'gcp-ds3-offset',

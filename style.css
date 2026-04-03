@@ -107,10 +107,10 @@ body, html {
 
 .gcp-container {
     position: absolute;
-    top: 40px;
-    left: 40px;
-    width: 95px;
-    height: 95px;
+    top: 60px;
+    left: 60px;
+    width: 140px;
+    height: 140px;
     z-index: 100;
 }
 

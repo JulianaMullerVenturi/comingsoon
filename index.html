@@ -184,23 +184,29 @@
                 <!-- Statically sweeping from focal epicenter (#3FE0FF) to ambient shadow base (#139DDE) -->
                 <radialGradient id="gcp-dynamic-gradient" cx="670.5" cy="670.5" r="500" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stop-color="#3FE0FF"/>
-                    <stop offset="100%" stop-color="#139DDE"/>
+                    <stop offset="100%" stop-color="#02568B"/>
                 </radialGradient>
 
                 <!-- Drop Shadow 1 (Overlay) Filter -->
                 <filter id="gcp-drop-shadow-1-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <feOffset dx="-92" dy="188" in="SourceAlpha" id="gcp-ds1-offset" result="offset"/>
                     <feGaussianBlur stdDeviation="87.5" in="offset" id="gcp-ds1-blur" result="blur"/>
+                    <feComponentTransfer in="blur" result="boosted-blur">
+                        <feFuncA type="linear" slope="3"/>
+                    </feComponentTransfer>
                     <feFlood flood-color="#0888E7" result="color"/>
-                    <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
+                    <feComposite operator="in" in="color" in2="boosted-blur" result="final-shadow"/>
                 </filter>
 
                 <!-- Drop Shadow 2 (Core) Filter -->
                 <filter id="gcp-drop-shadow-2-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
                     <feOffset dx="0" dy="78" in="SourceAlpha" id="gcp-ds2-offset" result="offset"/>
                     <feGaussianBlur stdDeviation="47.5" in="offset" id="gcp-ds2-blur" result="blur"/>
+                    <feComponentTransfer in="blur" result="boosted-blur">
+                        <feFuncA type="linear" slope="3.5"/>
+                    </feComponentTransfer>
                     <feFlood flood-color="#0DC7F3" result="color"/>
-                    <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
+                    <feComposite operator="in" in="color" in2="boosted-blur" result="final-shadow"/>
                 </filter>
 
                 <!-- Drop Shadow 3 (Far Background Glow) Filter -->
@@ -208,9 +214,12 @@
                     <feOffset dx="0" dy="0" in="SourceAlpha" id="gcp-ds3-offset" result="offset"/>
                     <!-- Extremely blurred for high visibility and wide spread -->
                     <feGaussianBlur stdDeviation="180" in="offset" id="gcp-ds3-blur" result="blur"/>
+                    <feComponentTransfer in="blur" result="boosted-blur">
+                        <feFuncA type="linear" slope="6.5"/>
+                    </feComponentTransfer>
                     <!-- Vibrant but slightly de-saturated mid-blue flood color -->
                     <feFlood flood-color="#1070FF" result="color"/>
-                    <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
+                    <feComposite operator="in" in="color" in2="boosted-blur" result="final-shadow"/>
                 </filter>
             </defs>
         </svg>
