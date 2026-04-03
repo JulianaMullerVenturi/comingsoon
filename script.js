@@ -22,16 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Drop Shadow 1 (Overlay) Base State - The Mid-Halo
     // Positioned to bridge smooth geometry between core and ambient trail
-    const ds1_base_x = 75;
-    const ds1_base_y = 150;
+    const ds1_base_x = 95;
+    const ds1_base_y = 190;
     
     // Drop Shadow 2 (Difference/Core) Base State - The Bright Core
-    const ds2_base_x = 35;
-    const ds2_base_y = 70;
+    const ds2_base_x = 45;
+    const ds2_base_y = 90;
 
     // Drop Shadow 3 (Far Background Glow) Base State - The Outer Spill
-    const ds3_base_x = 130;
-    const ds3_base_y = 260;
+    const ds3_base_x = 145;
+    const ds3_base_y = 290;
 
     // Inner Shadow 1 (Normal) Base State
     // Updated x from 7 to 85 to simulate lateral light physics
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Optimization: Pre-calculate blurs only on resize/init, not every frame
         // Curve-fitted blurs to create uninterrupted transitions between the three positions
         ds1Blur.setAttribute('stdDeviation', 60 / avgScale); 
-        ds2Blur.setAttribute('stdDeviation', 30 / avgScale);
+        ds2Blur.setAttribute('stdDeviation', 38 / avgScale); // Increased spread slightly from 30
         ds3Blur.setAttribute('stdDeviation', 100 / avgScale);
         is1Blur.setAttribute('stdDeviation', 20 / avgScale);
         is2Blur.setAttribute('stdDeviation', 10 / avgScale);
