@@ -39,9 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const is1_base_y = 250; 
 
     // Inner Shadow 2 (Normal) Base State
-    // Slightly increased offset 
-    const is2_base_x = 95;
-    const is2_base_y = 280;
+    // Slightly increased offset to peel it slightly away from IS1
+    const is2_base_x = 105;
+    const is2_base_y = 305;
 
     // Viewbox logic metrics for unit normalization
     const svgViewBoxW = 406.78;
