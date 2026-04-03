@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Vector Background</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-layer"></div>
+    
+    <div class="vector-container" id="vector-container">
+        <!-- SVG Definitions -->
+        <svg style="width: 0; height: 0; position: absolute;" aria-hidden="true" focusable="false">
+            <defs>
+                <path id="vector-shape" d="M295.54,19.21C308.26,6.48,324.94.11,341.61.11s33.35,6.37,46.08,19.1c25.44,25.46,25.44,66.73,0,92.2l-46.08,46.1-46.07,46.11c25.44-25.47,25.44-66.74,0-92.2-25.44-25.47-66.71-25.47-92.15,0l46.07-46.11,46.08-46.1h0ZM19.08,388.01c12.73,12.73,29.4,19.1,46.08,19.1s33.35-6.37,46.07-19.1,19.08-29.41,19.08-46.1-6.36-33.37-19.08-46.11c-12.72-12.72-29.39-19.09-46.07-19.09s-33.35,6.37-46.08,19.09c-25.44,25.47-25.44,66.74,0,92.2h0ZM387.69,295.81l-92.15-92.19c-25.44,25.46-38.17,58.83-38.17,92.2s12.73,66.73,38.17,92.19c12.72,12.73,29.39,19.1,46.07,19.1s33.35-6.37,46.08-19.1,19.08-29.41,19.08-46.1-6.35-33.37-19.08-46.11h0ZM111.24,149.59c33.35,0,66.7-12.72,92.15-38.18L111.24,19.21c-25.44-25.47-66.71-25.47-92.15,0C6.36,31.93,0,48.62,0,65.31s6.35,33.37,19.08,46.11c25.45,25.46,58.8,38.18,92.15,38.18h0Z"/>
+                
+                <!-- Inner Shadow 1 (Normal) -->
+                <!-- Base Configuration -> x: 7, y: 175, blur: 40, color: #02568B -->
+                <filter id="inner-shadow-1" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                    <!-- Dynamic dx/dy populated by JS -->
+                    <feOffset dx="7" dy="175" id="is1-offset"/>
+                    <!-- Blur remains static based on mapping, or can be scaled -->
+                    <!-- Note: since the SVG will scale with viewport, we might need to adjust stdDeviation in JS for perfect fidelity, but static is fine for now -->
+                    <feGaussianBlur stdDeviation="40" id="is1-blur" result="offset-blur"/>
+                    <!-- Composite inverted to create inner mask -->
+                    <!-- We use objectBoundingBox for SourceGraphic so no issues. But SourceAlpha is built-in -->
+                    <feComposite operator="out" in="SourceAlpha" in2="offset-blur" result="inverse"/>
+                    <feFlood flood-color="#02568B" result="color"/>
+                    <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+                </filter>
+
+                <!-- Inner Shadow 2 (Normal) -->
+                <!-- Base -> x: 2, y: 195, blur: 20, color: #009CFF -->
+                <filter id="inner-shadow-2" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                    <feOffset dx="2" dy="195" id="is2-offset"/>
+                    <feGaussianBlur stdDeviation="20" id="is2-blur" result="offset-blur"/>
+                    <feComposite operator="out" in="SourceAlpha" in2="offset-blur" result="inverse"/>
+                    <feFlood flood-color="#009CFF" result="color"/>
+                    <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+                </filter>
+                
+                <!-- Radial Light Fill (Point Light Simulator) -->
+                <!-- Statically sweeping from focal epicenter (#3FE0FF) to ambient shadow base (#139DDE) -->
+                <radialGradient id="dynamic-gradient" cx="203" cy="203" r="500" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#3FE0FF"/>
+                    <stop offset="100%" stop-color="#139DDE"/>
+                </radialGradient>
+
+                <!-- Drop Shadow 1 (Overlay) Filter -->
+                <filter id="drop-shadow-1-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                    <feOffset dx="-92" dy="188" in="SourceAlpha" id="ds1-offset" result="offset"/>
+                    <feGaussianBlur stdDeviation="87.5" in="offset" id="ds1-blur" result="blur"/>
+                    <feFlood flood-color="#0888E7" result="color"/>
+                    <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
+                </filter>
+
+                <!-- Drop Shadow 2 (Difference) Filter -->
+                <filter id="drop-shadow-2-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                    <feOffset dx="0" dy="78" in="SourceAlpha" id="ds2-offset" result="offset"/>
+                    <feGaussianBlur stdDeviation="47.5" in="offset" id="ds2-blur" result="blur"/>
+                    <feFlood flood-color="#3FE0FF" result="color"/>
+                    <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
+                </filter>
+
+                <!-- Drop Shadow 3 (Far Background Glow) Filter -->
+                <filter id="drop-shadow-3-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                    <feOffset dx="0" dy="0" in="SourceAlpha" id="ds3-offset" result="offset"/>
+                    <!-- Extremely blurred for high visibility and wide spread -->
+                    <feGaussianBlur stdDeviation="180" in="offset" id="ds3-blur" result="blur"/>
+                    <!-- Intense cyan flood color -->
+                    <feFlood flood-color="#009CFF" result="color"/>
+                    <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
+                </filter>
+            </defs>
+        </svg>
+
+        <!-- The Order of Layers determines Z-Index (Top is backward, Bottom is forward) -->
+        
+        <!-- Drop Shadow 3 (Far Background Glow) -->
+        <!-- Placed furthest back -->
+        <svg class="layer drop-shadow-3" viewBox="0 0 406.78 407" preserveAspectRatio="xMaxYMid meet">
+            <use href="#vector-shape" fill="black" filter="url(#drop-shadow-3-filter)" />
+        </svg>
+
+        <!-- Drop Shadow 1 (Overlay) -->
+        <!-- Placed below the base Vector -->
+        <svg class="layer drop-shadow-1" viewBox="0 0 406.78 407" preserveAspectRatio="xMaxYMid meet">
+            <use href="#vector-shape" fill="black" filter="url(#drop-shadow-1-filter)" />
+        </svg>
+
+        <!-- Drop Shadow 2 (Difference) -->
+        <!-- Placed below the base Vector -->
+        <svg class="layer drop-shadow-2" viewBox="0 0 406.78 407" preserveAspectRatio="xMaxYMid meet">
+            <use href="#vector-shape" fill="black" filter="url(#drop-shadow-2-filter)" />
+        </svg>
+
+        <!-- Main Fill Layer -->
+        <!-- Base styling with dynamic Linear Gradient -->
+        <svg class="layer main-vector" viewBox="0 0 406.78 407" preserveAspectRatio="xMaxYMid meet">
+            <use href="#vector-shape" fill="url(#dynamic-gradient)" />
+        </svg>
+
+        <!-- Inner Shadow 1 (Normal) -->
+        <!-- Overlaid ON TOP of main fill -->
+        <svg class="layer inner-shadow-1-layer" viewBox="0 0 406.78 407" preserveAspectRatio="xMaxYMid meet">
+            <!-- Ensure it covers the shape, inner shadow uses SourceAlpha of the use reference -->
+            <use href="#vector-shape" fill="black" filter="url(#inner-shadow-1)" />
+        </svg>
+
+        <!-- Inner Shadow 2 (Normal) -->
+        <!-- Overlaid ON TOP of main fill -->
+        <svg class="layer inner-shadow-2-layer" viewBox="0 0 406.78 407" preserveAspectRatio="xMaxYMid meet">
+            <use href="#vector-shape" fill="black" filter="url(#inner-shadow-2)" />
+        </svg>
+
+    </div>
+
+    <!-- Elipse (Cursor Overlay) -->
+    <div class="elipse" id="elipse"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

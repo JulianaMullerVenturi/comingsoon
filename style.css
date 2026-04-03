@@ -1,0 +1,102 @@
+:root {
+    /* Dynamics variables for JS assignment */
+    --ds1-x: 0px;
+    --ds1-y: 0px;
+    --ds1-blur: 175px;
+
+    --ds2-x: 0px;
+    --ds2-y: 0px;
+    --ds2-blur: 95px;
+
+    /* Base interactive mapping fallback */
+    --mouse-x: 50vw;
+    --mouse-y: 50vh;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #002E51; /* Premium dark background */
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    cursor: none; /* Hide default cursor if Elipse serves as custom cursor */
+}
+
+/* Base structural container */
+.vector-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100vw; /* Full width bounding area for shadows */
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible; /* Prevents container-level clipping */
+}
+
+/* Identical positioning for all SVG layers */
+.layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Maintaining proper SVG aspect ratio scaling natively */
+    overflow: visible; /* Essential for large filter effects/shadows to render outside viewBox */
+    will-change: transform, opacity; /* Force GPU promotion for smooth 60fps movement */
+}
+
+/* Removed shadow-mask-wrapper entirely to allow SVGs full screen coverage natively */
+
+/* Layer Z-Indexing and Blend Modes matching Figma structure */
+
+.drop-shadow-3 {
+    z-index: 5;
+    mix-blend-mode: normal;
+}
+
+.drop-shadow-1 {
+    z-index: 10;
+    mix-blend-mode: screen; /* Distinct luminous blue halo */
+}
+
+.drop-shadow-2 {
+    z-index: 20;
+    mix-blend-mode: difference; /* Sharp vibrant cyan core */
+}
+
+.main-vector {
+    z-index: 30;
+}
+
+.inner-shadow-1-layer {
+    z-index: 50;
+    mix-blend-mode: normal;
+    opacity: 0.8; /* Slight tuning for inset */
+}
+
+.inner-shadow-2-layer {
+    z-index: 40;
+    mix-blend-mode: normal;
+    opacity: 0.9;
+}
+
+/* Elipse Cursor Element */
+.elipse {
+    position: absolute;
+    width: 1021px;
+    height: 1021px;
+    border-radius: 50%;
+    /* #70CDFF with 11% opacity */
+    background-color: rgba(112, 205, 255, 0.11); 
+    filter: blur(304px); 
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+}
