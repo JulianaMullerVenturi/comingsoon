@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Elements
             this.mainVector = this.container.querySelector('.main-vector');
             this.dynamicGradient = document.getElementById(config.gradientId);
+            this.gradientStop2 = this.dynamicGradient ? this.dynamicGradient.querySelectorAll('stop')[1] : null;
             
             this.is1Offset = document.getElementById(config.ids.is1Offset);
             this.is2Offset = document.getElementById(config.ids.is2Offset);
@@ -27,16 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
             this.svgViewBoxW = config.viewBoxW;
             this.svgViewBoxH = config.viewBoxH;
 
-            // Base mapping coordinates
-            this.MAPPED_X = 500;
-            this.MAPPED_Y = -500;
-
-            // Physics variables
-            this.ds1_base_x = 95; this.ds1_base_y = 190;
-            this.ds2_base_x = 45; this.ds2_base_y = 90;
-            this.ds3_base_x = 145; this.ds3_base_y = 290;
-            this.is1_base_x = 85; this.is1_base_y = 250;
-            this.is2_base_x = 105; this.is2_base_y = 305;
+            // Physics variables - normalized to viewBox scale
+            this.SENSITIVITY = 0.12; // Base responsiveness
+            this.MAX_DRIFT = 200;    // Max distance in viewBox units
 
             this.rect = null;
             this.cx = 0; this.cy = 0;
@@ -65,14 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 visualScale = this.rect.height / this.svgViewBoxH;
                 this.visualWidth = this.svgViewBoxW * visualScale;
                 this.visualHeight = this.rect.height;
-                this.visualLeft = this.rect.left + this.rect.width - this.visualWidth; // xMax aligns to right
+                this.visualLeft = this.rect.left + this.rect.width - this.visualWidth;
                 this.visualTop = this.rect.top;
             } else {
                 visualScale = this.rect.width / this.svgViewBoxW;
                 this.visualWidth = this.rect.width;
                 this.visualHeight = this.svgViewBoxH * visualScale;
                 this.visualLeft = this.rect.left;
-                this.visualTop = this.rect.top + (this.rect.height - this.visualHeight) / 2; // YMid aligns to center
+                this.visualTop = this.rect.top + (this.rect.height - this.visualHeight) / 2;
             }
 
             this.cx = this.visualLeft + this.visualWidth / 2;
@@ -81,9 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
             this.scaleY = visualScale;
             this.avgScale = visualScale;
 
-            if(this.ds1Blur) this.ds1Blur.setAttribute('stdDeviation', 60 / this.avgScale); 
-            if(this.ds2Blur) this.ds2Blur.setAttribute('stdDeviation', 38 / this.avgScale);
-            if(this.ds3Blur) this.ds3Blur.setAttribute('stdDeviation', 100 / this.avgScale);
+            if(this.ds1Blur) this.ds1Blur.setAttribute('stdDeviation', 65 / this.avgScale); 
+            if(this.ds2Blur) this.ds2Blur.setAttribute('stdDeviation', 40 / this.avgScale);
+            if(this.ds3Blur) this.ds3Blur.setAttribute('stdDeviation', 110 / this.avgScale);
             if(this.is1Blur) this.is1Blur.setAttribute('stdDeviation', 20 / this.avgScale);
             if(this.is2Blur) this.is2Blur.setAttribute('stdDeviation', 10 / this.avgScale);
         }
@@ -91,30 +85,57 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFrame(mouseX, mouseY) {
             if (!this.rect || !this.ds1Offset) return;
 
+            // 1. Calculate Distances and Factors
             const dx = mouseX - this.cx;
             const dy = mouseY - this.cy;
+            const distance = Math.sqrt(dx*dx + dy*dy);
+            
+            // Interaction Thresholds (Screen Pixels)
+            const highlightRadius = Math.max(this.visualWidth, this.visualHeight) * 0.8;
+            const fadeRadius = highlightRadius * 3;
 
-            const mappedDx = this.MAPPED_X - this.cx;
-            const mappedDy = this.MAPPED_Y - this.cy;
+            // Calculate Factor for Proximity Highlighting (0 to 1)
+            let proximityFactor = 0;
+            if (distance < highlightRadius) {
+                proximityFactor = 1;
+            } else if (distance < fadeRadius) {
+                proximityFactor = 1 - ((distance - highlightRadius) / (fadeRadius - highlightRadius));
+            }
 
-            let factorX = mappedDx !== 0 ? (dx / mappedDx) : 0;
-            let factorY = mappedDy !== 0 ? (dy / mappedDy) : 0;
+            // 2. Update Shadows (Opposite Direction, responsive but attached)
+            // We use a non-linear scaling to keep them "attached" but trailing
+            const shadowX = -dx * this.SENSITIVITY;
+            const shadowY = -dy * this.SENSITIVITY;
 
-            this.ds1Offset.setAttribute('dx', (this.ds1_base_x * factorX) / this.scaleX);
-            this.ds1Offset.setAttribute('dy', (this.ds1_base_y * factorY) / this.scaleY);
+            // Apply to Drop Shadows
+            this.ds1Offset.setAttribute('dx', (shadowX * 1.5) / this.scaleX);
+            this.ds1Offset.setAttribute('dy', (shadowY * 1.8) / this.scaleY);
+            
+            this.ds2Offset.setAttribute('dx', (shadowX * 0.8) / this.scaleX);
+            this.ds2Offset.setAttribute('dy', (shadowY * 1.2) / this.scaleY);
 
-            this.ds2Offset.setAttribute('dx', (this.ds2_base_x * factorX) / this.scaleX);
-            this.ds2Offset.setAttribute('dy', (this.ds2_base_y * factorY) / this.scaleY);
+            this.ds3Offset.setAttribute('dx', (shadowX * 2.5) / this.scaleX);
+            this.ds3Offset.setAttribute('dy', (shadowY * 3.0) / this.scaleY);
 
-            this.ds3Offset.setAttribute('dx', (this.ds3_base_x * factorX) / this.scaleX);
-            this.ds3Offset.setAttribute('dy', (this.ds3_base_y * factorY) / this.scaleY);
+            // Apply to Inner Shadows (Inverted trailing for depth)
+            this.is1Offset.setAttribute('dx', (-shadowX * 0.6) / this.scaleX);
+            this.is1Offset.setAttribute('dy', (-shadowY * 0.6) / this.scaleY);
+            
+            this.is2Offset.setAttribute('dx', (-shadowX * 0.4) / this.scaleX);
+            this.is2Offset.setAttribute('dy', (-shadowY * 0.4) / this.scaleY);
 
-            this.is1Offset.setAttribute('dx', (this.is1_base_x * factorX) / this.scaleX);
-            this.is1Offset.setAttribute('dy', (this.is1_base_y * factorY) / this.scaleY);
+            // 3. Update Dynamic Gradient Color (Highlighting)
+            if (this.gradientStop2) {
+                // Interpolate from #139DDE (base) to #3FE0FF (highlight)
+                // #139DDE -> R:19, G:157, B:222
+                // #3FE0FF -> R:63, G:224, B:255
+                const r = Math.round(19 + (63 - 19) * proximityFactor);
+                const g = Math.round(157 + (224 - 157) * proximityFactor);
+                const b = Math.round(222 + (255 - 222) * proximityFactor);
+                this.gradientStop2.setAttribute('stop-color', `rgb(${r},${g},${b})`);
+            }
 
-            this.is2Offset.setAttribute('dx', (this.is2_base_x * factorX) / this.scaleX);
-            this.is2Offset.setAttribute('dy', (this.is2_base_y * factorY) / this.scaleY);
-
+            // 4. Update Gradient Position (Flashlight)
             const sx = ((mouseX - this.visualLeft) / this.visualWidth) * this.svgViewBoxW;
             const sy = ((mouseY - this.visualTop) / this.visualHeight) * this.svgViewBoxH;
 
