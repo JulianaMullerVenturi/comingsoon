@@ -1,4 +1,117 @@
+import re
+import os
 
+html_path = 'index.html'
+js_path = 'script.js'
+css_path = 'style.css'
+gcp_svg_path = 'logo-gcp.svg'
+
+with open(html_path, 'r', encoding='utf-8') as f:
+    html_content = f.read()
+
+with open(gcp_svg_path, 'r', encoding='utf-8') as f:
+    gcp_svg_content = f.read()
+
+# Extract inner contents of GCP SVG
+gcp_inner = re.search(r'<svg[^>]*>(.*?)</svg>', gcp_svg_content, re.DOTALL).group(1)
+# Clean up styles from GCP SVG if any to avoid conflicts, though they are inside defs
+gcp_inner = re.sub(r'<style>.*?</style>', '', gcp_inner, flags=re.DOTALL)
+
+# In index.html, we need to extract the filter definitions to duplicate them for GCP with `gcp-` prefix
+filters_block = re.search(r'(<!-- Inner Shadow 1 \(Normal\) -->.*?)</defs>', html_content, re.DOTALL).group(1)
+
+# Create GCP specific filters
+gcp_filters = filters_block.replace('id="inner-shadow-', 'id="gcp-inner-shadow-')
+gcp_filters = gcp_filters.replace('id="is1-', 'id="gcp-is1-')
+gcp_filters = gcp_filters.replace('id="is2-', 'id="gcp-is2-')
+gcp_filters = gcp_filters.replace('id="drop-shadow-', 'id="gcp-drop-shadow-')
+gcp_filters = gcp_filters.replace('id="ds1-', 'id="gcp-ds1-')
+gcp_filters = gcp_filters.replace('id="ds2-', 'id="gcp-ds2-')
+gcp_filters = gcp_filters.replace('id="ds3-', 'id="gcp-ds3-')
+gcp_filters = gcp_filters.replace('id="dynamic-gradient"', 'id="gcp-dynamic-gradient"')
+gcp_filters = gcp_filters.replace('url(#dynamic-gradient)', 'url(#gcp-dynamic-gradient)')
+
+# Build GCP Container HTML
+gcp_html = f"""
+    <div class="gcp-container" id="gcp-container">
+        <!-- SVG Definitions for GCP -->
+        <svg style="width: 0; height: 0; position: absolute;" aria-hidden="true" focusable="false">
+            <defs>
+                <g id="gcp-shape">
+                    {gcp_inner.strip()}
+                </g>
+                {gcp_filters.strip()}
+            </defs>
+        </svg>
+
+        <!-- Drop Shadow 3 Layer (Ambient Trail) -->
+        <svg class="layer drop-shadow-3" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
+            <use href="#gcp-shape" filter="url(#gcp-drop-shadow-3-filter)" />
+        </svg>
+
+        <!-- Drop Shadow 1 Layer (Halo) -->
+        <svg class="layer drop-shadow-1" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
+            <use href="#gcp-shape" filter="url(#gcp-drop-shadow-1-filter)" />
+        </svg>
+
+        <!-- Drop Shadow 2 Layer (Core Highlight) -->
+        <svg class="layer drop-shadow-2" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
+            <use href="#gcp-shape" filter="url(#gcp-drop-shadow-2-filter)" />
+        </svg>
+
+        <!-- Main Fill Layer -->
+        <svg class="layer main-vector" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
+            <use href="#gcp-shape" fill="url(#gcp-dynamic-gradient)" />
+        </svg>
+
+        <!-- Inner Shadow 1 Layer -->
+        <svg class="layer inner-shadow-1-layer" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
+            <use href="#gcp-shape" filter="url(#gcp-inner-shadow-1-filter)" />
+        </svg>
+
+        <!-- Inner Shadow 2 Layer -->
+        <svg class="layer inner-shadow-2-layer" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
+            <use href="#gcp-shape" filter="url(#gcp-inner-shadow-2-filter)" />
+        </svg>
+    </div>
+"""
+
+# Insert before closing body tag
+html_content = html_content.replace('</body>', gcp_html + '\n</body>')
+with open(html_path, 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+# Update style.css
+with open(css_path, 'r', encoding='utf-8') as f:
+    css_content = f.read()
+
+# Make sure SVGs inside both containers are styled easily by applying .layer to width/height 100%
+if '.gcp-container' not in css_content:
+    css_content += """
+
+.gcp-container {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 95px;
+    height: 95px;
+    z-index: 100;
+}
+
+.gcp-container .layer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+}
+"""
+with open(css_path, 'w', encoding='utf-8') as f:
+    f.write(css_content)
+
+# Update script.js entirely to use the Class based architecture
+js_class_code = """
 document.addEventListener('DOMContentLoaded', () => {
 
     class PhysicsVectorModel {
@@ -193,3 +306,9 @@ document.addEventListener('DOMContentLoaded', () => {
         gcpModel.updateFrame(mouseX, mouseY);
     }, 100);
 });
+"""
+
+with open(js_path, 'w', encoding='utf-8') as f:
+    f.write(js_class_code)
+
+print("Done")
