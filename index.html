@@ -55,11 +55,11 @@
                     <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
                 </filter>
 
-                <!-- Drop Shadow 2 (Difference) Filter -->
+                <!-- Drop Shadow 2 (Core) Filter -->
                 <filter id="drop-shadow-2-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
                     <feOffset dx="0" dy="78" in="SourceAlpha" id="ds2-offset" result="offset"/>
                     <feGaussianBlur stdDeviation="47.5" in="offset" id="ds2-blur" result="blur"/>
-                    <feFlood flood-color="#3FE0FF" result="color"/>
+                    <feFlood flood-color="#0DC7F3" result="color"/>
                     <feComposite operator="in" in="color" in2="blur" result="final-shadow"/>
                 </filter>
 

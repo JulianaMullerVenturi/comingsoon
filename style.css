@@ -64,7 +64,7 @@ body, html {
 
 .drop-shadow-2 {
     z-index: 20;
-    mix-blend-mode: difference; /* Sharp vibrant cyan core */
+    mix-blend-mode: screen; /* Changed from difference to screen to prevent dark green shifts */
 }
 
 .main-vector {
