@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const ds2_base_y = 78;
 
     // Drop Shadow 3 (Far Background Glow) Base State
-    // Restored original distant spill mapping
-    const ds3_base_x = 450;
-    const ds3_base_y = 900;
+    // Adjusted to create a transition sequence starting where Drop Shadow 1 finishes
+    const ds3_base_x = 180;
+    const ds3_base_y = 360;
 
     // Inner Shadow 1 (Normal) Base State
     // Updated x from 7 to 85 to simulate lateral light physics
