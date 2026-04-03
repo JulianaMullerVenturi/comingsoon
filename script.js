@@ -20,20 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const MAPPED_X = 500;
     const MAPPED_Y = -500;
 
-    // Drop Shadow 1 (Overlay) Base State
-    // Restored original distant offset
-    const ds1_base_x = 92;
-    const ds1_base_y = 188;
+    // Drop Shadow 1 (Overlay) Base State - The Mid-Halo
+    // Positioned to bridge smooth geometry between core and ambient trail
+    const ds1_base_x = 75;
+    const ds1_base_y = 150;
     
-    // Drop Shadow 2 (Difference/Core) Base State
-    // Restored original lateral offset
-    const ds2_base_x = 38;
-    const ds2_base_y = 78;
+    // Drop Shadow 2 (Difference/Core) Base State - The Bright Core
+    const ds2_base_x = 35;
+    const ds2_base_y = 70;
 
-    // Drop Shadow 3 (Far Background Glow) Base State
-    // Adjusted to create a transition sequence starting where Drop Shadow 1 finishes
-    const ds3_base_x = 180;
-    const ds3_base_y = 360;
+    // Drop Shadow 3 (Far Background Glow) Base State - The Outer Spill
+    const ds3_base_x = 130;
+    const ds3_base_y = 260;
 
     // Inner Shadow 1 (Normal) Base State
     // Updated x from 7 to 85 to simulate lateral light physics
@@ -92,10 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
         avgScale = visualScale;
 
         // Optimization: Pre-calculate blurs only on resize/init, not every frame
-        // Tighter blur to resemble vector shape distinctly
-        ds1Blur.setAttribute('stdDeviation', 45 / avgScale); 
-        ds2Blur.setAttribute('stdDeviation', 20 / avgScale);
-        ds3Blur.setAttribute('stdDeviation', 110 / avgScale);
+        // Curve-fitted blurs to create uninterrupted transitions between the three positions
+        ds1Blur.setAttribute('stdDeviation', 60 / avgScale); 
+        ds2Blur.setAttribute('stdDeviation', 30 / avgScale);
+        ds3Blur.setAttribute('stdDeviation', 100 / avgScale);
         is1Blur.setAttribute('stdDeviation', 20 / avgScale);
         is2Blur.setAttribute('stdDeviation', 10 / avgScale);
     }

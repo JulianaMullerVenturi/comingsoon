@@ -54,17 +54,20 @@ body, html {
 
 .drop-shadow-3 {
     z-index: 5;
-    mix-blend-mode: normal;
+    mix-blend-mode: screen;
+    opacity: 0.4; /* Ambient fade for trailing shadow */
 }
 
 .drop-shadow-1 {
     z-index: 10;
-    mix-blend-mode: normal; /* Normal mode to prevent additive blowout entirely */
+    mix-blend-mode: screen; /* Restored to screen so the light merges softly into the transition trail */
+    opacity: 0.6;
 }
 
 .drop-shadow-2 {
     z-index: 20;
-    mix-blend-mode: normal; /* Cap the brightness strictly at #0DC7F3 without additive blooming */
+    mix-blend-mode: screen; /* Smooth additive blend to mimic premium lighting */
+    opacity: 0.75;
 }
 
 .main-vector {
