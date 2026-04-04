@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Vector Background</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Plus+Jakarta+Sans:wght@100;200;300;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -253,6 +254,38 @@
         <svg class="layer inner-shadow-2-layer" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
             <use href="#gcp-shape" fill="black" filter="url(#gcp-inner-shadow-2-filter)" />
         </svg>
+    </div>
+
+    <!-- Countdown Container -->
+    <div class="countdown-container" id="countdown">
+        <div class="countdown-unit" id="unit-days">
+            <div class="digits-container">
+                <div class="digit-wrapper tens" id="days-tens"><div class="digit current">3</div></div>
+                <div class="digit-wrapper ones" id="days-ones"><div class="digit current">0</div></div>
+            </div>
+            <div class="countdown-label">DAYS</div>
+        </div>
+        <div class="countdown-unit" id="unit-hours">
+            <div class="digits-container">
+                <div class="digit-wrapper tens" id="hours-tens"><div class="digit current">0</div></div>
+                <div class="digit-wrapper ones" id="hours-ones"><div class="digit current">6</div></div>
+            </div>
+            <div class="countdown-label">HOURS</div>
+        </div>
+        <div class="countdown-unit" id="unit-minutes">
+            <div class="digits-container">
+                <div class="digit-wrapper tens" id="minutes-tens"><div class="digit current digit-one">1</div></div>
+                <div class="digit-wrapper ones" id="minutes-ones"><div class="digit current digit-one">1</div></div>
+            </div>
+            <div class="countdown-label">MINUTES</div>
+        </div>
+        <div class="countdown-unit" id="unit-seconds">
+            <div class="digits-container">
+                <div class="digit-wrapper tens" id="seconds-tens"><div class="digit current">3</div></div>
+                <div class="digit-wrapper ones" id="seconds-ones"><div class="digit current">9</div></div>
+            </div>
+            <div class="countdown-label">SECONDS</div>
+        </div>
     </div>
 
 </body>
