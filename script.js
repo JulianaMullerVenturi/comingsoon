@@ -43,9 +43,20 @@ document.addEventListener('DOMContentLoaded', () => {
             this.innerLightCoreRadiusPx = config.innerLightCoreRadiusPx !== undefined ? config.innerLightCoreRadiusPx : this.lightCoreRadiusPx;
             this.gradientRadiusPx = config.gradientRadiusPx || null;
             this.minOuterIntensity = config.minOuterIntensity !== undefined ? config.minOuterIntensity : (config.minIntensity || 0);
+            this.maxOuterIntensity = config.maxOuterIntensity !== undefined ? config.maxOuterIntensity : 1;
             this.minInnerIntensity = config.minInnerIntensity !== undefined ? config.minInnerIntensity : (config.minIntensity || 0);
             this.is1MaxOpacity = config.is1MaxOpacity !== undefined ? config.is1MaxOpacity : 0.8;
             this.is2MaxOpacity = config.is2MaxOpacity !== undefined ? config.is2MaxOpacity : 0.9;
+            this.dynamicInnerBlur = config.dynamicInnerBlur || false;
+            this.dynamicLeftBrightness = config.dynamicLeftBrightness || false;
+
+            this.dynamicOuterBlur = config.dynamicOuterBlur || false;
+            this.baseDs1Blur = config.baseDs1Blur !== undefined ? config.baseDs1Blur : 60;
+            this.baseDs2Blur = config.baseDs2Blur !== undefined ? config.baseDs2Blur : 38;
+            this.baseDs3Blur = config.baseDs3Blur !== undefined ? config.baseDs3Blur : 100;
+            this.minOuterBlurMult = config.minOuterBlurMult !== undefined ? config.minOuterBlurMult : 0;
+            this.blurDistanceFocus = config.blurDistanceFocus !== undefined ? config.blurDistanceFocus : 0;
+            this.blurDistanceMax = config.blurDistanceMax !== undefined ? config.blurDistanceMax : 800;
 
             // Physics variables
             this.ds1_base_x = config.ds1_base_x !== undefined ? config.ds1_base_x : 95; 
@@ -103,18 +114,19 @@ document.addEventListener('DOMContentLoaded', () => {
             this.scaleY = visualScale;
             this.avgScale = visualScale;
 
-            if(this.ds1Blur) this.ds1Blur.setAttribute('stdDeviation', 60 / this.avgScale); 
-            if(this.ds2Blur) this.ds2Blur.setAttribute('stdDeviation', 38 / this.avgScale);
-            if(this.ds3Blur) this.ds3Blur.setAttribute('stdDeviation', 100 / this.avgScale);
-            if(this.is1Blur) this.is1Blur.setAttribute('stdDeviation', (20 * this.innerBlurScale) / this.avgScale);
-            if(this.is2Blur) this.is2Blur.setAttribute('stdDeviation', (10 * this.innerBlurScale) / this.avgScale);
+            if(this.ds1Blur && !this.dynamicOuterBlur) this.ds1Blur.setAttribute('stdDeviation', this.baseDs1Blur / this.avgScale); 
+            if(this.ds2Blur && !this.dynamicOuterBlur) this.ds2Blur.setAttribute('stdDeviation', this.baseDs2Blur / this.avgScale);
+            if(this.ds3Blur && !this.dynamicOuterBlur) this.ds3Blur.setAttribute('stdDeviation', this.baseDs3Blur / this.avgScale);
+            if(this.is1Blur && !this.dynamicInnerBlur) this.is1Blur.setAttribute('stdDeviation', (20 * this.innerBlurScale) / this.avgScale);
+            if(this.is2Blur && !this.dynamicInnerBlur) this.is2Blur.setAttribute('stdDeviation', (10 * this.innerBlurScale) / this.avgScale);
         }
 
         updateFrame(mouseX, mouseY) {
-            if (!this.rect || !this.ds1Offset) return;
+            if (!this.rect) return;
 
             const dx = mouseX - this.cx;
             const dy = mouseY - this.cy;
+            const d = Math.sqrt(dx * dx + dy * dy);
 
             // Fix direction bug: always map against global window center to keep movement logic identical
             const globalCx = window.innerWidth / 2;
@@ -140,9 +152,44 @@ document.addEventListener('DOMContentLoaded', () => {
             this.is2Offset.setAttribute('dx', (this.is2_base_x * factorX * this.innerMovementScale) / this.scaleX);
             this.is2Offset.setAttribute('dy', (this.is2_base_y * factorY * this.innerMovementScale) / this.scaleY);
 
+            if (this.dynamicOuterBlur) {
+                let blurMult = 0;
+                if (d > this.blurDistanceFocus) {
+                    blurMult = Math.min((d - this.blurDistanceFocus) / (this.blurDistanceMax - this.blurDistanceFocus), 1);
+                    blurMult = Math.pow(blurMult, 0.8); 
+                }
+
+                let finalMult = this.minOuterBlurMult + (1 - this.minOuterBlurMult) * blurMult;
+
+                let blur1 = Math.max((this.baseDs1Blur * finalMult) / this.avgScale, 0.01);
+                let blur2 = Math.max((this.baseDs2Blur * finalMult) / this.avgScale, 0.01);
+                let blur3 = Math.max((this.baseDs3Blur * finalMult) / this.avgScale, 0.01);
+
+                if (this.ds1Blur) this.ds1Blur.setAttribute('stdDeviation', blur1); 
+                if (this.ds2Blur) this.ds2Blur.setAttribute('stdDeviation', blur2);
+                if (this.ds3Blur) this.ds3Blur.setAttribute('stdDeviation', blur3);
+            }
+
+            if (this.dynamicInnerBlur) {
+                // Keep blur strictly at normal base values for the majority of the screen
+                let blurMult = 1;
+                
+                // Activate scaling earlier as the cursor enters the left quarter of the screen
+                const leftThreshold = window.innerWidth * 0.25; 
+                
+                if (mouseX < leftThreshold) {
+                    // Calculate penetration depth into the left threshold width
+                    const edgeProximity = 1 - (Math.max(mouseX, 0) / leftThreshold);
+                    // Use a softer curve and a lower maximum scaling factor (capped at ~1.85x total)
+                    blurMult = 1 + (0.85 * Math.pow(edgeProximity, 1.5)); 
+                }
+
+                if (this.is1Blur) this.is1Blur.setAttribute('stdDeviation', (20 * this.innerBlurScale * blurMult) / this.avgScale);
+                if (this.is2Blur) this.is2Blur.setAttribute('stdDeviation', (10 * this.innerBlurScale * blurMult) / this.avgScale);
+            }
+
             // Fade out ALL light (drop shadows & inner shadows) when cursor moves away
             if (this.fadeLightOnDistance) {
-                const d = Math.sqrt(dx * dx + dy * dy);
                 const fadeRadius = this.lightRadiusPx || 150;
                 const coreRadius = this.lightCoreRadiusPx || 0;
                 
@@ -155,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 let outerIntensity = intensity;
                 if (outerIntensity < this.minOuterIntensity) outerIntensity = this.minOuterIntensity;
-                if (outerIntensity > 1) outerIntensity = 1;
+                if (outerIntensity > this.maxOuterIntensity) outerIntensity = this.maxOuterIntensity;
 
                 const innerFadeRadius = this.innerLightRadiusPx || 150;
                 const innerCoreRadius = this.innerLightCoreRadiusPx || 0;
@@ -212,6 +259,16 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 screenRadius = Math.max(window.innerWidth, window.innerHeight) * 1.8;
             }
+
+            if (this.dynamicLeftBrightness) {
+                const leftThreshold = window.innerWidth * 0.25; 
+                if (mouseX < leftThreshold) {
+                    const edgeProximity = 1 - (Math.max(mouseX, 0) / leftThreshold);
+                    // Inflate the radius mapping enough to brightly wash the fill, but constrain it so the distant edge still noticeably decays
+                    screenRadius *= (1 + 0.55 * Math.pow(edgeProximity, 1.5));
+                }
+            }
+
             const svgRadius = screenRadius / this.avgScale;
             this.dynamicGradient.setAttribute('r', svgRadius);
         }
@@ -225,6 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gradientId: 'dynamic-gradient',
         ds3_base_x: 60,  // Shift the bluer shadow off-center
         ds3_base_y: 420, // Elongate the bluer shadow trail
+        dynamicInnerBlur: true, // Allow inner shadows to soften and bleed at vast distances
+        dynamicLeftBrightness: true, // Inflate the gradient sweep on the far-left coordinate bounds to boost cyan fill presence
         ids: {
             is1Offset: 'is1-offset', is2Offset: 'is2-offset',
             ds1Offset: 'ds1-offset', ds2Offset: 'ds2-offset', ds3Offset: 'ds3-offset',
@@ -247,10 +306,20 @@ document.addEventListener('DOMContentLoaded', () => {
         lightCoreRadiusPx: 120, // Remains perfectly 100% intensity until 120px away
         innerLightRadiusPx: 1400, // Inner shadows survive massively longer distances across the screen
         innerLightCoreRadiusPx: 400, // Defines the core zone where interior bounds stay physically 100% bright without decay
-        minOuterIntensity: 0.45, // Significantly higher floor for drop shadows on right side of screen
+        minOuterIntensity: 0.25, // Shadows become notably weaker at a distance
+        maxOuterIntensity: 0.55, // Prevent shadows from becoming too bright and blowing out the shape when cursor is directly on top
         minInnerIntensity: 0, // Fade fully to 0 so the internal graphic evaluates purely to #02568B
         is1MaxOpacity: 0, // Disable entirely. Massive internal bevel matrices structurally collide natively inside tiny line-art vectors
         is2MaxOpacity: 0, // Disable entirely. Gradient radius tracking perfectly solves internal shading dynamically now
+        
+        dynamicOuterBlur: true,
+        baseDs1Blur: 65,
+        baseDs2Blur: 8,
+        baseDs3Blur: 100,
+        minOuterBlurMult: 0.4,
+        blurDistanceFocus: 80,
+        blurDistanceMax: 800,
+
         ds3_base_x: 60,  // Shift the bluer shadow off-center for GCP too
         ds3_base_y: 450, // Even more exaggerated trail for the smaller logo
         ids: {
