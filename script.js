@@ -1,5 +1,34 @@
-
 document.addEventListener('DOMContentLoaded', () => {
+
+    class Spring {
+        constructor(stiffness, damping) {
+            this.stiffness = stiffness;
+            this.damping = damping;
+            this.px = window.innerWidth / 2;
+            this.py = window.innerHeight / 2;
+            this.vx = 0;
+            this.vy = 0;
+            this.targetX = window.innerWidth / 2;
+            this.targetY = window.innerHeight / 2;
+        }
+
+        setTarget(x, y) {
+            this.targetX = x;
+            this.targetY = y;
+        }
+
+        update() {
+            // Using a fixed step for consistent physics (approx 1/60th of a second)
+            const dt = 0.016; 
+            const ax = -this.stiffness * (this.px - this.targetX) - this.damping * this.vx;
+            const ay = -this.stiffness * (this.py - this.targetY) - this.damping * this.vy;
+            
+            this.vx += ax * dt;
+            this.vy += ay * dt;
+            this.px += this.vx * dt;
+            this.py += this.vy * dt;
+        }
+    }
 
     class PhysicsVectorModel {
         constructor(config) {
@@ -330,43 +359,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const elipse = document.getElementById('elipse');
+    const customCursor = document.getElementById('custom-cursor');
+    const cursorSpring = new Spring(300, 28); // Specific Stiffness and Damping for movement
+    const scaleSpring = new Spring(400, 30);  // High stiffness for scale snappiness
+
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     let isTicking = false;
 
-    window.addEventListener('resize', () => {
-        mainModel.cacheLayout();
-        gcpModel.cacheLayout();
-        if (!isTicking) {
-            requestAnimationFrame(() => {
-                mainModel.updateFrame(mouseX, mouseY);
-                gcpModel.updateFrame(mouseX, mouseY);
-                isTicking = false;
-            });
-            isTicking = true;
-        }
+    // Initial scale values
+    scaleSpring.px = 1;
+    scaleSpring.targetX = 1;
+
+    document.addEventListener('mousedown', () => {
+        scaleSpring.setTarget(0.8, 0); // Target 0.8x scale
     });
 
-    const elipse = document.getElementById('elipse');
+    document.addEventListener('mouseup', () => {
+        scaleSpring.setTarget(1.0, 0); // Target 1.0x scale
+    });
+
+    function applyFrame() {
+        mainModel.updateFrame(mouseX, mouseY);
+        gcpModel.updateFrame(mouseX, mouseY);
+
+        // Update Physics Models
+        cursorSpring.setTarget(mouseX, mouseY);
+        cursorSpring.update();
+        
+        scaleSpring.update();
+
+        // Render Elipse (background glow)
+        if (elipse) {
+            elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+        }
+
+        // Render Custom UI Cursor
+        if (customCursor) {
+            // scaleSpring.px holds our current animated scale
+            customCursor.style.transform = `translate(${cursorSpring.px}px, ${cursorSpring.py}px) translate(-50%, -50%) scale(${scaleSpring.px})`;
+        }
+
+        requestAnimationFrame(applyFrame);
+    }
+
+    // Start high-fidelity physics loop
+    requestAnimationFrame(applyFrame);
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-
-        if (!isTicking) {
-            requestAnimationFrame(() => {
-                mainModel.updateFrame(mouseX, mouseY);
-                gcpModel.updateFrame(mouseX, mouseY);
-
-                // Update CSS Elipse Cursor position
-                if (elipse) {
-                    elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
-                }
-
-                isTicking = false;
-            });
-            isTicking = true;
-        }
     });
 
     // Initial render

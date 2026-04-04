@@ -21,7 +21,12 @@ body, html {
     background-color: #002E51; /* Premium dark background */
     overflow: hidden;
     font-family: 'Inter', sans-serif;
-    cursor: none; /* Hide default cursor if Elipse serves as custom cursor */
+    cursor: none !important; /* Force hide default cursor */
+}
+
+/* Ensure all interactive elements hide default cursor */
+a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
+    cursor: none !important;
 }
 
 /* Base structural container */
@@ -264,3 +269,94 @@ body, html {
     letter-spacing: 0;
     margin-top: -3px; 
 }
+
+/* Glass Stencil Layer (Information Block) */
+.glass-stencil {
+    position: absolute;
+    bottom: 48px; /* Matched to GCP logo margins */
+    left: 48px;   /* Matched to GCP logo margins */
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto; /* Enabled to allow hover effects on names */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.keywords-grid {
+    display: flex; /* Changed from grid to flex to decouple columns */
+    flex-direction: column;
+    gap: 12px; /* Increased Vertical gap */
+    align-items: flex-start;
+}
+
+.keyword-row {
+    display: flex;
+    gap: 12px; /* Increased horizontal gap between pills */
+    align-items: center;
+}
+
+.keyword-pill {
+    padding: 10px 22px; /* Increased padding */
+    border: 1px solid #02568B;
+    border-radius: 999px;
+    background: transparent;
+    color: #02568B;
+    font-size: 15px; /* Increased from 14px */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.employee-names {
+    margin-top: 40px; /* Increased margin */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; 
+}
+
+.names-row {
+    font-size: 18px; /* Increased from 16px */
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Increased gap */
+    line-height: normal;
+}
+
+.name {
+    color: #000; /* Pure Black for names */
+    transition: color 0.2s ease;
+    cursor: none; /* Already inherited but explicit for clarity */
+}
+
+.name:hover {
+    color: #02568B; /* Dark Blue hover effect */
+}
+
+.separator {
+    color: #000; /* Changed from #02568B to Black */
+    opacity: 0.3; /* 30% opacity */
+}
+
+/* Custom UI Cursor Styles */
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 12px; /* Reduced from 20px */
+    height: 12px; /* Reduced from 20px */
+    border-radius: 50%;
+    border: 1px solid #18A8E3;
+    background-color: rgba(24, 168, 227, 0.2); /* 20% opacity fill */
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%) scale(1);
+    will-change: transform;
+}
+
+
