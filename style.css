@@ -320,7 +320,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 
 .names-row {
     font-size: 18px; /* Increased from 16px */
-    font-weight: 400;
+    font-weight: 500; /* Increased from 400 */
     display: flex;
     align-items: center;
     gap: 20px; /* Increased gap */
@@ -338,8 +338,9 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 }
 
 .separator {
-    color: #000; /* Changed from #02568B to Black */
-    opacity: 0.3; /* 30% opacity */
+    color: #000; /* Solid Black */
+    font-weight: 300; /* Increased from 100 */
+    opacity: 0.6; /* Increased from 0.3 for better visibility */
 }
 
 /* Custom UI Cursor Styles */
