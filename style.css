@@ -11,6 +11,11 @@
     /* Base interactive mapping fallback */
     --mouse-x: 50vw;
     --mouse-y: 50vh;
+
+    /* Meet the team values */
+    --circle-x: 65;
+    --circle-y: 342;
+    --circle-r: 64.5;
 }
 
 body, html {
@@ -39,6 +44,9 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     pointer-events: none;
     z-index: 1;
     overflow: visible; /* Prevents container-level clipping */
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: var(--transform-origin-x, 0px) var(--transform-origin-y, 0px);
+    will-change: transform;
 }
 
 /* Identical positioning for all SVG layers */
@@ -94,18 +102,18 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 /* Elipse Cursor Element */
 .elipse {
     position: absolute;
-    width: 1021px;
-    height: 1021px;
+    width: 255px;
+    height: 255px;
     border-radius: 50%;
     /* #70CDFF with 11% opacity */
     background-color: rgba(112, 205, 255, 0.11); 
-    filter: blur(304px); 
+    filter: blur(76px); 
     mix-blend-mode: overlay;
     pointer-events: none;
     z-index: 999;
     top: 0;
     left: 0;
-    transform: translate(-50%, -50%);
+    /* Native translation offsets are combined with hardware scaling via JS later */
     will-change: transform;
 }
 
@@ -146,6 +154,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     font-family: 'Plus Jakarta Sans', sans-serif;
     color: #000000;
     pointer-events: none; 
+    transition: opacity 0.5s ease;
 }
 
 .countdown-unit {
@@ -287,6 +296,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     flex-direction: column;
     gap: 12px; /* Increased Vertical gap */
     align-items: flex-start;
+    transition: opacity 0.5s ease;
 }
 
 .keyword-row {
@@ -354,10 +364,24 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     border: 1px solid #18A8E3;
     background-color: rgba(24, 168, 227, 0.2); /* 20% opacity fill */
     mix-blend-mode: screen;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate(-50%, -50%) scale(1);
     will-change: transform;
 }
+
+/* Meet the Team Transitions */
+/* Meet the Team Transitions */
+.cleanup-teardrops {
+    --teardrop-display: none;
+}
+
+.meet-the-team-active .vector-container {
+    transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--tscale, 1));
+}
+
+.meet-the-team-active #countdown,
+.meet-the-team-active .keywords-grid {
+    opacity: 0;
+    pointer-events: none;
+}
+
 
 

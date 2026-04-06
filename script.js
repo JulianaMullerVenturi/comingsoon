@@ -1,5 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Store Team state transformation data globally to ensure interactivity maps perfectly
+    window.teamData = {
+        active: false,
+        tx: 0,
+        ty: 0,
+        originX: 0,
+        originY: 0,
+        tscale: 1
+    };
+
     class Spring {
         constructor(stiffness, damping) {
             this.stiffness = stiffness;
@@ -17,16 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
             this.targetY = y;
         }
 
-        update() {
-            // Using a fixed step for consistent physics (approx 1/60th of a second)
-            const dt = 0.016; 
+        update(dt = 0.016) {
+            // Securely cap frame delta to protect Euler math from explosion if tab goes completely idle
+            let safeDt = Math.min(dt, 0.05);
+            
             const ax = -this.stiffness * (this.px - this.targetX) - this.damping * this.vx;
             const ay = -this.stiffness * (this.py - this.targetY) - this.damping * this.vy;
             
-            this.vx += ax * dt;
-            this.vy += ay * dt;
-            this.px += this.vx * dt;
-            this.py += this.vy * dt;
+            this.vx += ax * safeDt;
+            this.vy += ay * safeDt;
+            this.px += this.vx * safeDt;
+            this.py += this.vy * safeDt;
         }
     }
 
@@ -152,6 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateFrame(mouseX, mouseY) {
             if (!this.rect) return;
+
+            if (window.teamData && window.teamData.active && this.container.classList.contains('vector-container')) {
+                // Freeze the intense physics filter math while CSS is hardware animating massive matrix changes
+                if (window.teamData.transitioning) return;
+            }
 
             const dx = mouseX - this.cx;
             const dy = mouseY - this.cy;
@@ -380,19 +396,24 @@ document.addEventListener('DOMContentLoaded', () => {
         scaleSpring.setTarget(1.0, 0); // Target 1.0x scale
     });
 
-    function applyFrame() {
+    let prevTime = 0;
+    function applyFrame(timestamp) {
+        if (!prevTime) prevTime = timestamp;
+        let dt = (timestamp - prevTime) / 1000;
+        prevTime = timestamp;
+
         mainModel.updateFrame(mouseX, mouseY);
         gcpModel.updateFrame(mouseX, mouseY);
 
         // Update Physics Models
         cursorSpring.setTarget(mouseX, mouseY);
-        cursorSpring.update();
+        cursorSpring.update(dt || 0.016);
         
-        scaleSpring.update();
+        scaleSpring.update(dt || 0.016);
 
-        // Render Elipse (background glow)
+        // Render Elipse (background glow) with hardware-accelerated 4x upscaling
         if (elipse) {
-            elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+            elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(4)`;
         }
 
         // Render Custom UI Cursor
@@ -418,8 +439,9 @@ document.addEventListener('DOMContentLoaded', () => {
         gcpModel.cacheLayout();
         mainModel.updateFrame(mouseX, mouseY);
         gcpModel.updateFrame(mouseX, mouseY);
+        // Render Elipse initialization
         if (elipse) {
-            elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+            elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(4)`;
         }
     }, 100);
 
@@ -521,6 +543,69 @@ document.addEventListener('DOMContentLoaded', () => {
             else container.classList.remove('ones-is-one');
         }
     }
+
+    // --- Meet the Team Interaction ---
+    const employeeNames = document.querySelectorAll('.employee-names .name');
+    employeeNames.forEach(nameEl => {
+        nameEl.addEventListener('click', (e) => {
+            if (document.body.classList.contains('meet-the-team-active')) return;
+            
+            document.body.classList.add('meet-the-team-active');
+            
+            const mLeft = mainModel.visualLeft;
+            const mTop = mainModel.visualTop;
+            const mWidth = mainModel.visualWidth;
+            const mHeight = mainModel.visualHeight;
+            
+            const viewBoxW = mainModel.svgViewBoxW;
+            const viewBoxH = mainModel.svgViewBoxH;
+
+            // Target circle is at X=65, Y=342, R=64.5 in SVG coordinates
+            const C_X = 65;
+            const C_Y = 342;
+            const C_R = 64.5;
+            
+            const startCenterX = mLeft + (C_X / viewBoxW) * mWidth;
+            const startCenterY = mTop + (C_Y / viewBoxH) * mHeight;
+            const currentCircleRadius = (C_R / viewBoxW) * mWidth;
+
+            // Target location (Right 40% center)
+            const targetCenterX = window.innerWidth * 0.8;
+            const targetCenterY = window.innerHeight * 0.5;
+
+            // Margins roughly 80px total (40px padding) safely bounded by innerHeight and 40% innerWidth
+            const availableW = window.innerWidth * 0.4 - 80;
+            const availableH = window.innerHeight - 80;
+            const targetRadius = Math.min(availableW, availableH) / 2;
+
+            const scaleFactor = targetRadius / currentCircleRadius;
+
+            // Populate global state so physics loop freezes cleanly during movement
+            window.teamData = {
+                active: true,
+                transitioning: true,
+                tx: targetCenterX - startCenterX,
+                ty: targetCenterY - startCenterY,
+                originX: startCenterX,
+                originY: startCenterY,
+                tscale: scaleFactor
+            };
+
+            // Set CSS transition targets
+            document.documentElement.style.setProperty('--transform-origin-x', `${startCenterX}px`);
+            document.documentElement.style.setProperty('--transform-origin-y', `${startCenterY}px`);
+            document.documentElement.style.setProperty('--tx', `${targetCenterX - startCenterX}px`);
+            document.documentElement.style.setProperty('--ty', `${targetCenterY - startCenterY}px`);
+            document.documentElement.style.setProperty('--tscale', scaleFactor);
+
+            // Hide the teardrops completely from the DOM after fading to free up filter bounds
+            // And resume standard physics tracking mapping at highest GPU performance
+            setTimeout(() => {
+                document.body.classList.add('cleanup-teardrops');
+                window.teamData.transitioning = false;
+            }, 1200);
+        });
+    });
 
     setInterval(tickCountdown, 1000);
 
