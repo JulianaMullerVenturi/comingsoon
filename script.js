@@ -569,8 +569,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const startCenterY = mTop + (C_Y / viewBoxH) * mHeight;
             const currentCircleRadius = (C_R / viewBoxW) * mWidth;
 
-            // Target location (Right 40% center)
-            const targetCenterX = window.innerWidth * 0.8;
+            // Target location (Shifted left to 68% of screen width for larger right margin)
+            const targetCenterX = window.innerWidth * 0.68;
             const targetCenterY = window.innerHeight * 0.5;
 
             // Margins roughly 80px total (40px padding) safely bounded by innerHeight and 40% innerWidth

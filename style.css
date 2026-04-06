@@ -364,6 +364,8 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     border: 1px solid #18A8E3;
     background-color: rgba(24, 168, 227, 0.2); /* 20% opacity fill */
     mix-blend-mode: screen;
+    z-index: 10000;
+    pointer-events: none;
     will-change: transform;
 }
 

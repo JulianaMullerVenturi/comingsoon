@@ -1,0 +1,59 @@
+﻿diff --git a/index.html b/index.html
+index 25518c4..517e318 100644
+--- a/index.html
++++ b/index.html
+@@ -14,11 +14,16 @@
+         <!-- SVG Definitions -->
+         <svg style="width: 0; height: 0; position: absolute;" aria-hidden="true" focusable="false">
+             <defs>
+-                <path id="vector-shape" d="M295.54,19.21C308.26,6.48,324.94.11,341.61.11s33.35,6.37,46.08,19.1c25.44,25.46,25.44,66.73,0,92.2l-46.08,46.1-46.07,46.11c25.44-25.47,25.44-66.74,0-92.2-25.44-25.47-66.71-25.47-92.15,0l46.07-46.11,46.08-46.1h0ZM19.08,388.01c12.73,12.73,29.4,19.1,46.08,19.1s33.35-6.37,46.07-19.1,19.08-29.41,19.08-46.1-6.36-33.37-19.08-46.11c-12.72-12.72-29.39-19.09-46.07-19.09s-33.35,6.37-46.08,19.09c-25.44,25.47-25.44,66.74,0,92.2h0ZM387.69,295.81l-92.15-92.19c-25.44,25.46-38.17,58.83-38.17,92.2s12.73,66.73,38.17,92.19c12.72,12.73,29.39,19.1,46.07,19.1s33.35-6.37,46.08-19.1,19.08-29.41,19.08-46.1-6.35-33.37-19.08-46.11h0ZM111.24,149.59c33.35,0,66.7-12.72,92.15-38.18L111.24,19.21c-25.44-25.47-66.71-25.47-92.15,0C6.36,31.93,0,48.62,0,65.31s6.35,33.37,19.08,46.11c25.45,25.46,58.8,38.18,92.15,38.18h0Z"/>
++                <g id="vector-shape">
++                    <!-- The 3 outward teardrop elements -->
++                    <path class="vector-teardrops" style="display: var(--teardrop-display, inline);" d="M295.54,19.21C308.26,6.48,324.94.11,341.61.11s33.35,6.37,46.08,19.1c25.44,25.46,25.44,66.73,0,92.2l-46.08,46.1-46.07,46.11c25.44-25.47,25.44-66.74,0-92.2-25.44-25.47-66.71-25.47-92.15,0l46.07-46.11,46.08-46.1h0ZM387.69,295.81l-92.15-92.19c-25.44,25.46-38.17,58.83-38.17,92.2s12.73,66.73,38.17,92.19c12.72,12.73,29.39,19.1,46.07,19.1s33.35-6.37,46.08-19.1,19.08-29.41,19.08-46.1-6.35-33.37-19.08-46.11h0ZM111.24,149.59c33.35,0,66.7-12.72,92.15-38.18L111.24,19.21c-25.44-25.47-66.71-25.47-92.15,0C6.36,31.93,0,48.62,0,65.31s6.35,33.37,19.08,46.11c25.45,25.46,58.8,38.18,92.15,38.18h0Z"/>
++                    <!-- The bottom-left target circle -->
++                    <path class="vector-circle" d="M19.08,388.01c12.73,12.73,29.4,19.1,46.08,19.1s33.35-6.37,46.07-19.1,19.08-29.41,19.08-46.1-6.36-33.37-19.08-46.11c-12.72-12.72-29.39-19.09-46.07-19.09s-33.35,6.37-46.08,19.09c-25.44,25.47-25.44,66.74,0,92.2h0Z"/>
++                </g>
+                 
+                 <!-- Inner Shadow 1 (Normal) -->
+                 <!-- Base Configuration -> x: 7, y: 175, blur: 40, color: #02568B -->
+-                <filter id="inner-shadow-1" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
++                <filter id="inner-shadow-1" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                     <!-- Dynamic dx/dy populated by JS -->
+                     <feOffset dx="7" dy="175" id="is1-offset"/>
+                     <!-- Blur remains static based on mapping, or can be scaled -->
+@@ -33,7 +38,7 @@
+ 
+                 <!-- Inner Shadow 2 (Normal) -->
+                 <!-- Base -> x: 2, y: 195, blur: 20, color: #009CFF -->
+-                <filter id="inner-shadow-2" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
++                <filter id="inner-shadow-2" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
+                     <feOffset dx="2" dy="195" id="is2-offset"/>
+                     <feGaussianBlur stdDeviation="20" id="is2-blur" result="offset-blur"/>
+                     <feComposite operator="out" in="SourceAlpha" in2="offset-blur" result="inverse"/>
+@@ -50,7 +55,7 @@
+                 </radialGradient>
+ 
+                 <!-- Drop Shadow 1 (Overlay) Filter -->
+-                <filter id="drop-shadow-1-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
++                <filter id="drop-shadow-1-filter" x="-200" y="-150" width="800" height="900" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+                     <feOffset dx="-92" dy="188" in="SourceAlpha" id="ds1-offset" result="offset"/>
+                     <feGaussianBlur stdDeviation="87.5" in="offset" id="ds1-blur" result="blur"/>
+                     <feFlood flood-color="#0888E7" result="color"/>
+@@ -58,7 +63,7 @@
+                 </filter>
+ 
+                 <!-- Drop Shadow 2 (Core) Filter -->
+-                <filter id="drop-shadow-2-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
++                <filter id="drop-shadow-2-filter" x="-100" y="-100" width="600" height="700" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+                     <feOffset dx="0" dy="78" in="SourceAlpha" id="ds2-offset" result="offset"/>
+                     <feGaussianBlur stdDeviation="47.5" in="offset" id="ds2-blur" result="blur"/>
+                     <feFlood flood-color="#0DC7F3" result="color"/>
+@@ -66,7 +71,7 @@
+                 </filter>
+ 
+                 <!-- Drop Shadow 3 (Far Background Glow) Filter -->
+-                <filter id="drop-shadow-3-filter" x="-150%" y="-150%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">
++                <filter id="drop-shadow-3-filter" x="-250" y="-250" width="1000" height="1000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+                     <feOffset dx="0" dy="0" in="SourceAlpha" id="ds3-offset" result="offset"/>
+                     <!-- Extremely blurred for high visibility and wide spread -->
+                     <feGaussianBlur stdDeviation="180" in="offset" id="ds3-blur" result="blur"/>
