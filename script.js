@@ -546,12 +546,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Meet the Team Interaction ---
     const employeeNames = document.querySelectorAll('.employee-names .name');
+    const teamDetail = document.getElementById('team-detail');
+
     employeeNames.forEach(nameEl => {
         nameEl.addEventListener('click', (e) => {
-            if (document.body.classList.contains('meet-the-team-active')) return;
+            const detailName = document.getElementById('detail-name');
+            const isAlreadyActive = document.body.classList.contains('meet-the-team-active');
+
+            if (isAlreadyActive && detailName.textContent !== nameEl.textContent) {
+                // Smooth "Depth Swap" Transition
+                teamDetail.classList.remove('enter');
+                teamDetail.classList.add('exit');
+
+                setTimeout(() => {
+                    if (detailName) detailName.textContent = nameEl.textContent;
+                    teamDetail.classList.remove('exit');
+                    teamDetail.classList.add('enter');
+                    
+                    // Cleanup enter class after animation completes
+                    setTimeout(() => teamDetail.classList.remove('enter'), 600);
+                }, 400);
+            } else {
+                // Initial Reveal 
+                if (detailName) detailName.textContent = nameEl.textContent;
+                document.body.classList.add('meet-the-team-active');
+            }
             
-            document.body.classList.add('meet-the-team-active');
+            // Update Highlight
+            employeeNames.forEach(el => el.classList.remove('highlight'));
+            nameEl.classList.add('highlight');
             
+            // Shared Circle Transformation Logic
             const mLeft = mainModel.visualLeft;
             const mTop = mainModel.visualTop;
             const mWidth = mainModel.visualWidth;
@@ -569,18 +594,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const startCenterY = mTop + (C_Y / viewBoxH) * mHeight;
             const currentCircleRadius = (C_R / viewBoxW) * mWidth;
 
-            // Target location (Shifted left to 68% of screen width for larger right margin)
+            // Target location
             const targetCenterX = window.innerWidth * 0.68;
             const targetCenterY = window.innerHeight * 0.5;
 
-            // Margins roughly 80px total (40px padding) safely bounded by innerHeight and 40% innerWidth
             const availableW = window.innerWidth * 0.4 - 80;
             const availableH = window.innerHeight - 80;
             const targetRadius = Math.min(availableW, availableH) / 2;
 
             const scaleFactor = targetRadius / currentCircleRadius;
+            const circleRightEdge = targetCenterX + targetRadius;
+            const mirroredMargin = window.innerWidth - circleRightEdge;
 
-            // Populate global state so physics loop freezes cleanly during movement
+            // Update State & CSS
             window.teamData = {
                 active: true,
                 transitioning: true,
@@ -591,21 +617,75 @@ document.addEventListener('DOMContentLoaded', () => {
                 tscale: scaleFactor
             };
 
-            // Set CSS transition targets
             document.documentElement.style.setProperty('--transform-origin-x', `${startCenterX}px`);
             document.documentElement.style.setProperty('--transform-origin-y', `${startCenterY}px`);
             document.documentElement.style.setProperty('--tx', `${targetCenterX - startCenterX}px`);
             document.documentElement.style.setProperty('--ty', `${targetCenterY - startCenterY}px`);
             document.documentElement.style.setProperty('--tscale', scaleFactor);
+            document.documentElement.style.setProperty('--detail-left', `${mirroredMargin}px`);
 
-            // Hide the teardrops completely from the DOM after fading to free up filter bounds
-            // And resume standard physics tracking mapping at highest GPU performance
-            setTimeout(() => {
-                document.body.classList.add('cleanup-teardrops');
-                window.teamData.transitioning = false;
-            }, 1200);
+            if (!isAlreadyActive) {
+                setTimeout(() => {
+                    document.body.classList.add('cleanup-teardrops');
+                    window.teamData.transitioning = false;
+                }, 1200);
+            } else {
+                // If already active, just ensure transitioning is false after a bit
+                setTimeout(() => {
+                    window.teamData.transitioning = false;
+                }, 500);
+            }
         });
     });
+
+    const goBackBtn = document.getElementById('go-back-btn');
+    if (goBackBtn) {
+        goBackBtn.addEventListener('click', () => {
+            document.body.classList.remove('meet-the-team-active');
+            employeeNames.forEach(el => el.classList.remove('highlight'));
+            
+            window.teamData.active = false;
+            window.teamData.transitioning = true;
+            document.body.classList.remove('cleanup-teardrops');
+            
+            setTimeout(() => {
+                window.teamData.transitioning = false;
+            }, 1200);
+
+            // Reset and trigger countdown animation
+            countdownState = {
+                days: 30,
+                hours: 6,
+                minutes: 11,
+                seconds: 39
+            };
+            
+            document.querySelectorAll('.digit-wrapper').forEach(wrapper => {
+                wrapper.innerHTML = ''; 
+            });
+
+            setTimeout(() => {
+                const daysStr = formatDigit(countdownState.days);
+                const hoursStr = formatDigit(countdownState.hours);
+                const minutesStr = formatDigit(countdownState.minutes);
+                const secondsStr = formatDigit(countdownState.seconds);
+
+                updateDigit('days-tens', daysStr[0]);
+                updateDigit('days-ones', daysStr[1]);
+                updateDigit('hours-tens', hoursStr[0]);
+                updateDigit('hours-ones', hoursStr[1]);
+                updateDigit('minutes-tens', minutesStr[0]);
+                updateDigit('minutes-ones', minutesStr[1]);
+                updateDigit('seconds-tens', secondsStr[0]);
+                updateDigit('seconds-ones', secondsStr[1]);
+
+                syncContainerOpticalKerning('days-tens', daysStr[0], daysStr[1]);
+                syncContainerOpticalKerning('hours-tens', hoursStr[0], hoursStr[1]);
+                syncContainerOpticalKerning('minutes-tens', minutesStr[0], minutesStr[1]);
+                syncContainerOpticalKerning('seconds-tens', secondsStr[0], secondsStr[1]);
+            }, 50);
+        });
+    }
 
     setInterval(tickCountdown, 1000);
 
