@@ -56,10 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
             this.ds1Offset = document.getElementById(config.ids.ds1Offset);
             this.ds2Offset = document.getElementById(config.ids.ds2Offset);
             this.ds3Offset = document.getElementById(config.ids.ds3Offset);
+            this.ds4Offset = document.getElementById(config.ids.ds4Offset);
             
             this.ds1Blur = document.getElementById(config.ids.ds1Blur);
             this.ds2Blur = document.getElementById(config.ids.ds2Blur);
             this.ds3Blur = document.getElementById(config.ids.ds3Blur);
+            this.ds4Blur = document.getElementById(config.ids.ds4Blur);
             this.is1Blur = document.getElementById(config.ids.is1Blur);
             this.is2Blur = document.getElementById(config.ids.is2Blur);
 
@@ -97,14 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
             this.minOuterBlurMult = config.minOuterBlurMult !== undefined ? config.minOuterBlurMult : 0;
             this.blurDistanceFocus = config.blurDistanceFocus !== undefined ? config.blurDistanceFocus : 0;
             this.blurDistanceMax = config.blurDistanceMax !== undefined ? config.blurDistanceMax : 800;
+            this.staticLayers = config.staticLayers || [];
+            this.fullIntensityLayers = config.fullIntensityLayers || [];
+            this.gradientCenterPull = config.gradientCenterPull || 0; // 0 to 1, how much to pull back to center at distance
+            this.gradientRadiusScaling = config.gradientRadiusScaling || 0; // how much to inflate radius at distance
 
             // Physics variables
             this.ds1_base_x = config.ds1_base_x !== undefined ? config.ds1_base_x : 95; 
             this.ds1_base_y = config.ds1_base_y !== undefined ? config.ds1_base_y : 190;
             this.ds2_base_x = config.ds2_base_x !== undefined ? config.ds2_base_x : 45; 
             this.ds2_base_y = config.ds2_base_y !== undefined ? config.ds2_base_y : 90;
-            this.ds3_base_x = config.ds3_base_x !== undefined ? config.ds3_base_x : 145; 
             this.ds3_base_y = config.ds3_base_y !== undefined ? config.ds3_base_y : 290;
+            this.ds4_base_x = config.ds4_base_x !== undefined ? config.ds4_base_x : 0; 
+            this.ds4_base_y = config.ds4_base_y !== undefined ? config.ds4_base_y : 0;
             
             this.is1_base_x = config.is1_base_x !== undefined ? config.is1_base_x : 85; 
             this.is1_base_y = config.is1_base_y !== undefined ? config.is1_base_y : 250;
@@ -157,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(this.ds1Blur && !this.dynamicOuterBlur) this.ds1Blur.setAttribute('stdDeviation', this.baseDs1Blur / this.avgScale); 
             if(this.ds2Blur && !this.dynamicOuterBlur) this.ds2Blur.setAttribute('stdDeviation', this.baseDs2Blur / this.avgScale);
             if(this.ds3Blur && !this.dynamicOuterBlur) this.ds3Blur.setAttribute('stdDeviation', this.baseDs3Blur / this.avgScale);
+            if(this.ds4Blur && !this.dynamicOuterBlur) this.ds4Blur.setAttribute('stdDeviation', this.baseDs4Blur / this.avgScale);
             if(this.is1Blur && !this.dynamicInnerBlur) this.is1Blur.setAttribute('stdDeviation', (20 * this.innerBlurScale) / this.avgScale);
             if(this.is2Blur && !this.dynamicInnerBlur) this.is2Blur.setAttribute('stdDeviation', (10 * this.innerBlurScale) / this.avgScale);
         }
@@ -182,14 +190,39 @@ document.addEventListener('DOMContentLoaded', () => {
             let factorX = mappedDx !== 0 ? (dx / mappedDx) : 0;
             let factorY = mappedDy !== 0 ? (dy / mappedDy) : 0;
 
-            this.ds1Offset.setAttribute('dx', (this.ds1_base_x * factorX * this.movementScale) / this.scaleX);
-            this.ds1Offset.setAttribute('dy', (this.ds1_base_y * factorY * this.movementScale) / this.scaleY);
+            if (!this.staticLayers.includes('ds1')) {
+                this.ds1Offset.setAttribute('dx', (this.ds1_base_x * factorX * this.movementScale) / this.scaleX);
+                this.ds1Offset.setAttribute('dy', (this.ds1_base_y * factorY * this.movementScale) / this.scaleY);
+            } else {
+                this.ds1Offset.setAttribute('dx', 0);
+                this.ds1Offset.setAttribute('dy', 0);
+            }
 
-            this.ds2Offset.setAttribute('dx', (this.ds2_base_x * factorX * this.movementScale) / this.scaleX);
-            this.ds2Offset.setAttribute('dy', (this.ds2_base_y * factorY * this.movementScale) / this.scaleY);
+            if (!this.staticLayers.includes('ds2')) {
+                this.ds2Offset.setAttribute('dx', (this.ds2_base_x * factorX * this.movementScale) / this.scaleX);
+                this.ds2Offset.setAttribute('dy', (this.ds2_base_y * factorY * this.movementScale) / this.scaleY);
+            } else {
+                this.ds2Offset.setAttribute('dx', 0);
+                this.ds2Offset.setAttribute('dy', 0);
+            }
 
-            this.ds3Offset.setAttribute('dx', (this.ds3_base_x * factorX * this.movementScale) / this.scaleX);
-            this.ds3Offset.setAttribute('dy', (this.ds3_base_y * factorY * this.movementScale) / this.scaleY);
+            if (!this.staticLayers.includes('ds3')) {
+                this.ds3Offset.setAttribute('dx', (this.ds3_base_x * factorX * this.movementScale) / this.scaleX);
+                this.ds3Offset.setAttribute('dy', (this.ds3_base_y * factorY * this.movementScale) / this.scaleY);
+            } else {
+                this.ds3Offset.setAttribute('dx', 0);
+                this.ds3Offset.setAttribute('dy', 0);
+            }
+
+            if (this.ds4Offset) {
+                if (!this.staticLayers.includes('ds4')) {
+                    this.ds4Offset.setAttribute('dx', (this.ds4_base_x * factorX * this.movementScale) / this.scaleX);
+                    this.ds4Offset.setAttribute('dy', (this.ds4_base_y * factorY * this.movementScale) / this.scaleY);
+                } else {
+                    this.ds4Offset.setAttribute('dx', 0);
+                    this.ds4Offset.setAttribute('dy', 0);
+                }
+            }
 
             this.is1Offset.setAttribute('dx', (this.is1_base_x * factorX * this.innerMovementScale) / this.scaleX);
             this.is1Offset.setAttribute('dy', (this.is1_base_y * factorY * this.innerMovementScale) / this.scaleY);
@@ -213,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (this.ds1Blur) this.ds1Blur.setAttribute('stdDeviation', blur1); 
                 if (this.ds2Blur) this.ds2Blur.setAttribute('stdDeviation', blur2);
                 if (this.ds3Blur) this.ds3Blur.setAttribute('stdDeviation', blur3);
+                if (this.ds4Blur) this.ds4Blur.setAttribute('stdDeviation', (this.baseDs4Blur * finalMult) / this.avgScale);
             }
 
             if (this.dynamicInnerBlur) {
@@ -266,10 +300,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const ds1 = this.container.querySelector('.drop-shadow-1');
                 const ds2 = this.container.querySelector('.drop-shadow-2');
                 const ds3 = this.container.querySelector('.drop-shadow-3');
+                const ds4 = this.container.querySelector('.drop-shadow-4');
                 
-                if (ds1) ds1.style.opacity = 0.6 * outerIntensity;
-                if (ds2) ds2.style.opacity = 0.75 * outerIntensity;
-                if (ds3) ds3.style.opacity = 0.95 * outerIntensity;
+                if (ds1) ds1.style.opacity = 0.6 * (this.fullIntensityLayers.includes('ds1') ? 1 : outerIntensity);
+                if (ds2) ds2.style.opacity = 0.85 * (this.fullIntensityLayers.includes('ds2') ? 1 : outerIntensity);
+                if (ds3) ds3.style.opacity = 0.95 * (this.fullIntensityLayers.includes('ds3') ? 1 : outerIntensity);
+                if (ds4) ds4.style.opacity = 0.5 * (this.fullIntensityLayers.includes('ds4') ? 1 : outerIntensity);
 
                 // Inner light (inner shadows)
                 const inner1 = this.container.querySelector('.inner-shadow-1-layer');
@@ -292,8 +328,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (inner2) inner2.style.opacity = this.is2MaxOpacity * finalInnerOpacity;
             }
 
-            const sx = ((mouseX - this.visualLeft) / this.visualWidth) * this.svgViewBoxW;
-            const sy = ((mouseY - this.visualTop) / this.visualHeight) * this.svgViewBoxH;
+            const rawSx = ((mouseX - this.visualLeft) / this.visualWidth) * this.svgViewBoxW;
+            const rawSy = ((mouseY - this.visualTop) / this.visualHeight) * this.svgViewBoxH;
+
+            // Apply Center Pull logic: as distance increases, we interpolate back to the direct center (cx/cy of viewport)
+            let sx = rawSx;
+            let sy = rawSy;
+            
+            if (this.gradientCenterPull > 0) {
+                const centerX = this.svgViewBoxW / 2;
+                const centerY = this.svgViewBoxH / 2;
+                const pullFactor = Math.min(d / 1200, 1) * this.gradientCenterPull;
+                sx = rawSx * (1 - pullFactor) + centerX * pullFactor;
+                sy = rawSy * (1 - pullFactor) + centerY * pullFactor;
+            }
 
             this.dynamicGradient.setAttribute('cx', sx);
             this.dynamicGradient.setAttribute('cy', sy);
@@ -303,6 +351,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 screenRadius = this.gradientRadiusPx;
             } else {
                 screenRadius = Math.max(window.innerWidth, window.innerHeight) * 1.8;
+            }
+
+            // Apply Radius Scaling: inflate the radius as we move away to wash the logo in more direct light
+            if (this.gradientRadiusScaling > 0) {
+                const scaleFactor = 1 + (d / 1000) * this.gradientRadiusScaling;
+                screenRadius *= scaleFactor;
             }
 
             if (this.dynamicLeftBrightness) {
@@ -343,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         viewBoxH: 1341,
         gradientId: 'gcp-dynamic-gradient',
         blurScale: 1, // Let ds blur naturally base scale
-        movementScale: 0.35, // Restrict ds travel distance to keep trails closer to logo
+        movementScale: 0.35, // Restored movement for the halo
         innerBlurScale: 0.08, // Sharper inner shadow
         innerMovementScale: 0.22, // Deepen inner shadow intersection
         fadeLightOnDistance: true,
@@ -354,13 +408,21 @@ document.addEventListener('DOMContentLoaded', () => {
         minOuterIntensity: 0.25, // Shadows become notably weaker at a distance
         maxOuterIntensity: 0.55, // Prevent shadows from becoming too bright and blowing out the shape when cursor is directly on top
         minInnerIntensity: 0, // Fade fully to 0 so the internal graphic evaluates purely to #02568B
+        
+        gradientCenterPull: 0.15, // Significantly reduced pull back
+        gradientRadiusScaling: 0.2, // Significantly reduced radius inflation
+        
         is1MaxOpacity: 0, // Disable entirely. Massive internal bevel matrices structurally collide natively inside tiny line-art vectors
         is2MaxOpacity: 0, // Disable entirely. Gradient radius tracking perfectly solves internal shading dynamically now
         
-        dynamicOuterBlur: true,
+        dynamicOuterBlur: false,
+        staticLayers: ['ds1', 'ds3', 'ds4'], // Halo, Trail, and Soft Underglow are now locked
+        fullIntensityLayers: ['ds1', 'ds4'], // Halo and Soft Underglow are always bright
+        
         baseDs1Blur: 65,
         baseDs2Blur: 8,
         baseDs3Blur: 100,
+        baseDs4Blur: 25, // Soft ambient glow
         minOuterBlurMult: 0.4,
         blurDistanceFocus: 80,
         blurDistanceMax: 800,
@@ -369,8 +431,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ds3_base_y: 450, // Even more exaggerated trail for the smaller logo
         ids: {
             is1Offset: 'gcp-is1-offset', is2Offset: 'gcp-is2-offset',
-            ds1Offset: 'gcp-ds1-offset', ds2Offset: 'gcp-ds2-offset', ds3Offset: 'gcp-ds3-offset',
-            ds1Blur: 'gcp-ds1-blur', ds2Blur: 'gcp-ds2-blur', ds3Blur: 'gcp-ds3-blur',
+            ds1Offset: 'gcp-ds1-offset', ds2Offset: 'gcp-ds2-offset', ds3Offset: 'gcp-ds3-offset', ds4Offset: 'gcp-ds4-offset',
+            ds1Blur: 'gcp-ds1-blur', ds2Blur: 'gcp-ds2-blur', ds3Blur: 'gcp-ds3-blur', ds4Blur: 'gcp-ds4-blur',
             is1Blur: 'gcp-is1-blur', is2Blur: 'gcp-is2-blur'
         }
     });

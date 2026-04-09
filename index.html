@@ -227,12 +227,48 @@
                     <feFlood flood-color="#1070FF" result="color"/>
                     <feComposite operator="in" in="color" in2="boosted-blur" result="final-shadow"/>
                 </filter>
+
+                <!-- Drop Shadow 4 (Stationary Soft Glow) Filter -->
+                <filter id="gcp-drop-shadow-4-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+                    <feOffset dx="0" dy="0" in="SourceAlpha" id="gcp-ds4-offset" result="offset"/>
+                    <!-- Softer blur than the moving highlighting, sharper than the background glow -->
+                    <feGaussianBlur stdDeviation="80" in="offset" id="gcp-ds4-blur" result="blur"/>
+                    <feComponentTransfer in="blur" result="boosted-blur">
+                        <feFuncA type="linear" slope="4.5"/>
+                    </feComponentTransfer>
+                    <!-- Cyan-Blue glow color -->
+                    <feFlood flood-color="#0DC7F3" result="color"/>
+                    <feComposite operator="in" in="color" in2="boosted-blur" result="final-shadow"/>
+                </filter>
+                <!-- Drop Shadow 5 (Fixed Shape Underglow) Filter -->
+                <filter id="gcp-drop-shadow-5-filter" x="-15000" y="-15000" width="35000" height="35000" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+                    <feOffset dx="0" dy="0" in="SourceAlpha" />
+                    <!-- Tighter blur to retain the SVG shape -->
+                    <feGaussianBlur stdDeviation="22" result="blur"/>
+                    <feComponentTransfer in="blur" result="boosted-blur">
+                        <feFuncA type="linear" slope="2.5"/>
+                    </feComponentTransfer>
+                    <!-- Deep bright blue to match the halo hierarchy -->
+                    <feFlood flood-color="#0888E7" result="color"/>
+                    <feComposite operator="in" in="color" in2="boosted-blur" result="final-shadow"/>
+                </filter>
             </defs>
+        </svg>
+
+        <!-- Drop Shadow 5 Layer (Stationary Structured Shadow) -->
+        <!-- Fixed opacity via inline style since it ignores JS physics entirely -->
+        <svg class="layer drop-shadow-5" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet" style="opacity: 0.75;">
+            <use href="#gcp-shape" fill="black" filter="url(#gcp-drop-shadow-5-filter)" />
         </svg>
 
         <!-- Drop Shadow 3 Layer (Ambient Trail) -->
         <svg class="layer drop-shadow-3" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
             <use href="#gcp-shape" fill="black" filter="url(#gcp-drop-shadow-3-filter)" />
+        </svg>
+
+        <!-- Drop Shadow 4 Layer (Stationary Soft Underglow) -->
+        <svg class="layer drop-shadow-4" viewBox="0 0 1341 1341" preserveAspectRatio="xMaxYMid meet">
+            <use href="#gcp-shape" fill="black" filter="url(#gcp-drop-shadow-4-filter)" />
         </svg>
 
         <!-- Drop Shadow 1 Layer (Halo) -->
