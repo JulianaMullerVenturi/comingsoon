@@ -24,6 +24,22 @@ body, html {
     cursor: none !important; /* Force hide default cursor */
 }
 
+.background-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    /* Soft lighting gradient combined with high-frequency SVG noise for a rough glass/grit texture */
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(24, 168, 227, 0.12) 0%, rgba(0, 46, 81, 0) 70%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.3' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.3; /* Subtlety creates the expensive look */
+    mix-blend-mode: overlay; /* Blends texturally with the dark blue base */
+}
+
 /* Ensure all interactive elements hide default cursor */
 a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     cursor: none !important;
