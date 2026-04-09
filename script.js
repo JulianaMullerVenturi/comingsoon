@@ -464,8 +464,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let dt = (timestamp - prevTime) / 1000;
         prevTime = timestamp;
 
-        mainModel.updateFrame(mouseX, mouseY);
-        gcpModel.updateFrame(mouseX, mouseY);
+        // Autonomous slow, perpetual circular motion from middle-bottom of screen
+        const orbitRadius = 100; // short motion
+        const orbitSpeed = 0.0008; // slow
+        const anchorX = window.innerWidth / 2;
+        const anchorY = window.innerHeight; // middle-bottom
+        
+        const orbitX = anchorX + Math.cos(timestamp * orbitSpeed) * orbitRadius;
+        const orbitY = anchorY + Math.sin(timestamp * orbitSpeed) * orbitRadius;
+
+        mainModel.updateFrame(orbitX, orbitY);
+        gcpModel.updateFrame(orbitX, orbitY);
 
         // Update Physics Models
         cursorSpring.setTarget(mouseX, mouseY);
@@ -475,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Render Elipse (background glow) with hardware-accelerated 4x upscaling
         if (elipse) {
-            elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(4)`;
+            elipse.style.transform = `translate(${orbitX}px, ${orbitY}px) translate(-50%, -50%) scale(4)`;
         }
 
         // Render Custom UI Cursor
@@ -499,11 +508,20 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         mainModel.cacheLayout();
         gcpModel.cacheLayout();
-        mainModel.updateFrame(mouseX, mouseY);
-        gcpModel.updateFrame(mouseX, mouseY);
+        
+        const orbitRadius = 100;
+        const anchorX = window.innerWidth / 2;
+        const anchorY = window.innerHeight;
+        
+        const orbitX = anchorX + orbitRadius; // Initial cos(0) = 1
+        const orbitY = anchorY;               // Initial sin(0) = 0
+
+        mainModel.updateFrame(orbitX, orbitY);
+        gcpModel.updateFrame(orbitX, orbitY);
+        
         // Render Elipse initialization
         if (elipse) {
-            elipse.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(4)`;
+            elipse.style.transform = `translate(${orbitX}px, ${orbitY}px) translate(-50%, -50%) scale(4)`;
         }
     }, 100);
 
