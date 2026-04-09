@@ -1,14 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Store Team state transformation data globally to ensure interactivity maps perfectly
-    window.teamData = {
-        active: false,
-        tx: 0,
-        ty: 0,
-        originX: 0,
-        originY: 0,
-        tscale: 1
-    };
+
 
     class Spring {
         constructor(stiffness, damping) {
@@ -172,10 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFrame(mouseX, mouseY) {
             if (!this.rect) return;
 
-            if (window.teamData && window.teamData.active && this.container.classList.contains('vector-container')) {
-                // Freeze the intense physics filter math while CSS is hardware animating massive matrix changes
-                if (window.teamData.transitioning) return;
-            }
+
 
             const dx = mouseX - this.cx;
             const dy = mouseY - this.cy;
@@ -468,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const orbitRadius = 100; // short motion
         const orbitSpeed = 0.0008; // slow
         const anchorX = window.innerWidth / 2;
-        const anchorY = window.innerHeight; // middle-bottom
+        const anchorY = window.innerHeight - 50; // slightly up from middle-bottom
         
         const orbitX = anchorX + Math.cos(timestamp * orbitSpeed) * orbitRadius;
         const orbitY = anchorY + Math.sin(timestamp * orbitSpeed) * orbitRadius;
@@ -511,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const orbitRadius = 100;
         const anchorX = window.innerWidth / 2;
-        const anchorY = window.innerHeight;
+        const anchorY = window.innerHeight - 50;
         
         const orbitX = anchorX + orbitRadius; // Initial cos(0) = 1
         const orbitY = anchorY;               // Initial sin(0) = 0
@@ -624,148 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Meet the Team Interaction ---
-    const employeeNames = document.querySelectorAll('.employee-names .name');
-    const teamDetail = document.getElementById('team-detail');
 
-    employeeNames.forEach(nameEl => {
-        nameEl.addEventListener('click', (e) => {
-            const detailName = document.getElementById('detail-name');
-            const isAlreadyActive = document.body.classList.contains('meet-the-team-active');
-
-            if (isAlreadyActive && detailName.textContent !== nameEl.textContent) {
-                // Smooth "Depth Swap" Transition
-                teamDetail.classList.remove('enter');
-                teamDetail.classList.add('exit');
-
-                setTimeout(() => {
-                    if (detailName) detailName.textContent = nameEl.textContent;
-                    teamDetail.classList.remove('exit');
-                    teamDetail.classList.add('enter');
-                    
-                    // Cleanup enter class after animation completes
-                    setTimeout(() => teamDetail.classList.remove('enter'), 600);
-                }, 400);
-            } else {
-                // Initial Reveal 
-                if (detailName) detailName.textContent = nameEl.textContent;
-                document.body.classList.add('meet-the-team-active');
-            }
-            
-            // Update Highlight
-            employeeNames.forEach(el => el.classList.remove('highlight'));
-            nameEl.classList.add('highlight');
-            
-            // Shared Circle Transformation Logic
-            const mLeft = mainModel.visualLeft;
-            const mTop = mainModel.visualTop;
-            const mWidth = mainModel.visualWidth;
-            const mHeight = mainModel.visualHeight;
-            
-            const viewBoxW = mainModel.svgViewBoxW;
-            const viewBoxH = mainModel.svgViewBoxH;
-
-            // Target circle is at X=65, Y=342, R=64.5 in SVG coordinates
-            const C_X = 65;
-            const C_Y = 342;
-            const C_R = 64.5;
-            
-            const startCenterX = mLeft + (C_X / viewBoxW) * mWidth;
-            const startCenterY = mTop + (C_Y / viewBoxH) * mHeight;
-            const currentCircleRadius = (C_R / viewBoxW) * mWidth;
-
-            // Target location
-            const targetCenterX = window.innerWidth * 0.68;
-            const targetCenterY = window.innerHeight * 0.5;
-
-            const availableW = window.innerWidth * 0.4 - 80;
-            const availableH = window.innerHeight - 80;
-            const targetRadius = Math.min(availableW, availableH) / 2;
-
-            const scaleFactor = targetRadius / currentCircleRadius;
-            const circleRightEdge = targetCenterX + targetRadius;
-            const mirroredMargin = window.innerWidth - circleRightEdge;
-
-            // Update State & CSS
-            window.teamData = {
-                active: true,
-                transitioning: true,
-                tx: targetCenterX - startCenterX,
-                ty: targetCenterY - startCenterY,
-                originX: startCenterX,
-                originY: startCenterY,
-                tscale: scaleFactor
-            };
-
-            document.documentElement.style.setProperty('--transform-origin-x', `${startCenterX}px`);
-            document.documentElement.style.setProperty('--transform-origin-y', `${startCenterY}px`);
-            document.documentElement.style.setProperty('--tx', `${targetCenterX - startCenterX}px`);
-            document.documentElement.style.setProperty('--ty', `${targetCenterY - startCenterY}px`);
-            document.documentElement.style.setProperty('--tscale', scaleFactor);
-            document.documentElement.style.setProperty('--detail-left', `${mirroredMargin}px`);
-
-            if (!isAlreadyActive) {
-                setTimeout(() => {
-                    document.body.classList.add('cleanup-teardrops');
-                    window.teamData.transitioning = false;
-                }, 1200);
-            } else {
-                // If already active, just ensure transitioning is false after a bit
-                setTimeout(() => {
-                    window.teamData.transitioning = false;
-                }, 500);
-            }
-        });
-    });
-
-    const goBackBtn = document.getElementById('go-back-btn');
-    if (goBackBtn) {
-        goBackBtn.addEventListener('click', () => {
-            document.body.classList.remove('meet-the-team-active');
-            employeeNames.forEach(el => el.classList.remove('highlight'));
-            
-            window.teamData.active = false;
-            window.teamData.transitioning = true;
-            document.body.classList.remove('cleanup-teardrops');
-            
-            setTimeout(() => {
-                window.teamData.transitioning = false;
-            }, 1200);
-
-            // Reset and trigger countdown animation
-            countdownState = {
-                days: 30,
-                hours: 6,
-                minutes: 11,
-                seconds: 39
-            };
-            
-            document.querySelectorAll('.digit-wrapper').forEach(wrapper => {
-                wrapper.innerHTML = ''; 
-            });
-
-            setTimeout(() => {
-                const daysStr = formatDigit(countdownState.days);
-                const hoursStr = formatDigit(countdownState.hours);
-                const minutesStr = formatDigit(countdownState.minutes);
-                const secondsStr = formatDigit(countdownState.seconds);
-
-                updateDigit('days-tens', daysStr[0]);
-                updateDigit('days-ones', daysStr[1]);
-                updateDigit('hours-tens', hoursStr[0]);
-                updateDigit('hours-ones', hoursStr[1]);
-                updateDigit('minutes-tens', minutesStr[0]);
-                updateDigit('minutes-ones', minutesStr[1]);
-                updateDigit('seconds-tens', secondsStr[0]);
-                updateDigit('seconds-ones', secondsStr[1]);
-
-                syncContainerOpticalKerning('days-tens', daysStr[0], daysStr[1]);
-                syncContainerOpticalKerning('hours-tens', hoursStr[0], hoursStr[1]);
-                syncContainerOpticalKerning('minutes-tens', minutesStr[0], minutesStr[1]);
-                syncContainerOpticalKerning('seconds-tens', secondsStr[0], secondsStr[1]);
-            }, 50);
-        });
-    }
 
     setInterval(tickCountdown, 1000);
 

@@ -11,11 +11,6 @@
     /* Base interactive mapping fallback */
     --mouse-x: 50vw;
     --mouse-y: 50vh;
-
-    /* Meet the team values */
-    --circle-x: 65;
-    --circle-y: 342;
-    --circle-r: 64.5;
 }
 
 body, html {
@@ -34,6 +29,11 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     cursor: none !important;
 }
 
+/* Ensure all interactive elements hide default cursor */
+a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
+    cursor: none !important;
+}
+
 /* Base structural container */
 .vector-container {
     position: absolute;
@@ -44,8 +44,6 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     pointer-events: none;
     z-index: 1;
     overflow: visible; /* Prevents container-level clipping */
-    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-    transform-origin: var(--transform-origin-x, 0px) var(--transform-origin-y, 0px);
     will-change: transform;
 }
 
@@ -340,7 +338,6 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 .name {
     color: #000; /* Pure Black for names */
     transition: color 0.2s ease;
-    cursor: none; /* Already inherited but explicit for clarity */
 }
 
 .name:hover {
@@ -369,126 +366,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     will-change: transform;
 }
 
-/* Team Detail Content Styling */
-.team-detail {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: var(--detail-left, 270px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.8s ease 0.4s; /* Delay slightly to follow the circle math */
-    max-width: 450px;
-    z-index: 300;
-}
 
-.meet-the-team-active .team-detail {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-#detail-name {
-    color: #02568B;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 56px;
-    font-weight: 500;
-    margin: 0 0 24px 0;
-}
-
-#detail-bio, .team-detail p {
-    color: #000;
-    font-size: 16px;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.team-detail p + p {
-    margin-top: 16px;
-}
-
-.go-back-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    color: #02568B;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.6;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    margin-bottom: 24px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    cursor: none !important;
-}
-
-.go-back-btn:hover {
-    opacity: 1;
-    transform: translateX(-4px);
-}
-
-.name.highlight {
-    color: #02568B !important;
-}
-
-/* Team Detail "Depth Swap" Transitions */
-@keyframes detailTumbleOut {
-    0% { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0); filter: blur(0); }
-    100% { opacity: 0; transform: perspective(1000px) rotateX(60deg) translateY(-30px) scale(0.9); filter: blur(8px); }
-}
-
-@keyframes detailTumbleIn {
-    0% { opacity: 0; transform: perspective(1000px) rotateX(-60deg) translateY(30px) scale(0.9); filter: blur(8px); }
-    100% { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0) scale(1); filter: blur(0); }
-}
-
-@keyframes fadeSlideOut {
-    0% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(10px); }
-}
-
-@keyframes fadeSlideIn {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-.team-detail.exit #detail-name {
-    animation: detailTumbleOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.team-detail.exit #detail-bio,
-.team-detail.exit p,
-.team-detail.exit .go-back-btn {
-    animation: fadeSlideOut 0.4s ease forwards;
-}
-
-.team-detail.enter #detail-name {
-    animation: detailTumbleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.team-detail.enter #detail-bio,
-.team-detail.enter p,
-.team-detail.enter .go-back-btn {
-    animation: fadeSlideIn 0.5s ease forwards;
-}
-
-/* Meet the Team Transitions */
-.cleanup-teardrops {
-    --teardrop-display: none;
-}
-
-.meet-the-team-active .vector-container {
-    transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--tscale, 1));
-}
-
-.meet-the-team-active #countdown,
-.meet-the-team-active .keywords-grid {
-    opacity: 0;
-    pointer-events: none;
-}
 
 
 
