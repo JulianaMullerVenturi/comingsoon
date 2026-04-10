@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const elipse = document.getElementById('elipse');
+
     const customCursor = document.getElementById('custom-cursor');
     const cursorSpring = new Spring(300, 28); // Specific Stiffness and Damping for movement
     const scaleSpring = new Spring(400, 30);  // High stiffness for scale snappiness
@@ -471,10 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         scaleSpring.update(dt || 0.016);
 
-        // Render Elipse (background glow) with hardware-accelerated 4x upscaling
-        if (elipse) {
-            elipse.style.transform = `translate(${orbitX}px, ${orbitY}px) translate(-50%, -50%) scale(4)`;
-        }
+
 
         // Render Custom UI Cursor
         if (customCursor) {
@@ -508,10 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mainModel.updateFrame(orbitX, orbitY);
         gcpModel.updateFrame(orbitX, orbitY);
         
-        // Render Elipse initialization
-        if (elipse) {
-            elipse.style.transform = `translate(${orbitX}px, ${orbitY}px) translate(-50%, -50%) scale(4)`;
-        }
+
     }, 100);
 
     // --- Countdown Timer Logic ---

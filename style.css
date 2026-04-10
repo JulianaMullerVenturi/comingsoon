@@ -113,23 +113,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     opacity: 0.9;
 }
 
-/* Elipse Cursor Element */
-.elipse {
-    position: absolute;
-    width: 255px;
-    height: 255px;
-    border-radius: 50%;
-    /* #70CDFF with 11% opacity */
-    background-color: rgba(112, 205, 255, 0.11); 
-    filter: blur(76px); 
-    mix-blend-mode: overlay;
-    pointer-events: none;
-    z-index: 999;
-    top: 0;
-    left: 0;
-    /* Native translation offsets are combined with hardware scaling via JS later */
-    will-change: transform;
-}
+
 
 
 .gcp-container {
