@@ -9,16 +9,18 @@ body, html {
     cursor: none !important; /* Force hide default cursor */
 }
 
-/* Pre-rendered 4K background video — hardware-decoded, zero filter cost */
-#bg-video {
+/* Sprite sheet background — 10×12 grid (120 frames at 1280×720), JS-driven at 15fps */
+#bg-sprite {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    object-fit: cover; /* Fill viewport, crop excess — matches SVG preserveAspectRatio="xMaxYMid meet" behavior */
     z-index: 1;
     pointer-events: none;
+    background-image: url('background_sprite.webp');
+    background-size: 1000% 1200%; /* 10 columns × 12 rows */
+    background-position: 0% 0%;
 }
 
 /* Ensure all interactive elements hide default cursor */

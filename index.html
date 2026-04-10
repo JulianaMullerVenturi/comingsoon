@@ -8,12 +8,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Pre-rendered 4K background video (3840×2160, 30fps, 8s seamless loop) -->
-    <!-- Hardware-decoded H.264 — replaces all SVG filter rendering -->
-    <video id="bg-video" autoplay loop muted playsinline
-           preload="auto">
-        <source src="background_loop.mp4" type="video/mp4">
-    </video>
+    <!-- Pre-rendered sprite sheet background (24 frames, CSS-animated, zero decode cost) -->
+    <div id="bg-sprite"></div>
 
     <script src="script.js"></script>
 

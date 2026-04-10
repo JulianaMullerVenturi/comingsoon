@@ -1,5 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ─── Sprite sheet frame driver (120 frames, 15fps, 10×12 grid) ───
+    const sprite = document.getElementById('bg-sprite');
+    if (sprite) {
+        const COLS = 10, ROWS = 12, TOTAL = 120;
+        const INTERVAL = 8000 / TOTAL; // ~67ms per frame = 15fps
+        let frame = 0;
+        setInterval(() => {
+            const col = frame % COLS;
+            const row = Math.floor(frame / COLS);
+            const x = col / (COLS - 1) * 100;
+            const y = row / (ROWS - 1) * 100;
+            sprite.style.backgroundPosition = `${x}% ${y}%`;
+            frame = (frame + 1) % TOTAL;
+        }, INTERVAL);
+    }
+
     // ─── Lightweight Spring for cursor physics ───────────────────────
     class Spring {
         constructor(stiffness, damping) {
@@ -29,26 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ─── Custom Cursor ───────────────────────────────────────────────
+    // ─── Custom Cursor (on-demand animation — no idle GPU cost) ──────
     const customCursor = document.getElementById('custom-cursor');
     const cursorSpring = new Spring(300, 28);
     const scaleSpring = new Spring(400, 30);
 
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
+    let animating = false;
+    let prevTime = 0;
 
     scaleSpring.px = 1;
     scaleSpring.targetX = 1;
 
-    document.addEventListener('mousedown', () => {
-        scaleSpring.setTarget(0.8, 0);
-    });
-
-    document.addEventListener('mouseup', () => {
-        scaleSpring.setTarget(1.0, 0);
-    });
-
-    let prevTime = 0;
     function animateCursor(timestamp) {
         if (!prevTime) prevTime = timestamp;
         let dt = (timestamp - prevTime) / 1000;
@@ -62,14 +71,39 @@ document.addEventListener('DOMContentLoaded', () => {
             customCursor.style.transform = `translate(${cursorSpring.px}px, ${cursorSpring.py}px) translate(-50%, -50%) scale(${scaleSpring.px})`;
         }
 
+        // Stop the loop once the spring has settled — no idle GPU compositing
+        const vMag = Math.abs(cursorSpring.vx) + Math.abs(cursorSpring.vy) + Math.abs(scaleSpring.vx);
+        const dMag = Math.abs(cursorSpring.px - mouseX) + Math.abs(cursorSpring.py - mouseY);
+        if (vMag < 0.01 && dMag < 0.1) {
+            animating = false;
+            return;
+        }
+
         requestAnimationFrame(animateCursor);
     }
 
-    requestAnimationFrame(animateCursor);
+    function kickCursorAnimation() {
+        if (!animating) {
+            animating = true;
+            prevTime = 0;
+            requestAnimationFrame(animateCursor);
+        }
+    }
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+        kickCursorAnimation();
+    });
+
+    document.addEventListener('mousedown', () => {
+        scaleSpring.setTarget(0.8, 0);
+        kickCursorAnimation();
+    });
+
+    document.addEventListener('mouseup', () => {
+        scaleSpring.setTarget(1.0, 0);
+        kickCursorAnimation();
     });
 
     // ─── Countdown Timer Logic ───────────────────────────────────────
