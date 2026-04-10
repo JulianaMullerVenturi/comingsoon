@@ -1,18 +1,3 @@
-:root {
-    /* Dynamics variables for JS assignment */
-    --ds1-x: 0px;
-    --ds1-y: 0px;
-    --ds1-blur: 175px;
-
-    --ds2-x: 0px;
-    --ds2-y: 0px;
-    --ds2-blur: 95px;
-
-    /* Base interactive mapping fallback */
-    --mouse-x: 50vw;
-    --mouse-y: 50vh;
-}
-
 body, html {
     margin: 0;
     padding: 0;
@@ -24,116 +9,21 @@ body, html {
     cursor: none !important; /* Force hide default cursor */
 }
 
-.background-layer {
-    position: absolute;
+/* Pre-rendered 4K background video — hardware-decoded, zero filter cost */
+#bg-video {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 0;
-    pointer-events: none;
-    /* Soft lighting gradient combined with high-frequency SVG noise for a rough glass/grit texture */
-    background: 
-        radial-gradient(circle at 50% 50%, rgba(24, 168, 227, 0.12) 0%, rgba(0, 46, 81, 0) 70%),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.3' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.3; /* Subtlety creates the expensive look */
-    mix-blend-mode: overlay; /* Blends texturally with the dark blue base */
-}
-
-/* Ensure all interactive elements hide default cursor */
-a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
-    cursor: none !important;
-}
-
-/* Ensure all interactive elements hide default cursor */
-a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
-    cursor: none !important;
-}
-
-/* Base structural container */
-.vector-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100vw; /* Full width bounding area for shadows */
-    height: 100vh;
-    pointer-events: none;
+    object-fit: cover; /* Fill viewport, crop excess — matches SVG preserveAspectRatio="xMaxYMid meet" behavior */
     z-index: 1;
-    overflow: visible; /* Prevents container-level clipping */
-    will-change: transform;
+    pointer-events: none;
 }
 
-/* Identical positioning for all SVG layers */
-.layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    /* Maintaining proper SVG aspect ratio scaling natively */
-    overflow: visible; /* Essential for large filter effects/shadows to render outside viewBox */
-    will-change: transform, opacity; /* Force GPU promotion for smooth 60fps movement */
-}
-
-/* Removed shadow-mask-wrapper entirely to allow SVGs full screen coverage natively */
-
-/* Layer Z-Indexing and Blend Modes matching Figma structure */
-
-.drop-shadow-3 {
-    z-index: 5;
-    mix-blend-mode: screen;
-    opacity: 0.65; /* Increased opacity for a more visible, saturated ambient trail */
-}
-
-.drop-shadow-1 {
-    z-index: 10;
-    mix-blend-mode: screen; /* Restored to screen so the light merges softly into the transition trail */
-    opacity: 0.6;
-}
-
-.drop-shadow-2 {
-    z-index: 20;
-    mix-blend-mode: screen; /* Smooth additive blend to mimic premium lighting */
-    opacity: 0.75;
-}
-
-.main-vector {
-    z-index: 30;
-}
-
-.inner-shadow-1-layer {
-    z-index: 50;
-    mix-blend-mode: normal;
-    opacity: 0.8; /* Slight tuning for inset */
-}
-
-.inner-shadow-2-layer {
-    z-index: 40;
-    mix-blend-mode: normal;
-    opacity: 0.9;
-}
-
-
-
-
-.gcp-container {
-    position: absolute;
-    top: 48px;
-    left: 48px;
-    width: 140px;
-    height: 140px;
-    z-index: 100;
-    transform: scale(0.8);
-    transform-origin: top left;
-}
-
-.gcp-container .layer {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    overflow: visible;
+/* Ensure all interactive elements hide default cursor */
+a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
+    cursor: none !important;
 }
 
 /* Countdown Styles */
