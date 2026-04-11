@@ -9,19 +9,15 @@ body, html {
     cursor: none !important; /* Force hide default cursor */
 }
 
-/* Sprite sheet background — 10×12 grid (120 frames at 1280×720), JS-driven at 15fps */
-/* 1% overscan on all edges hides sub-pixel jitter from background-position rounding */
-#bg-sprite {
+/* Background canvas — filled by JS from sprite sheet, pixel-exact source clipping */
+#bg-canvas {
     position: fixed;
-    top: -1vh;
-    left: -1vw;
-    width: 102vw;
-    height: 102vh;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 1;
     pointer-events: none;
-    background-image: url('background_sprite.webp');
-    background-size: 1000% 1200%; /* 10 columns × 12 rows */
-    background-position: 0% 0%;
 }
 
 /* Ensure all interactive elements hide default cursor */

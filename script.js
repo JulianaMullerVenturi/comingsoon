@@ -1,19 +1,78 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ─── Sprite sheet frame driver (120 frames, 15fps, 10×12 grid) ───
-    const sprite = document.getElementById('bg-sprite');
-    if (sprite) {
+    // ─── Canvas sprite driver (120 frames, 15fps, 10×12 grid) ─────────
+    // Lossless sprite sheet with 4px padding between cells.
+    // drawImage clips source rectangles at exact pixel boundaries.
+    // Edge vignette stabilizes outermost pixels across all frames.
+    const canvas = document.getElementById('bg-canvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
         const COLS = 10, ROWS = 12, TOTAL = 120;
-        const INTERVAL = 8000 / TOTAL; // ~67ms per frame = 15fps
+        const CELL_W = 1280, CELL_H = 720; // sprite cell dimensions
+        const PAD = 4;                      // padding between cells in sprite
+        const INTERVAL = 8000 / TOTAL;      // ~67ms = 15fps
+        const EDGE_SIZE = 6;                // edge vignette fade width (px)
+        const BG_COLOR = '#002E51';
         let frame = 0;
-        setInterval(() => {
-            const col = frame % COLS;
-            const row = Math.floor(frame / COLS);
-            const x = col / (COLS - 1) * 100;
-            const y = row / (ROWS - 1) * 100;
-            sprite.style.backgroundPosition = `${x}% ${y}%`;
-            frame = (frame + 1) % TOTAL;
-        }, INTERVAL);
+
+        // Paint subtle edge vignette — makes outermost pixels identical across all frames
+        function drawEdgeVignette(w, h) {
+            const sz = EDGE_SIZE;
+            // Top
+            const top = ctx.createLinearGradient(0, 0, 0, sz);
+            top.addColorStop(0, BG_COLOR);
+            top.addColorStop(1, 'rgba(0,46,81,0)');
+            ctx.fillStyle = top;
+            ctx.fillRect(0, 0, w, sz);
+            // Bottom
+            const bot = ctx.createLinearGradient(0, h - sz, 0, h);
+            bot.addColorStop(0, 'rgba(0,46,81,0)');
+            bot.addColorStop(1, BG_COLOR);
+            ctx.fillStyle = bot;
+            ctx.fillRect(0, h - sz, w, sz);
+            // Left
+            const left = ctx.createLinearGradient(0, 0, sz, 0);
+            left.addColorStop(0, BG_COLOR);
+            left.addColorStop(1, 'rgba(0,46,81,0)');
+            ctx.fillStyle = left;
+            ctx.fillRect(0, 0, sz, h);
+            // Right
+            const right = ctx.createLinearGradient(w - sz, 0, w, 0);
+            right.addColorStop(0, 'rgba(0,46,81,0)');
+            right.addColorStop(1, BG_COLOR);
+            ctx.fillStyle = right;
+            ctx.fillRect(w - sz, 0, sz, h);
+        }
+
+        // Load sprite sheet
+        const spriteImg = new Image();
+        spriteImg.onload = function() {
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                drawFrame();
+            }
+
+            function drawFrame() {
+                const col = frame % COLS;
+                const row = Math.floor(frame / COLS);
+                // Padding-aware source coordinates — skip the 4px gaps
+                const sx = col * (CELL_W + PAD);
+                const sy = row * (CELL_H + PAD);
+                ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, 0, 0, canvas.width, canvas.height);
+                // Stabilize edges so all frames are identical at the boundary
+                drawEdgeVignette(canvas.width, canvas.height);
+            }
+
+            resize();
+            window.addEventListener('resize', resize);
+
+            setInterval(() => {
+                frame = (frame + 1) % TOTAL;
+                drawFrame();
+            }, INTERVAL);
+        };
+        spriteImg.src = 'background_sprite.webp';
     }
 
     // ─── Lightweight Spring for cursor physics ───────────────────────
