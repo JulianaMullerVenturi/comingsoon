@@ -10,12 +10,13 @@ body, html {
 }
 
 /* Sprite sheet background — 10×12 grid (120 frames at 1280×720), JS-driven at 15fps */
+/* 1% overscan on all edges hides sub-pixel jitter from background-position rounding */
 #bg-sprite {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: -1vh;
+    left: -1vw;
+    width: 102vw;
+    height: 102vh;
     z-index: 1;
     pointer-events: none;
     background-image: url('background_sprite.webp');
