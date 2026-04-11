@@ -226,11 +226,14 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 
 .name {
     color: #000; /* Pure Black for names */
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .name:hover {
-    color: #02568B; /* Dark Blue hover effect */
+    color: #3EDEFE; /* Electric Blue Text */
+    text-shadow: 0 0 14px rgba(0, 102, 255, 0.6), 0 0 25px rgba(0, 102, 255, 0.4); /* Stronger, deeper Blue Glow */
 }
 
 .separator {
