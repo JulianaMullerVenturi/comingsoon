@@ -169,8 +169,8 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 /* Glass Stencil Layer (Information Block) */
 .glass-stencil {
     position: absolute;
-    bottom: 48px; /* Matched to GCP logo margins */
-    left: 48px;   /* Matched to GCP logo margins */
+    bottom: clamp(24px, 2.5vmin + 20px, 48px); /* Restored desktop margin */
+    left: clamp(24px, 2.5vmin + 20px, 48px);   /* Restored desktop margin */
     z-index: 150;
     display: flex;
     flex-direction: column;
@@ -181,24 +181,24 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 .keywords-grid {
     display: flex; /* Changed from grid to flex to decouple columns */
     flex-direction: column;
-    gap: 12px; /* Increased Vertical gap */
+    gap: clamp(8px, 0.4vmin + 8px, 12px); /* Restored desktop gap */
     align-items: flex-start;
     transition: opacity 0.2s ease;
 }
 
 .keyword-row {
     display: flex;
-    gap: 12px; /* Increased horizontal gap between pills */
+    gap: clamp(8px, 0.4vmin + 8px, 12px); /* Restored desktop gap */
     align-items: center;
 }
 
 .keyword-pill {
-    padding: 10px 22px; /* Increased padding */
+    padding: clamp(6px, 0.4vmin + 6px, 10px) clamp(12px, 1vmin + 11px, 22px); /* Restored desktop padding */
     border: 1px solid #02568B;
     border-radius: 999px;
     background: transparent;
     color: #02568B;
-    font-size: 15px; /* Increased from 14px */
+    font-size: clamp(9px, 0.6vmin + 8px, 15px); /* Restored desktop font size */
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -209,18 +209,18 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 }
 
 .employee-names {
-    margin-top: 40px; /* Increased margin */
+    margin-top: clamp(20px, 2vmin + 18px, 40px); /* Restored desktop margin */
     display: flex;
     flex-direction: column;
-    gap: 8px; 
+    gap: clamp(4px, 0.4vmin + 4px, 8px); /* Restored desktop gap */
 }
 
 .names-row {
-    font-size: 18px; /* Increased from 16px */
+    font-size: clamp(11px, 0.8vmin + 9px, 18px); /* Restored desktop font size */
     font-weight: 500; /* Increased from 400 */
     display: flex;
     align-items: center;
-    gap: 20px; /* Increased gap */
+    gap: clamp(10px, 1vmin + 9px, 20px); /* Restored desktop gap */
     line-height: normal;
 }
 
@@ -239,7 +239,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 .separator {
     color: #000; /* Solid Black */
     font-weight: 300; /* Increased from 100 */
-    opacity: 0.6; /* Increased from 0.3 for better visibility */
+    opacity: 0.4; /* Slightly lowered for better blending at small sizes */
 }
 
 /* Custom UI Cursor Styles */
