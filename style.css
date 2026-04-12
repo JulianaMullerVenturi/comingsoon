@@ -25,6 +25,27 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     cursor: none !important;
 }
 
+
+
+/* GCP Logo — live vector overlay with autonomous orbital shadow */
+.gcp-logo-container {
+    position: absolute;
+    top: 48px;
+    left: 48px;
+    width: 90px;
+    height: 90px;
+    z-index: 100;
+    pointer-events: none;
+    will-change: filter;
+}
+
+.gcp-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
 /* Countdown Styles */
 .countdown-container {
     position: absolute;

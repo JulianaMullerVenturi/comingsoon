@@ -75,6 +75,32 @@ document.addEventListener('DOMContentLoaded', () => {
         spriteImg.src = 'background_sprite.webp';
     }
 
+    // ─── GCP Logo — Autonomous Orbital Drop Shadow ──────────────────
+    // Mirrors the same orbital motion used in the render pipeline,
+    // but applied as a CSS drop-shadow on the live SVG logo.
+    const gcpLogo = document.getElementById('gcp-logo');
+    if (gcpLogo) {
+        const GCP_ORBIT_SPEED = (2 * Math.PI) / 8000; // Same 8-second loop
+        const GCP_SHADOW_RADIUS = 12;   // Shadow orbit radius in px
+        const GCP_BLUR = 18;            // Base blur for the glow
+        const GCP_COLOR = 'rgba(8, 136, 231, 0.55)'; // #0888E7 @ 55%
+        let gcpStartTime = null;
+
+        function animateGcpShadow(timestamp) {
+            if (!gcpStartTime) gcpStartTime = timestamp;
+            const elapsed = timestamp - gcpStartTime;
+            const angle = elapsed * GCP_ORBIT_SPEED;
+
+            const dx = Math.cos(angle) * GCP_SHADOW_RADIUS;
+            const dy = Math.sin(angle) * GCP_SHADOW_RADIUS;
+
+            gcpLogo.style.filter = `drop-shadow(${dx.toFixed(1)}px ${dy.toFixed(1)}px ${GCP_BLUR}px ${GCP_COLOR})`;
+            requestAnimationFrame(animateGcpShadow);
+        }
+
+        requestAnimationFrame(animateGcpShadow);
+    }
+
     // ─── Lightweight Spring for cursor physics ───────────────────────
     class Spring {
         constructor(stiffness, damping) {

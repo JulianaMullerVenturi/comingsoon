@@ -11,6 +11,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "puppeteer": "^24.40.0"
+    "canvas": "^3.2.3",
+    "puppeteer": "^24.40.0",
+    "sharp": "^0.34.5"
   }
 }
