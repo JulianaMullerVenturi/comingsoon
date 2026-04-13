@@ -36,14 +36,35 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     height: 90px;
     z-index: 100;
     pointer-events: none;
-    will-change: filter;
+    /* Static multi-layer blue glow matching the Information Block hover state */
+    filter: drop-shadow(0px 0px 14px rgba(0, 102, 255, 0.6)) drop-shadow(0px 0px 25px rgba(0, 102, 255, 0.4));
+    will-change: transform; /* filter removed from will-change as it's now static */
 }
 
-.gcp-logo-img {
+/* Square-shaped focal glow on the top-right corner */
+.gcp-logo-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    background: linear-gradient(45deg, #19C1EE, transparent);
+    filter: blur(24px); /* Vibrant, blurred square shadow */
+    transform: translate(50%, -50%); /* Precisely centered on the top-right corner */
+    z-index: -1;
+    opacity: 1; /* Fade handled via gradient toward the top-right */
+}
+
+#gcp-svg {
+    width: 100%;
+    height: 100%;
     display: block;
+}
+
+#gcp-svg .st0 {
+    fill: #3EDEFE; /* Electric Blue to match hovered names */
+    transition: fill 0.3s ease;
 }
 
 /* Countdown Styles */
