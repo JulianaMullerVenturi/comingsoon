@@ -15,33 +15,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const BG_COLOR = '#002E51';
         let frame = 0;
 
-        // Paint subtle edge vignette — makes outermost pixels identical across all frames
-        function drawEdgeVignette(w, h) {
-            const sz = EDGE_SIZE;
-            // Top
-            const top = ctx.createLinearGradient(0, 0, 0, sz);
+        const vignetteCanvas = document.createElement('canvas');
+        const vCtx = vignetteCanvas.getContext('2d');
+
+        // Pre-render the vignette to an offscreen canvas so we aren't calculating gradients 15 times a second
+        function preRenderVignette(w, h) {
+            vignetteCanvas.width = w;
+            vignetteCanvas.height = h;
+            vCtx.clearRect(0, 0, w, h);
+
+            const sz = 6; // EDGE_SIZE
+            const top = vCtx.createLinearGradient(0, 0, 0, sz);
             top.addColorStop(0, BG_COLOR);
             top.addColorStop(1, 'rgba(0,46,81,0)');
-            ctx.fillStyle = top;
-            ctx.fillRect(0, 0, w, sz);
-            // Bottom
-            const bot = ctx.createLinearGradient(0, h - sz, 0, h);
+            vCtx.fillStyle = top;
+            vCtx.fillRect(0, 0, w, sz);
+
+            const bot = vCtx.createLinearGradient(0, h - sz, 0, h);
             bot.addColorStop(0, 'rgba(0,46,81,0)');
             bot.addColorStop(1, BG_COLOR);
-            ctx.fillStyle = bot;
-            ctx.fillRect(0, h - sz, w, sz);
-            // Left
-            const left = ctx.createLinearGradient(0, 0, sz, 0);
+            vCtx.fillStyle = bot;
+            vCtx.fillRect(0, h - sz, w, sz);
+
+            const left = vCtx.createLinearGradient(0, 0, sz, 0);
             left.addColorStop(0, BG_COLOR);
             left.addColorStop(1, 'rgba(0,46,81,0)');
-            ctx.fillStyle = left;
-            ctx.fillRect(0, 0, sz, h);
-            // Right
-            const right = ctx.createLinearGradient(w - sz, 0, w, 0);
+            vCtx.fillStyle = left;
+            vCtx.fillRect(0, 0, sz, h);
+
+            const right = vCtx.createLinearGradient(w - sz, 0, w, 0);
             right.addColorStop(0, 'rgba(0,46,81,0)');
             right.addColorStop(1, BG_COLOR);
-            ctx.fillStyle = right;
-            ctx.fillRect(w - sz, 0, sz, h);
+            vCtx.fillStyle = right;
+            vCtx.fillRect(w - sz, 0, sz, h);
         }
 
         // Load sprite sheet
@@ -50,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             function resize() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
+                preRenderVignette(canvas.width, canvas.height);
                 drawFrame();
             }
 
@@ -60,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const sx = col * (CELL_W + PAD);
                 const sy = row * (CELL_H + PAD);
                 ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, 0, 0, canvas.width, canvas.height);
-                // Stabilize edges so all frames are identical at the boundary
-                drawEdgeVignette(canvas.width, canvas.height);
+                // Draw the pre-rendered static vignette natively as a single texture overlay
+                ctx.drawImage(vignetteCanvas, 0, 0);
             }
 
             resize();
@@ -73,6 +80,40 @@ document.addEventListener('DOMContentLoaded', () => {
             }, INTERVAL);
         };
         spriteImg.src = 'background_sprite.webp';
+    }
+
+    // ─── GCP Focal Glow — Non-Linear Orbital Animation ───────────────
+    // A seamless 8-second clockwise lap with a "Keplerian" speed profile:
+    // Slower at the far corner (Top-Right), faster when close to the logo (Bottom-Left).
+    const gcpContainer = document.querySelector('.gcp-logo-container');
+    const glowElement = document.getElementById('gcp-glow');
+    if (gcpContainer) {
+        const LAP_TIME = 8000;
+        const RADIUS = 4;       // Subtle orbit radius
+        const INTENSITY = 0.25; // Subtle acceleration at the logo
+        const PHASE_OFFSET = (1.6 * Math.PI); // Shifted slightly earlier (~288 deg) to time the approach
+
+        const START_PHASE = 1.55 * Math.PI; // Startup phase offset (near Apoapsis)
+
+        function animateFocalGlow() {
+            const timestamp = performance.now();
+            const normalizedTime = (timestamp % LAP_TIME) / LAP_TIME;
+            const phi = (normalizedTime * 2 * Math.PI) + START_PHASE;
+            
+            // Warp the angle to satisfy the variable speed requirement
+            const visualAngle = phi - INTENSITY * Math.sin(phi - PHASE_OFFSET);
+
+            const dx = Math.cos(visualAngle) * RADIUS;
+            const dy = Math.sin(visualAngle) * RADIUS;
+
+            // Direct inline transform bypasses heavy CSS variable style recalculations
+            if (glowElement) {
+                glowElement.style.transform = `translate(calc(15% + ${dx.toFixed(2)}px), calc(-15% + ${dy.toFixed(2)}px))`;
+            }
+        }
+        
+        // Sync focal glow execution to 15fps (matches background canvas) to drastically reduce GPU/CPU compositor wakes
+        setInterval(animateFocalGlow, 1000 / 15);
     }
 
 
