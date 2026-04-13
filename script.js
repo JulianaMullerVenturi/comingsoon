@@ -308,4 +308,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setInterval(tickCountdown, 1000);
 
+    // ─── Custom Link Preview Logic ───────────────────────────────────
+    const customLinkPreview = document.getElementById('custom-link-preview');
+    const customLinks = document.querySelectorAll('[data-href]');
+
+    if (customLinkPreview) {
+        customLinks.forEach(link => {
+            link.addEventListener('mouseenter', (e) => {
+                const url = link.getAttribute('data-href');
+                if (url) {
+                    customLinkPreview.textContent = url;
+                    customLinkPreview.classList.add('visible');
+                }
+            });
+
+            link.addEventListener('mouseleave', () => {
+                customLinkPreview.classList.remove('visible');
+            });
+
+            link.addEventListener('click', (e) => {
+                const url = link.getAttribute('data-href');
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            });
+        });
+    }
+
 });

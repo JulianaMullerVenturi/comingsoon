@@ -298,7 +298,32 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     will-change: transform;
 }
 
+/* Elegant Custom Link Preview Tooltip */
+.custom-link-preview {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 6px 14px;
+    background: rgba(0, 46, 81, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(1, 101, 162, 0.7);
+    border-right: 1px solid rgba(1, 101, 162, 0.7);
+    border-top-right-radius: 6px;
+    color: #0165a2; /* Updated URL color */
+    font-size: 13px;
+    font-weight: 300;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    pointer-events: none;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden; /* Prevent GPU from calculating blur when hidden */
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 
-
-
-
+.custom-link-preview.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
