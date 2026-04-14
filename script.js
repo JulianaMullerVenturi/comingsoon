@@ -327,12 +327,68 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             link.addEventListener('click', (e) => {
+                if (link.id === 'btn-book-demo') return;
                 const url = link.getAttribute('data-href');
                 if (url) {
                     window.open(url, '_blank');
                 }
             });
         });
+    }
+
+    // ─── Book a Demo Sidebar Logic ───────────────────────────────────
+    const btnBookDemo = document.getElementById('btn-book-demo');
+    const closeSidebarBtn = document.getElementById('close-sidebar');
+    const body = document.body;
+
+    if (btnBookDemo) {
+        btnBookDemo.addEventListener('click', (e) => {
+            e.preventDefault();
+            body.classList.toggle('demo-active');
+        });
+
+        if (closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                body.classList.remove('demo-active');
+            });
+        }
+
+        // Close sidebar when clicking outside the form area
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('demo-sidebar');
+            if (body.classList.contains('demo-active') && 
+                sidebar && !sidebar.contains(e.target) && 
+                btnBookDemo && !btnBookDemo.contains(e.target)) {
+                body.classList.remove('demo-active');
+            }
+        });
+
+        // ─── Form Validation Logic ───
+        const demoForm = document.getElementById('demo-form');
+        const btnSubmit = document.getElementById('btn-submit');
+        const inputs = demoForm ? demoForm.querySelectorAll('input[type="text"], input[type="email"]') : [];
+        const checkbox = document.getElementById('demo-agree');
+
+        if (demoForm && btnSubmit) {
+            const validateForm = () => {
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (input.value.trim() === '') isValid = false;
+                });
+                if (checkbox && !checkbox.checked) isValid = false;
+
+                if (isValid) {
+                    btnSubmit.classList.remove('disabled');
+                } else {
+                    btnSubmit.classList.add('disabled');
+                }
+            };
+
+            inputs.forEach(input => input.addEventListener('input', validateForm));
+            if (checkbox) checkbox.addEventListener('change', validateForm);
+            validateForm(); // initial check
+        }
     }
 
 });

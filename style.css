@@ -30,7 +30,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 .gcp-brand-group {
     position: absolute;
     top: 48px;
-    left: 64px;
+    left: clamp(24px, 2.5vmin + 20px, 48px);
     display: flex;
     align-items: center;
     gap: 20px;
@@ -354,7 +354,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     position: fixed;
     bottom: 0;
     left: 0;
-    padding: 6px 14px;
+    padding: 4px 10px;
     background: rgba(0, 46, 81, 0.6);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -362,7 +362,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     border-right: 1px solid rgba(1, 101, 162, 0.7);
     border-top-right-radius: 6px;
     color: #0165a2; /* Updated URL color */
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 300;
     font-family: 'Plus Jakarta Sans', sans-serif;
     pointer-events: none;
@@ -377,4 +377,162 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+}
+
+/* ─── Demo Active States ─── */
+body.demo-active .glass-stencil {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+body:not(.demo-active) .glass-stencil {
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body.demo-active .countdown-container {
+    filter: blur(8px);
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.85); /* Changed back to -50% for centering */
+    transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+body:not(.demo-active) .countdown-container {
+    transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ─── Book a Demo Composition Element ─── */
+.demo-sidebar {
+    position: absolute;
+    top: 55%; /* Centering perfectly between GCP logo and bottom */
+    left: clamp(24px, 2.5vmin + 20px, 48px);
+    width: 380px;
+    z-index: 9000;
+    transform: translate(-50px, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    padding: 0 40px;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body.demo-active .demo-sidebar {
+    transform: translate(0, -50%);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.demo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-group input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 0;
+    color: #fff;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.form-group input:focus {
+    border-bottom-color: #35D0F7;
+}
+
+.checkbox-group {
+    margin-top: 10px;
+}
+
+.custom-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.custom-checkbox-label input {
+    display: none;
+}
+
+.custom-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s ease;
+    margin-top: 2px;
+}
+
+.custom-checkbox-label input:checked + .custom-checkbox {
+    background: #35D0F7;
+    border-color: #35D0F7;
+}
+
+.custom-checkbox-label input:checked + .custom-checkbox::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    width: 4px;
+    height: 9px;
+    border: solid #001f3f;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.checkbox-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 300;
+}
+
+.btn-submit {
+    margin-top: 20px;
+    padding: 14px 24px;
+    background: transparent;
+    border: 1px solid rgba(53, 208, 247, 0.4);
+    border-radius: 8px;
+    color: #35D0F7;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    align-self: flex-start;
+}
+.btn-submit:hover {
+    background: rgba(53, 208, 247, 0.2);
+    border-color: rgba(53, 208, 247, 0.8);
+    box-shadow: none;
+}
+
+.btn-submit.disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.4);
+    background: transparent;
 }

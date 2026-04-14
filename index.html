@@ -54,7 +54,7 @@
         <div class="gcp-line-2">Noordhuys</div>
         <div class="gcp-line-3">& De Rooi Pannen</div>
     </div>
-    <a href="#" class="btn-demo">Book a Demo</a>
+    <a data-href="xXenta.com/BookADemo" class="btn-demo" id="btn-book-demo">Book a Demo</a>
 </div>
 
     <script src="script.js"></script>
@@ -131,5 +131,37 @@
 
     <!-- Custom elegant link preview box -->
     <div id="custom-link-preview" class="custom-link-preview"></div>
+
+    <!-- Book a Demo Sidebar -->
+    <aside id="demo-sidebar" class="demo-sidebar">
+        <div class="sidebar-content">
+            <form class="demo-form" id="demo-form" novalidate>
+                <div class="form-group">
+                    <input type="text" id="demo-fname" name="fname" placeholder="First Name *" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="demo-lname" name="lname" placeholder="Last Name *" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="demo-email" name="email" placeholder="Company Email *" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="demo-company" name="company" placeholder="Company Name *" required>
+                </div>
+                
+                <div class="checkbox-group">
+                    <label class="custom-checkbox-label">
+                        <input type="checkbox" id="demo-agree" name="agree" required>
+                        <span class="custom-checkbox"></span>
+                        <span class="checkbox-text">I agree to receive general communications from xXenta</span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-submit disabled" id="btn-submit">Submit Request</button>
+                
+
+            </form>
+        </div>
+    </aside>
 </body>
 </html>
