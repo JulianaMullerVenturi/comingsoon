@@ -27,15 +27,66 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 
 
 /* GCP Logo — live vector overlay with autonomous orbital shadow */
-.gcp-logo-container {
+.gcp-brand-group {
     position: absolute;
     top: 48px;
-    left: 48px;
+    left: 64px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 100;
+}
+
+.gcp-logo-container {
+    position: relative;
     width: 90px;
     height: 90px;
-    z-index: 100;
+    flex-shrink: 0;
     pointer-events: none;
-    /* Static glow now handled via optimized PNG asset in ::before pseudo-element */
+}
+
+.gcp-text-block {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    line-height: 1.2;
+}
+
+.gcp-line-1 { 
+    color: #0165a2; 
+    font-size: 11pt; 
+    font-weight: 500; 
+}
+
+.gcp-line-2, .gcp-line-3 { 
+    color: #000; 
+    font-size: 16pt; 
+    font-weight: 320; 
+}
+
+.btn-demo {
+    margin-left: 20px;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1.5px solid rgba(53, 208, 247, 0.4);
+    border-radius: 8px; /* Squared-off to contrast with pills */
+    color: #35D0F7;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    pointer-events: auto;
+    backdrop-filter: blur(4px);
+}
+
+.btn-demo:hover {
+    background: rgba(53, 208, 247, 0.2);
+    border-color: rgba(53, 208, 247, 0.8);
+    color: #35D0F7; 
+    box-shadow: 6px -6px 36px 4px rgba(10, 155, 235, 0.45);
 }
 
 /* Dedicated DOM element for glow avoids CSS variable layout recalculations */
@@ -221,24 +272,24 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 .keywords-grid {
     display: flex; /* Changed from grid to flex to decouple columns */
     flex-direction: column;
-    gap: clamp(8px, 0.4vmin + 8px, 12px); /* Restored desktop gap */
+    gap: clamp(7px, 0.35vmin + 7px, 11px); 
     align-items: flex-start;
     transition: opacity 0.2s ease;
 }
 
 .keyword-row {
     display: flex;
-    gap: clamp(8px, 0.4vmin + 8px, 12px); /* Restored desktop gap */
+    gap: clamp(7px, 0.35vmin + 7px, 11px); 
     align-items: center;
 }
 
 .keyword-pill {
-    padding: clamp(6px, 0.4vmin + 6px, 10px) clamp(12px, 1vmin + 11px, 22px); /* Restored desktop padding */
+    padding: clamp(5px, 0.35vmin + 5px, 9px) clamp(11px, 0.9vmin + 9px, 19px); 
     border: 1px solid #02568B;
     border-radius: 999px;
     background: transparent;
     color: #02568B;
-    font-size: clamp(9px, 0.6vmin + 8px, 15px); /* Restored desktop font size */
+    font-size: clamp(8.5px, 0.55vmin + 7px, 13.5px); 
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -249,18 +300,18 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 }
 
 .employee-names {
-    margin-top: clamp(20px, 2vmin + 18px, 40px); /* Restored desktop margin */
+    margin-top: clamp(12px, 1.5vmin + 10px, 24px); 
     display: flex;
     flex-direction: column;
     gap: clamp(4px, 0.4vmin + 4px, 8px); /* Restored desktop gap */
 }
 
 .names-row {
-    font-size: clamp(11px, 0.8vmin + 9px, 18px); /* Restored desktop font size */
-    font-weight: 500; /* Increased from 400 */
+    font-size: clamp(10px, 0.7vmin + 8px, 16px); 
+    font-weight: 400; 
     display: flex;
     align-items: center;
-    gap: clamp(10px, 1vmin + 9px, 20px); /* Restored desktop gap */
+    gap: clamp(9px, 0.9vmin + 8px, 18px); 
     line-height: normal;
 }
 
