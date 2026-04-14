@@ -412,9 +412,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const successMsg = document.getElementById('demo-success-msg');
                 if (successMsg) {
                     successMsg.style.display = 'block';
-                    setTimeout(() => {
-                        successMsg.style.display = 'none';
-                    }, 5000);
                 }
             });
         }

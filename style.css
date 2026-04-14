@@ -258,6 +258,44 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     margin-top: -3px; 
 }
 
+/* Mobile 2x2 Grid Layout */
+@media (max-width: 768px) {
+    .countdown-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 24px;
+        column-gap: 32px;
+    }
+
+    .countdown-unit {
+        width: 100%;
+    }
+
+    /* Hide the vertical desktop separators in grid view */
+    .countdown-unit:not(:last-child)::after {
+        display: none;
+    }
+
+    /* Override extreme linear scaling to keep digits boldly 
+       legible within the larger grid quadrants */
+    .digit, .digit-bounds {
+        font-size: clamp(60px, 16vw, 100px);
+    }
+
+    .digit-wrapper {
+        height: clamp(60px, 16vw, 100px);
+        width: clamp(30px, 8vw, 50px);
+    }
+
+    .digits-container {
+        width: clamp(60px, 16vw, 100px);
+    }
+
+    .countdown-label {
+        font-size: clamp(12px, 3.5vw, 16px);
+    }
+}
+
 /* Glass Stencil Layer (Information Block) */
 .glass-stencil {
     position: absolute;
@@ -323,9 +361,11 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     text-decoration: none;
 }
 
-.name:hover {
-    color: #3EDEFE; /* Electric Blue Text */
-    text-shadow: 0 0 14px rgba(0, 102, 255, 0.6), 0 0 25px rgba(0, 102, 255, 0.4); /* Stronger, deeper Blue Glow */
+@media (hover: hover) {
+    .name:hover {
+        color: #3EDEFE; /* Electric Blue Text */
+        text-shadow: 0 0 14px rgba(0, 102, 255, 0.6), 0 0 25px rgba(0, 102, 255, 0.4); /* Stronger, deeper Blue Glow */
+    }
 }
 
 .separator {
@@ -334,50 +374,64 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     opacity: 0.4; /* Slightly lowered for better blending at small sizes */
 }
 
-/* Custom UI Cursor Styles */
+/* Custom UI Cursor Styles (Desktop Only) */
 .custom-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 12px; /* Reduced from 20px */
-    height: 12px; /* Reduced from 20px */
-    border-radius: 50%;
-    border: 1px solid #18A8E3;
-    background-color: rgba(24, 168, 227, 0.2); /* 20% opacity fill */
-    mix-blend-mode: screen;
-    z-index: 10000;
-    pointer-events: none;
-    will-change: transform;
+    display: none;
 }
 
-/* Elegant Custom Link Preview Tooltip */
+@media (hover: hover) and (pointer: fine) {
+    .custom-cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 1px solid #18A8E3;
+        background-color: rgba(24, 168, 227, 0.2);
+        mix-blend-mode: screen;
+        z-index: 10000;
+        pointer-events: none;
+        will-change: transform;
+        display: block;
+    }
+}
+
+/* Elegant Custom Link Preview Tooltip (Desktop Only) */
 .custom-link-preview {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    padding: 4px 10px;
-    background: rgba(0, 46, 81, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-top: 1px solid rgba(1, 101, 162, 0.7);
-    border-right: 1px solid rgba(1, 101, 162, 0.7);
-    border-top-right-radius: 6px;
-    color: #0165a2; /* Updated URL color */
-    font-size: 10px;
-    font-weight: 300;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    pointer-events: none;
-    z-index: 10000;
-    opacity: 0;
-    visibility: hidden; /* Prevent GPU from calculating blur when hidden */
-    transform: translateY(10px);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: none;
 }
 
-.custom-link-preview.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+@media (hover: hover) and (pointer: fine) {
+    .custom-link-preview {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        padding: 4px 10px;
+        background: rgba(0, 46, 81, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-top: 1px solid rgba(1, 101, 162, 0.7);
+        border-right: 1px solid rgba(1, 101, 162, 0.7);
+        border-top-right-radius: 6px;
+        color: #0165a2;
+        font-size: 10px;
+        font-weight: 300;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        pointer-events: none;
+        z-index: 10000;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        display: block;
+    }
+
+    .custom-link-preview.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
 }
 
 /* ─── Demo Active States ─── */
