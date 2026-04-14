@@ -388,6 +388,35 @@ document.addEventListener('DOMContentLoaded', () => {
             inputs.forEach(input => input.addEventListener('input', validateForm));
             if (checkbox) checkbox.addEventListener('change', validateForm);
             validateForm(); // initial check
+
+            demoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (btnSubmit.classList.contains('disabled')) return;
+                
+                const fname = document.getElementById('demo-fname').value;
+                const lname = document.getElementById('demo-lname').value;
+                const email = document.getElementById('demo-email').value;
+                const company = document.getElementById('demo-company').value;
+                
+                const subject = encodeURIComponent(`Book a Demo Request - ${company}`);
+                const mailBody = encodeURIComponent(`Name: ${fname} ${lname}\nCompany: ${company}\nEmail: ${email}\n\nI would like to book a demo.`);
+                
+                window.location.href = `mailto:j.venturi@xxenta.com?subject=${subject}&body=${mailBody}`;
+                
+                // Clear the form
+                demoForm.reset();
+                validateForm();
+                
+                // Show success message
+                const successMsg = document.getElementById('demo-success-msg');
+                if (successMsg) {
+                    successMsg.style.display = 'block';
+                    setTimeout(() => {
+                        successMsg.style.display = 'none';
+                    }, 5000);
+                }
+            });
         }
     }
 

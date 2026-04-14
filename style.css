@@ -29,18 +29,18 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 /* GCP Logo — live vector overlay with autonomous orbital shadow */
 .gcp-brand-group {
     position: absolute;
-    top: 48px;
+    top: clamp(24px, 2.5vmin + 20px, 48px);
     left: clamp(24px, 2.5vmin + 20px, 48px);
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: clamp(10px, 1.5vmin + 5px, 20px);
     z-index: 100;
 }
 
 .gcp-logo-container {
     position: relative;
-    width: 90px;
-    height: 90px;
+    width: clamp(50px, 6vmin + 30px, 90px);
+    height: clamp(50px, 6vmin + 30px, 90px);
     flex-shrink: 0;
     pointer-events: none;
 }
@@ -50,29 +50,30 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     flex-direction: column;
     font-family: 'Plus Jakarta Sans', sans-serif;
     line-height: 1.2;
+    margin-top: 1px;
 }
 
 .gcp-line-1 { 
     color: #0165a2; 
-    font-size: 11pt; 
+    font-size: clamp(11.5px, 1.2vmin + 8px, 14.6px);
     font-weight: 500; 
 }
 
 .gcp-line-2, .gcp-line-3 { 
     color: #000; 
-    font-size: 16pt; 
+    font-size: clamp(15px, 1.6vmin + 10px, 21.3px);
     font-weight: 320; 
 }
 
 .btn-demo {
-    margin-left: 20px;
-    padding: 10px 24px;
+    margin-left: clamp(10px, 1.5vmin + 5px, 20px);
+    padding: clamp(6px, 0.8vmin + 4px, 10px) clamp(16px, 2vmin + 10px, 24px);
     background: transparent;
     border: 1.5px solid rgba(53, 208, 247, 0.4);
     border-radius: 8px; /* Squared-off to contrast with pills */
     color: #35D0F7;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 12px;
+    font-size: clamp(9px, 0.6vmin + 6px, 12px);
     font-weight: 600;
     text-decoration: none;
     text-transform: uppercase;
@@ -126,7 +127,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 80px; 
+    gap: clamp(10px, 3.5vw, 80px); 
     z-index: 200;
     opacity: 0.9;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -140,7 +141,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 160px;
+    width: clamp(60px, 12vw, 160px);
     flex-shrink: 0;
     position: relative;
 }
@@ -149,10 +150,10 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     content: '';
     position: absolute;
     top: 50%;
-    right: -40px;
+    right: calc(clamp(10px, 3.5vw, 80px) / -2);
     width: 0;
     border-right: 1.5px solid rgba(0, 0, 0, 0.95);
-    height: 180px;
+    height: clamp(80px, 15vw, 180px);
     transform: translateY(calc(-50% + 10px));
 }
 
@@ -160,30 +161,30 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 140px;
+    width: clamp(55px, 10vw, 140px);
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Whole-group Optical Centering for Asymmetric Pairs exclusively */
 .digits-container.tens-is-one:not(.ones-is-one) {
-    transform: translateX(-12px);
+    transform: translateX(calc(clamp(4px, 1vw, 12px) * -1));
 }
 
 .digits-container.ones-is-one:not(.tens-is-one) {
-    transform: translateX(12px);
+    transform: translateX(clamp(4px, 1vw, 12px));
 }
 
 .digit-wrapper {
     position: relative;
-    height: 140px; 
-    width: 70px;
+    height: clamp(55px, 10vw, 140px); 
+    width: clamp(27px, 5vw, 70px);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .digit-bounds {
-    font-size: 120px;
+    font-size: clamp(45px, 8vw, 120px);
     font-weight: 100;
     letter-spacing: 0;
     line-height: 1;
@@ -192,7 +193,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 }
 
 .digit {
-    font-size: 120px;
+    font-size: clamp(45px, 8vw, 120px);
     font-weight: 100;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -208,11 +209,11 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 
 /* Dynamic Kerning for 1 - shifts ink closer to the optical center */
 .digit-wrapper.tens .digit.digit-one {
-    left: calc(50% + 12px);
+    left: calc(50% + clamp(4px, 1vw, 12px));
 }
 
 .digit-wrapper.ones .digit.digit-one {
-    left: calc(50% - 12px);
+    left: calc(50% - clamp(4px, 1vw, 12px));
 }
 
 .digit.fade-out {
@@ -250,7 +251,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 }
 
 .countdown-label {
-    font-size: 20px;
+    font-size: clamp(10px, 1.8vw, 20px);
     font-weight: 300;
     text-transform: uppercase;
     letter-spacing: 0;
@@ -405,7 +406,7 @@ body:not(.demo-active) .countdown-container {
     position: absolute;
     top: 55%; /* Centering perfectly between GCP logo and bottom */
     left: clamp(24px, 2.5vmin + 20px, 48px);
-    width: 380px;
+    width: clamp(260px, 80vw, 380px);
     z-index: 9000;
     transform: translate(-50px, -50%);
     opacity: 0;
@@ -413,7 +414,7 @@ body:not(.demo-active) .countdown-container {
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
-    padding: 0 40px;
+    padding: 0 clamp(16px, 4vw, 40px);
     box-sizing: border-box;
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
@@ -427,7 +428,7 @@ body.demo-active .demo-sidebar {
 .demo-form {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: clamp(15px, 3vh, 30px);
 }
 
 .form-group {
@@ -439,9 +440,9 @@ body.demo-active .demo-sidebar {
     background: transparent;
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 10px 0;
+    padding: clamp(6px, 1.2vh, 10px) 0;
     color: #fff;
-    font-size: 16px;
+    font-size: clamp(13px, 3vw, 14.6px);
     font-family: inherit;
     font-weight: 300;
     outline: none;
@@ -472,8 +473,8 @@ body.demo-active .demo-sidebar {
 }
 
 .custom-checkbox {
-    width: 18px;
-    height: 18px;
+    width: clamp(14px, 3vw, 18px);
+    height: clamp(14px, 3vw, 18px);
     border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 4px;
     flex-shrink: 0;
@@ -501,20 +502,20 @@ body.demo-active .demo-sidebar {
 
 .checkbox-text {
     color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
+    font-size: clamp(10px, 2.5vw, 13px);
     line-height: 1.5;
     font-weight: 300;
 }
 
 .btn-submit {
-    margin-top: 20px;
-    padding: 14px 24px;
+    margin-top: clamp(10px, 2vh, 20px);
+    padding: clamp(10px, 1.5vh, 14px) clamp(16px, 3vw, 24px);
     background: transparent;
     border: 1px solid rgba(53, 208, 247, 0.4);
     border-radius: 8px;
     color: #35D0F7;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px;
+    font-size: clamp(11px, 2.5vw, 14px);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -522,6 +523,7 @@ body.demo-active .demo-sidebar {
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     align-self: flex-start;
 }
+
 .btn-submit:hover {
     background: rgba(53, 208, 247, 0.2);
     border-color: rgba(53, 208, 247, 0.8);
@@ -535,4 +537,18 @@ body.demo-active .demo-sidebar {
     border-color: rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.4);
     background: transparent;
+}
+
+.demo-success-msg {
+    color: #35D0F7;
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 1.4;
+    margin-top: 5px;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
