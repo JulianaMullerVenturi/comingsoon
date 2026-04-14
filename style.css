@@ -29,18 +29,18 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 /* GCP Logo — live vector overlay with autonomous orbital shadow */
 .gcp-brand-group {
     position: absolute;
-    top: clamp(24px, 2.5vmin + 20px, 48px);
-    left: clamp(24px, 2.5vmin + 20px, 48px);
+    top: clamp(28.8px, 3vmin + 24px, 57.6px);
+    left: clamp(28.8px, 3vmin + 24px, 57.6px);
     display: flex;
     align-items: center;
-    gap: clamp(10px, 1.5vmin + 5px, 20px);
+    gap: clamp(12px, 1.8vmin + 6px, 24px);
     z-index: 100;
 }
 
 .gcp-logo-container {
     position: relative;
-    width: clamp(50px, 6vmin + 30px, 90px);
-    height: clamp(50px, 6vmin + 30px, 90px);
+    width: clamp(60px, 7.2vmin + 36px, 108px);
+    height: clamp(60px, 7.2vmin + 36px, 108px);
     flex-shrink: 0;
     pointer-events: none;
 }
@@ -55,32 +55,32 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 
 .gcp-line-1 { 
     color: #0165a2; 
-    font-size: clamp(11.5px, 1.2vmin + 8px, 14.6px);
+    font-size: clamp(13.8px, 1.44vmin + 9.6px, 17.52px);
     font-weight: 500; 
 }
 
 .gcp-line-2, .gcp-line-3 { 
     color: #000; 
-    font-size: clamp(15px, 1.6vmin + 10px, 21.3px);
+    font-size: clamp(18px, 1.92vmin + 12px, 25.56px);
     font-weight: 320; 
 }
 
 .btn-demo {
-    margin-left: clamp(10px, 1.5vmin + 5px, 20px);
-    padding: clamp(6px, 0.8vmin + 4px, 10px) clamp(16px, 2vmin + 10px, 24px);
+    margin-left: clamp(12px, 1.8vmin + 6px, 24px);
+    padding: clamp(7.2px, 0.96vmin + 4.8px, 12px) clamp(19.2px, 2.4vmin + 12px, 28.8px);
     background: transparent;
     border: 1.5px solid rgba(53, 208, 247, 0.4);
-    border-radius: 8px; /* Squared-off to contrast with pills */
+    border-radius: 9.6px; 
     color: #35D0F7;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: clamp(9px, 0.6vmin + 6px, 12px);
+    font-size: clamp(10.8px, 0.72vmin + 7.2px, 14.4px);
     font-weight: 600;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     pointer-events: auto;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(4.8px); 
 }
 
 .btn-demo:hover {
@@ -88,6 +88,25 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     border-color: rgba(53, 208, 247, 0.8);
     color: #35D0F7; 
     box-shadow: 6px -6px 36px 4px rgba(10, 155, 235, 0.45);
+}
+
+/* Mobile Header Architecture */
+@media (max-width: 768px) {
+    .gcp-brand-group {
+        top: 0;
+        left: 0;
+        width: 100vw;
+        padding: clamp(19.2px, 4.8vw, 28.8px) clamp(28.8px, 7.2vw, 38.4px); 
+        background: linear-gradient(to bottom, rgba(0, 56, 99, 1), rgba(0, 56, 99, 0.65)); 
+        backdrop-filter: blur(19.2px); 
+        -webkit-backdrop-filter: blur(19.2px);
+        box-sizing: border-box;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+    }
+
+    .btn-demo {
+        margin-left: auto; /* Forces button to the absolute right edge */
+    }
 }
 
 /* Dedicated DOM element for glow avoids CSS variable layout recalculations */
@@ -122,12 +141,12 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: 16px;
-    transform: translate(-50%, -50%) scale(0.92);
+    margin-top: 19.2px; 
+    transform: translate(-50%, -50%) scale(0.95); 
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(10px, 3.5vw, 80px); 
+    gap: clamp(16px, 5vw, 110px); /* Increased spacing between tiles */
     z-index: 200;
     opacity: 0.9;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -136,12 +155,18 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     transition: opacity 0.2s ease;
 }
 
+@media (min-width: 769px) {
+    .countdown-container {
+        margin-top: 10px; /* Fine-tuned: just slightly higher than the original version */
+    }
+}
+
 .countdown-unit {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: clamp(60px, 12vw, 160px);
+    width: clamp(64px, 12.8vw, 172px); /* Reduced width */
     flex-shrink: 0;
     position: relative;
 }
@@ -150,22 +175,22 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     content: '';
     position: absolute;
     top: 50%;
-    right: calc(clamp(10px, 3.5vw, 80px) / -2);
+    right: calc(clamp(16px, 5vw, 110px) / -2); /* Synchronized with new gap */
     width: 0;
     border-right: 1.5px solid rgba(0, 0, 0, 0.95);
-    height: clamp(80px, 15vw, 180px);
-    transform: translateY(calc(-50% + 10px));
+    height: clamp(84px, 15vw, 192px); 
+    transform: translateY(calc(-50% + 12px));
 }
 
 .digits-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: clamp(55px, 10vw, 140px);
+    width: clamp(58px, 10.4vw, 148px); /* Reduced width */
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Whole-group Optical Centering for Asymmetric Pairs exclusively */
+/* Whole-group Optical Centering for Asymmetric Pairs */
 .digits-container.tens-is-one:not(.ones-is-one) {
     transform: translateX(calc(clamp(4px, 1vw, 12px) * -1));
 }
@@ -176,15 +201,15 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 
 .digit-wrapper {
     position: relative;
-    height: clamp(55px, 10vw, 140px); 
-    width: clamp(27px, 5vw, 70px);
+    height: clamp(58px, 10.4vw, 148px); 
+    width: clamp(28.8px, 5.2vw, 74px); /* Reduced width */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .digit-bounds {
-    font-size: clamp(45px, 8vw, 120px);
+    font-size: clamp(48px, 8.4vw, 128px); /* Reduced font size */
     font-weight: 100;
     letter-spacing: 0;
     line-height: 1;
@@ -193,7 +218,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 }
 
 .digit {
-    font-size: clamp(45px, 8vw, 120px);
+    font-size: clamp(48px, 8.4vw, 128px); /* Reduced font size */
     font-weight: 100;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -251,11 +276,11 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 }
 
 .countdown-label {
-    font-size: clamp(10px, 1.8vw, 20px);
+    font-size: clamp(11px, 2vw, 22px); /* Reduced label size */
     font-weight: 300;
     text-transform: uppercase;
     letter-spacing: 0;
-    margin-top: -3px; 
+    margin-top: -3.6px; 
 }
 
 /* Mobile 2x2 Grid Layout */
@@ -263,8 +288,8 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     .countdown-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        row-gap: 24px;
-        column-gap: 32px;
+        row-gap: 28.8px; 
+        column-gap: 38.4px; 
     }
 
     .countdown-unit {
@@ -279,78 +304,90 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
     /* Override extreme linear scaling to keep digits boldly 
        legible within the larger grid quadrants */
     .digit, .digit-bounds {
-        font-size: clamp(60px, 16vw, 100px);
+        font-size: clamp(72px, 19.2vw, 120px); 
     }
 
     .digit-wrapper {
-        height: clamp(60px, 16vw, 100px);
-        width: clamp(30px, 8vw, 50px);
+        height: clamp(72px, 19.2vw, 120px);
+        width: clamp(36px, 9.6vw, 60px);
     }
 
     .digits-container {
-        width: clamp(60px, 16vw, 100px);
+        width: clamp(72px, 19.2vw, 120px);
     }
 
     .countdown-label {
-        font-size: clamp(12px, 3.5vw, 16px);
+        font-size: clamp(14.4px, 4.2vw, 19.2px);
     }
 }
 
 /* Glass Stencil Layer (Information Block) */
 .glass-stencil {
     position: absolute;
-    bottom: clamp(24px, 2.5vmin + 20px, 48px); /* Restored desktop margin */
-    left: clamp(24px, 2.5vmin + 20px, 48px);   /* Restored desktop margin */
+    bottom: clamp(28.8px, 3vmin + 24px, 57.6px); 
+    left: clamp(28.8px, 3vmin + 24px, 57.6px);   
     z-index: 150;
     display: flex;
     flex-direction: column;
-    pointer-events: auto; /* Enabled to allow hover effects on names */
+    pointer-events: auto; 
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .keywords-grid {
-    display: flex; /* Changed from grid to flex to decouple columns */
+    display: flex; 
     flex-direction: column;
-    gap: clamp(7px, 0.35vmin + 7px, 11px); 
+    gap: clamp(8.4px, 0.42vmin + 8.4px, 13.2px); 
     align-items: flex-start;
     transition: opacity 0.2s ease;
 }
 
 .keyword-row {
     display: flex;
-    gap: clamp(7px, 0.35vmin + 7px, 11px); 
     align-items: center;
+    gap: inherit;
+    opacity: 0;
+    animation: intro-fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.keyword-row:nth-child(1) { animation-delay: 0.1s; }
+.keyword-row:nth-child(2) { animation-delay: 0.25s; }
+
 .keyword-pill {
-    padding: clamp(5px, 0.35vmin + 5px, 9px) clamp(11px, 0.9vmin + 9px, 19px); 
+    padding: clamp(6px, 0.42vmin + 6px, 10.8px) clamp(13.2px, 1.08vmin + 10.8px, 22.8px); 
     border: 1px solid #02568B;
     border-radius: 999px;
     background: transparent;
     color: #02568B;
-    font-size: clamp(8.5px, 0.55vmin + 7px, 13.5px); 
+    font-size: clamp(10.2px, 0.66vmin + 8.4px, 16.2px); 
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
     white-space: nowrap;
+    cursor: default;
+}
+
+@media (max-width: 768px) {
+    .keyword-pill {
+        color: #35D0F7;
+        border-color: #35D0F7;
+    }
 }
 
 .employee-names {
-    margin-top: clamp(12px, 1.5vmin + 10px, 24px); 
+    margin-top: clamp(14.4px, 1.8vmin + 12px, 28.8px); 
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 0.4vmin + 4px, 8px); /* Restored desktop gap */
+    gap: clamp(4.8px, 0.48vmin + 4.8px, 9.6px); 
+    opacity: 0;
+    animation: intro-fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
 }
 
 .names-row {
-    font-size: clamp(10px, 0.7vmin + 8px, 16px); 
+    font-size: clamp(12px, 0.84vmin + 9.6px, 19.2px); 
     font-weight: 400; 
     display: flex;
     align-items: center;
-    gap: clamp(9px, 0.9vmin + 8px, 18px); 
+    gap: clamp(10.8px, 1.08vmin + 9.6px, 21.6px); 
     line-height: normal;
 }
 
@@ -363,19 +400,27 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 
 @media (hover: hover) {
     .name:hover {
-        color: #3EDEFE; /* Electric Blue Text */
+        color: #35D0F7; /* Unified Cyan Highlight */
         text-shadow: 0 0 14px rgba(0, 102, 255, 0.6), 0 0 25px rgba(0, 102, 255, 0.4); /* Stronger, deeper Blue Glow */
     }
 }
 
-.separator {
-    color: #000; /* Solid Black */
-    font-weight: 300; /* Increased from 100 */
-    opacity: 0.4; /* Slightly lowered for better blending at small sizes */
+@keyframes intro-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+        filter: blur(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
 }
 
-/* Custom UI Cursor Styles (Desktop Only) */
-.custom-cursor {
+/* Custom UI Cursor & Link Previews */
+@media (pointer: fine) {
+    .custom-cursor {
     display: none;
 }
 
@@ -384,8 +429,8 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
         position: fixed;
         top: 0;
         left: 0;
-        width: 12px;
-        height: 12px;
+        width: 14.4px; /* 12 * 1.2 */
+        height: 14.4px; 
         border-radius: 50%;
         border: 1px solid #18A8E3;
         background-color: rgba(24, 168, 227, 0.2);
@@ -407,22 +452,22 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
         position: fixed;
         bottom: 0;
         left: 0;
-        padding: 4px 10px;
+        padding: 4.8px 12px; /* 4/10 * 1.2 */
         background: rgba(0, 46, 81, 0.6);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(9.6px); /* 8 * 1.2 */
+        -webkit-backdrop-filter: blur(9.6px);
         border-top: 1px solid rgba(1, 101, 162, 0.7);
         border-right: 1px solid rgba(1, 101, 162, 0.7);
-        border-top-right-radius: 6px;
+        border-top-right-radius: 7.2px; /* 6 * 1.2 */
         color: #0165a2;
-        font-size: 10px;
+        font-size: 12px; /* 10 * 1.2 */
         font-weight: 300;
         font-family: 'Plus Jakarta Sans', sans-serif;
         pointer-events: none;
         z-index: 10000;
         opacity: 0;
         visibility: hidden;
-        transform: translateY(10px);
+        transform: translateY(12px); 
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         display: block;
     }
@@ -438,7 +483,7 @@ a, button, [role="button"], .keyword-pill, .name, .countdown-unit {
 body.demo-active .glass-stencil {
     opacity: 0;
     pointer-events: none;
-    transform: translateY(20px);
+    transform: translateY(24px); /* 20 * 1.2 */
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 body:not(.demo-active) .glass-stencil {
@@ -448,7 +493,7 @@ body:not(.demo-active) .glass-stencil {
 body.demo-active .countdown-container {
     filter: blur(8px);
     opacity: 0.3;
-    transform: translate(-50%, -50%) scale(0.85); /* Changed back to -50% for centering */
+    transform: translate(-50%, -50%) scale(0.9); /* Subtle retreat (5% recoil) */
     transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 body:not(.demo-active) .countdown-container {
@@ -458,17 +503,17 @@ body:not(.demo-active) .countdown-container {
 /* ─── Book a Demo Composition Element ─── */
 .demo-sidebar {
     position: absolute;
-    top: 55%; /* Centering perfectly between GCP logo and bottom */
-    left: clamp(24px, 2.5vmin + 20px, 48px);
-    width: clamp(260px, 80vw, 380px);
+    top: 55%; 
+    left: clamp(28.8px, 3vmin + 24px, 57.6px);
+    width: clamp(312px, 96vw, 456px); /* 260/80/380 * 1.2 */
     z-index: 9000;
-    transform: translate(-50px, -50%);
+    transform: translate(-60px, -50%); /* 50 * 1.2 */
     opacity: 0;
     pointer-events: none;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
-    padding: 0 clamp(16px, 4vw, 40px);
+    padding: 0 clamp(19.2px, 4.8vw, 48px);
     box-sizing: border-box;
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
@@ -482,7 +527,7 @@ body.demo-active .demo-sidebar {
 .demo-form {
     display: flex;
     flex-direction: column;
-    gap: clamp(15px, 3vh, 30px);
+    gap: clamp(18px, 3.6vh, 36px); /* 15/3/30 * 1.2 */
 }
 
 .form-group {
@@ -494,9 +539,9 @@ body.demo-active .demo-sidebar {
     background: transparent;
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding: clamp(6px, 1.2vh, 10px) 0;
+    padding: clamp(7.2px, 1.44vh, 12px) 0;
     color: #fff;
-    font-size: clamp(13px, 3vw, 14.6px);
+    font-size: clamp(15.6px, 3.6vw, 17.52px);
     font-family: inherit;
     font-weight: 300;
     outline: none;
@@ -527,14 +572,14 @@ body.demo-active .demo-sidebar {
 }
 
 .custom-checkbox {
-    width: clamp(14px, 3vw, 18px);
-    height: clamp(14px, 3vw, 18px);
+    width: clamp(16.8px, 3.6vw, 21.6px);
+    height: clamp(16.8px, 3.6vw, 21.6px);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 4px;
+    border-radius: 4.8px; /* 4 * 1.2 */
     flex-shrink: 0;
     position: relative;
     transition: all 0.2s ease;
-    margin-top: 2px;
+    margin-top: 2.4px;
 }
 
 .custom-checkbox-label input:checked + .custom-checkbox {
@@ -556,50 +601,91 @@ body.demo-active .demo-sidebar {
 
 .checkbox-text {
     color: rgba(255, 255, 255, 0.6);
-    font-size: clamp(10px, 2.5vw, 13px);
+    font-size: clamp(12px, 3vw, 15.6px);
     line-height: 1.5;
     font-weight: 300;
 }
 
 .btn-submit {
-    margin-top: clamp(10px, 2vh, 20px);
-    padding: clamp(10px, 1.5vh, 14px) clamp(16px, 3vw, 24px);
+    margin-top: clamp(12px, 2.4vh, 24px);
+    padding: clamp(12px, 1.8vh, 16.8px) clamp(19.2px, 3.6vw, 28.8px);
     background: transparent;
-    border: 1px solid rgba(53, 208, 247, 0.4);
-    border-radius: 8px;
+    border: 1.5px solid rgba(53, 208, 247, 0.4);
+    border-radius: 9.6px;
     color: #35D0F7;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: clamp(11px, 2.5vw, 14px);
+    font-size: clamp(13.2px, 3vw, 16.8px);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     align-self: flex-start;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-submit:hover {
     background: rgba(53, 208, 247, 0.2);
-    border-color: rgba(53, 208, 247, 0.8);
-    box-shadow: none;
+    box-shadow: 0 0 20px rgba(53, 208, 247, 0.3);
+    border-color: #35D0F7;
 }
 
 .btn-submit.disabled {
-    opacity: 0.35;
-    cursor: default;
+    opacity: 0.3;
     pointer-events: none;
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.4);
-    background: transparent;
+}
+
+.btn-submit.sending {
+    pointer-events: none;
+    background: rgba(53, 208, 247, 0.1);
+    border-color: #35D0F7;
+    animation: pulse-glow 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(53, 208, 247, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(53, 208, 247, 0.5); }
+}
+
+.demo-form.form-submitting {
+    pointer-events: none;
+}
+
+.demo-form.form-success > :not(.demo-success-msg) {
+    opacity: 0 !important;
+    filter: blur(10px);
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .demo-success-msg {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    text-align: center;
     color: #35D0F7;
-    font-size: 11px;
-    font-weight: 300;
-    line-height: 1.4;
-    margin-top: 5px;
-    animation: fadeIn 0.4s ease forwards;
+    font-size: 15.6px;
+    font-weight: 400;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0;
+    display: none;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.demo-form.form-success .demo-success-msg {
+    display: block !important;
+    opacity: 1;
+    animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(0); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(-50%); filter: blur(0); }
 }
 
 @keyframes fadeIn {

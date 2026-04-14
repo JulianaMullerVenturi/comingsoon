@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const CELL_W = 1280, CELL_H = 720; // sprite cell dimensions
         const PAD = 4;                      // padding between cells in sprite
         const INTERVAL = 8000 / TOTAL;      // ~67ms = 15fps
-        const EDGE_SIZE = 6;                // edge vignette fade width (px)
+        const EDGE_SIZE = 7.2;              // edge vignette fade width (px) - Scaled 1.2x from 6
         const BG_COLOR = '#002E51';
         let frame = 0;
 
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             vignetteCanvas.height = h;
             vCtx.clearRect(0, 0, w, h);
 
-            const sz = 6; // EDGE_SIZE
+            const sz = 7.2; // EDGE_SIZE - Scaled 1.2x from 6
             const top = vCtx.createLinearGradient(0, 0, 0, sz);
             top.addColorStop(0, BG_COLOR);
             top.addColorStop(1, 'rgba(0,46,81,0)');
@@ -66,8 +66,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Padding-aware source coordinates — skip the 4px gaps
                 const sx = col * (CELL_W + PAD);
                 const sy = row * (CELL_H + PAD);
-                ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, 0, 0, canvas.width, canvas.height);
-                // Draw the pre-rendered static vignette natively as a single texture overlay
+                
+                // Smart Crop logic for responsive centering
+                if (window.innerWidth <= 768) {
+                    // Emulate "object-fit: cover" mathematics
+                    const scale = Math.max(canvas.width / CELL_W, canvas.height / CELL_H);
+                    const drawWidth = CELL_W * scale;
+                    const drawHeight = CELL_H * scale;
+                    
+                    // Pan Strategy: The logo is located on the right side of the video. 
+                    // Instead of centering (0.5), we pan to 0.8 (80% towards the right edge)
+                    // to perfectly center the logo in the mobile viewport.
+                    const panRatio = 0.8; 
+                    const offsetX = (canvas.width - drawWidth) * panRatio;
+                    
+                    // Keep vertical axis perfectly centered
+                    const offsetY = (canvas.height - drawHeight) / 2;
+                    
+                    ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, offsetX, offsetY, drawWidth, drawHeight);
+                } else {
+                    // Desktop default: stretch to fit screen bounds
+                    ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, 0, 0, canvas.width, canvas.height);
+                }
+
+                // Draw the pre-rendered static vignette over the footage
                 ctx.drawImage(vignetteCanvas, 0, 0);
             }
 
@@ -89,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const glowElement = document.getElementById('gcp-glow');
     if (gcpContainer) {
         const LAP_TIME = 8000;
-        const RADIUS = 4;       // Subtle orbit radius
+        const RADIUS = 4.8;       // Subtle orbit radius - Scaled 1.2x from 4
         const INTENSITY = 0.25; // Subtle acceleration at the logo
         const PHASE_OFFSET = (1.6 * Math.PI); // Shifted slightly earlier (~288 deg) to time the approach
 
@@ -392,27 +414,36 @@ document.addEventListener('DOMContentLoaded', () => {
             demoForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
-                if (btnSubmit.classList.contains('disabled')) return;
+                if (btnSubmit.classList.contains('disabled') || btnSubmit.classList.contains('sending')) return;
                 
-                const fname = document.getElementById('demo-fname').value;
-                const lname = document.getElementById('demo-lname').value;
-                const email = document.getElementById('demo-email').value;
-                const company = document.getElementById('demo-company').value;
+                // 1. Entering "Sending" state
+                btnSubmit.classList.add('sending');
+                btnSubmit.textContent = 'SENDING...';
+                demoForm.classList.add('form-submitting');
                 
-                const subject = encodeURIComponent(`Book a Demo Request - ${company}`);
-                const mailBody = encodeURIComponent(`Name: ${fname} ${lname}\nCompany: ${company}\nEmail: ${email}\n\nI would like to book a demo.`);
-                
-                window.location.href = `mailto:j.venturi@xxenta.com?subject=${subject}&body=${mailBody}`;
-                
-                // Clear the form
-                demoForm.reset();
-                validateForm();
-                
-                // Show success message
-                const successMsg = document.getElementById('demo-success-msg');
-                if (successMsg) {
-                    successMsg.style.display = 'block';
-                }
+                // 2. Mock Backend Latency (1.8s) for "Premium" feel
+                setTimeout(() => {
+                    const company = document.getElementById('demo-company').value;
+                    
+                    // 3. Transition to Success
+                    btnSubmit.classList.remove('sending');
+                    btnSubmit.textContent = 'SENT';
+                    demoForm.classList.remove('form-submitting');
+                    demoForm.classList.add('form-success');
+                    
+                    // 4. Auto-Reset and Close after celebratory pause
+                    setTimeout(() => {
+                        body.classList.remove('demo-active');
+                        
+                        // Wait for sidebar close animation to finish before resetting
+                        setTimeout(() => {
+                            demoForm.reset();
+                            demoForm.classList.remove('form-success');
+                            btnSubmit.textContent = 'REQUEST DEMO';
+                            validateForm();
+                        }, 600);
+                    }, 2500);
+                }, 1800);
             });
         }
     }
