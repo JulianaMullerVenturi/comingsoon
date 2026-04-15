@@ -11,44 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const CELL_W = 1280, CELL_H = 720; // sprite cell dimensions
         const PAD = 4;                      // padding between cells in sprite
         const INTERVAL = 8000 / TOTAL;      // ~67ms = 15fps
-        const EDGE_SIZE = 7.2;              // edge vignette fade width (px) - Scaled 1.2x from 6
-        const BG_COLOR = '#002E51';
         let frame = 0;
-
-        const vignetteCanvas = document.createElement('canvas');
-        const vCtx = vignetteCanvas.getContext('2d');
-
-        // Pre-render the vignette to an offscreen canvas so we aren't calculating gradients 15 times a second
-        function preRenderVignette(w, h) {
-            vignetteCanvas.width = w;
-            vignetteCanvas.height = h;
-            vCtx.clearRect(0, 0, w, h);
-
-            const sz = 7.2; // EDGE_SIZE - Scaled 1.2x from 6
-            const top = vCtx.createLinearGradient(0, 0, 0, sz);
-            top.addColorStop(0, BG_COLOR);
-            top.addColorStop(1, 'rgba(0,46,81,0)');
-            vCtx.fillStyle = top;
-            vCtx.fillRect(0, 0, w, sz);
-
-            const bot = vCtx.createLinearGradient(0, h - sz, 0, h);
-            bot.addColorStop(0, 'rgba(0,46,81,0)');
-            bot.addColorStop(1, BG_COLOR);
-            vCtx.fillStyle = bot;
-            vCtx.fillRect(0, h - sz, w, sz);
-
-            const left = vCtx.createLinearGradient(0, 0, sz, 0);
-            left.addColorStop(0, BG_COLOR);
-            left.addColorStop(1, 'rgba(0,46,81,0)');
-            vCtx.fillStyle = left;
-            vCtx.fillRect(0, 0, sz, h);
-
-            const right = vCtx.createLinearGradient(w - sz, 0, w, 0);
-            right.addColorStop(0, 'rgba(0,46,81,0)');
-            right.addColorStop(1, BG_COLOR);
-            vCtx.fillStyle = right;
-            vCtx.fillRect(w - sz, 0, sz, h);
-        }
 
         // Load sprite sheet
         const spriteImg = new Image();
@@ -56,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
             function resize() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
-                preRenderVignette(canvas.width, canvas.height);
                 drawFrame();
             }
 
@@ -88,9 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Desktop default: stretch to fit screen bounds
                     ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, 0, 0, canvas.width, canvas.height);
                 }
-
-                // Draw the pre-rendered static vignette over the footage
-                ctx.drawImage(vignetteCanvas, 0, 0);
             }
 
             resize();
@@ -364,15 +323,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
 
     if (btnBookDemo) {
+        const resetSidebar = () => {
+            const demoForm = document.getElementById('demo-form');
+            const demoSidebar = document.getElementById('demo-sidebar');
+            if (demoForm) {
+                demoForm.classList.remove('form-success');
+                demoForm.reset();
+            }
+            if (demoSidebar) {
+                demoSidebar.classList.remove('success-active');
+            }
+            if (typeof validateForm === 'function') {
+                validateForm();
+            }
+        };
+
         btnBookDemo.addEventListener('click', (e) => {
             e.preventDefault();
+            const wasActive = body.classList.contains('demo-active');
             body.classList.toggle('demo-active');
+            
+            // Reset state if we just closed it
+            if (wasActive) {
+                setTimeout(resetSidebar, 600); // Wait for transition out
+            }
         });
 
         if (closeSidebarBtn) {
             closeSidebarBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 body.classList.remove('demo-active');
+                setTimeout(resetSidebar, 600);
             });
         }
 
@@ -383,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sidebar && !sidebar.contains(e.target) && 
                 btnBookDemo && !btnBookDemo.contains(e.target)) {
                 body.classList.remove('demo-active');
+                setTimeout(resetSidebar, 600);
             }
         });
 
@@ -414,36 +396,20 @@ document.addEventListener('DOMContentLoaded', () => {
             demoForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
-                if (btnSubmit.classList.contains('disabled') || btnSubmit.classList.contains('sending')) return;
+                if (btnSubmit.classList.contains('disabled')) return;
                 
-                // 1. Entering "Sending" state
-                btnSubmit.classList.add('sending');
-                btnSubmit.textContent = 'SENDING...';
-                demoForm.classList.add('form-submitting');
+                // Activate the success state via class (handles the opacity transition)
+                demoForm.classList.add('form-success');
                 
-                // 2. Mock Backend Latency (1.8s) for "Premium" feel
-                setTimeout(() => {
-                    const company = document.getElementById('demo-company').value;
-                    
-                    // 3. Transition to Success
-                    btnSubmit.classList.remove('sending');
-                    btnSubmit.textContent = 'SENT';
-                    demoForm.classList.remove('form-submitting');
-                    demoForm.classList.add('form-success');
-                    
-                    // 4. Auto-Reset and Close after celebratory pause
-                    setTimeout(() => {
-                        body.classList.remove('demo-active');
-                        
-                        // Wait for sidebar close animation to finish before resetting
-                        setTimeout(() => {
-                            demoForm.reset();
-                            demoForm.classList.remove('form-success');
-                            btnSubmit.textContent = 'REQUEST DEMO';
-                            validateForm();
-                        }, 600);
-                    }, 2500);
-                }, 1800);
+                // Shift the whole sidebar up slightly (handles the transform transition)
+                const demoSidebar = document.getElementById('demo-sidebar');
+                if (demoSidebar) {
+                    demoSidebar.classList.add('success-active');
+                }
+                
+                // Wipe the fields and re-validate (disables button)
+                demoForm.reset();
+                validateForm();
             });
         }
     }

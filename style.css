@@ -503,7 +503,7 @@ body:not(.demo-active) .countdown-container {
 /* ─── Book a Demo Composition Element ─── */
 .demo-sidebar {
     position: absolute;
-    top: 55%; 
+    top: 60%; /* Shifted down from 55% to lower the whole composition */
     left: clamp(28.8px, 3vmin + 24px, 57.6px);
     width: clamp(312px, 96vw, 456px); /* 260/80/380 * 1.2 */
     z-index: 9000;
@@ -522,6 +522,15 @@ body.demo-active .demo-sidebar {
     transform: translate(0, -50%);
     opacity: 1;
     pointer-events: auto;
+}
+
+/* Subtle upward shift when success is shown to leave more room at the bottom */
+.demo-sidebar.success-active {
+    transform: translate(-60px, calc(-50% - 30px)); /* Tiny bit more up: 25 * 1.2 */
+}
+
+body.demo-active .demo-sidebar.success-active {
+    transform: translate(0, calc(-50% - 30px)); 
 }
 
 .demo-form {
@@ -636,56 +645,23 @@ body.demo-active .demo-sidebar {
     pointer-events: none;
 }
 
-.btn-submit.sending {
-    pointer-events: none;
-    background: rgba(53, 208, 247, 0.1);
-    border-color: #35D0F7;
-    animation: pulse-glow 1.5s infinite ease-in-out;
-}
-
-@keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 5px rgba(53, 208, 247, 0.2); }
-    50% { box-shadow: 0 0 20px rgba(53, 208, 247, 0.5); }
-}
-
-.demo-form.form-submitting {
-    pointer-events: none;
-}
-
-.demo-form.form-success > :not(.demo-success-msg) {
-    opacity: 0 !important;
-    filter: blur(10px);
-    transform: translateY(-10px);
-    pointer-events: none;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 .demo-success-msg {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    transform: translateY(-50%);
-    text-align: center;
+    margin-top: clamp(12px, 2.4vh, 18px); /* Micro-adjustment: even closer for perfect integration */
     color: #35D0F7;
     font-size: 15.6px;
     font-weight: 400;
     line-height: 1.6;
-    margin: 0;
-    opacity: 0;
-    display: none;
-    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: left;
+    opacity: 0; /* Reserved space avoids layout shifts in centered containers */
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(-5px);
 }
 
 .demo-form.form-success .demo-success-msg {
-    display: block !important;
     opacity: 1;
-    animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(0); filter: blur(10px); }
-    to { opacity: 1; transform: translateY(-50%); filter: blur(0); }
+    pointer-events: auto;
+    transform: translateY(0);
 }
 
 @keyframes fadeIn {
