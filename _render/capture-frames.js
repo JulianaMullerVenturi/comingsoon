@@ -1,13 +1,12 @@
 /**
- * capture-frames.js — Puppeteer Native 1080p Frame Capture
+ * capture-frames.js — Puppeteer 2× Supersampled Frame Capture
  * 
- * Launches headless Chrome at 1920×1080 (deviceScaleFactor:1),
- * then steps through 120 frames (every 2nd from the 240-frame loop)
- * to capture a perfect, seamless orbital loop at 15fps.
+ * Launches headless Chrome at 1920×1080 logical viewport with
+ * deviceScaleFactor:2, rendering at 3840×2160 physical pixels.
  * 
- * Frames are captured at native 1920×1080 — matching the sprite cell size
- * exactly, so no downscaling is needed. This preserves 100% of the SVG
- * filter proportions (blur radii, shadow offsets, opacity layering).
+ * This preserves 100% of the SVG filter proportions (all JS sees
+ * 1920×1080) while capturing at 4K for supersampled line quality.
+ * The build-spritesheet step Lanczos-downscales to 1920×1080 cells.
  * 
  * Usage: node capture-frames.js
  * Output: ./frames/frame_0000.png through frame_0119.png
@@ -48,11 +47,13 @@ const FRAMES_DIR = path.join(__dirname, 'frames');
 
     const page = await browser.newPage();
     
-    // Native 1920×1080 — matches sprite cell size exactly (no downscaling)
+    // Logical 1920×1080 with 2× pixel density → 3840×2160 physical pixels.
+    // JS/CSS sees 1920×1080 (SVG filter params stay correct),
+    // but screenshots capture at 4K for supersampled line quality.
     await page.setViewport({
         width: 1920,
         height: 1080,
-        deviceScaleFactor: 1
+        deviceScaleFactor: 2
     });
 
     // Load the render page
@@ -100,7 +101,7 @@ const FRAMES_DIR = path.join(__dirname, 'frames');
     const totalTime = ((Date.now() - startTime) / 1000).toFixed(1);
     console.log(`\nCapture complete! ${OUTPUT_FRAMES} frames in ${totalTime}s`);
     console.log(`Output: ${FRAMES_DIR}`);
-    console.log(`Resolution: 1920×1080 (native, matches cell size)`);
+    console.log(`Resolution: 3840×2160 (2× supersampled from 1920×1080 logical)`);
 
     await browser.close();
 })();
