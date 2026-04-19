@@ -131,13 +131,33 @@ body.demo-active .btn-demo {
         font-size: 13.8px; /* Scaled down to match logo height */
     }
 
-    .btn-demo {
-        margin-left: auto; /* Forces button to the absolute right edge */
-        white-space: nowrap; /* Prevents text from wrapping into two lines */
-        padding: 8px 14.4px; /* Tighter internal padding for compact fit */
-        font-size: 10.4px; /* Slightly smaller to guarantee full fit on narrow devices */
-        border-width: 1px;
-        border-color: #35D0F7;
+    @media (max-width: 767px) {
+        .btn-demo {
+            margin-left: auto;
+            white-space: nowrap;
+            padding: 8px 14.4px;
+            font-size: 10.4px;
+            border-width: 1px;
+            border-color: #35D0F7;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+    }
+    
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .btn-demo {
+            margin-left: auto;
+            white-space: nowrap;
+            padding: clamp(6px, 0.42vmin + 6px, 10.8px) clamp(13.2px, 1.08vmin + 10.8px, 22.8px);
+            font-size: clamp(10.2px, 0.66vmin + 8.4px, 16.2px);
+            border-width: 1px;
+            border-color: #35D0F7;
+            letter-spacing: 0.08em;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
     }
 }
 
@@ -400,7 +420,7 @@ body.demo-active .btn-demo {
     cursor: default;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 767px) {
     .glass-stencil {
         bottom: clamp(40px, 6vh, 80px); 
         left: clamp(16px, 4.2vw, 24px);   
@@ -426,6 +446,8 @@ body.demo-active .btn-demo {
         color: #35D0F7;
         border-color: #35D0F7;
         background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
         font-size: clamp(8px, 2.3vw, 10px); /* Fine-tuned for better fit */
         padding: 10px 12px; /* Balanced horizontal padding (fixed margin) */
         white-space: nowrap;
@@ -500,13 +522,13 @@ body.demo-active .btn-demo {
     }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 768px) {
     .desktop-hide {
         display: none !important;
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 767px) {
     .mobile-team-trigger {
         display: flex;
         margin-top: clamp(40px, 6vh, 80px);
@@ -1031,11 +1053,24 @@ body.demo-active .demo-sidebar.success-active {
     .demo-form .form-group:first-child input {
         padding-top: 0 !important;
     }
-}
-
-/* Tablet / iPad specific overrides */
+}/* --- Tablet Hybrid Refinements (768px - 1024px) --- */
 @media (min-width: 768px) and (max-width: 1024px) {
-    .btn-demo, .keyword-pill {
-        background: rgba(0, 46, 81, 0.8) !important;
+    .keyword-pill {
+        color: #35D0F7 !important;
+        border-color: #35D0F7 !important;
+    }
+    
+    .name {
+        color: #000 !important; /* Keep names black for contrast against bright backgrounds */
+    }
+
+    .name:hover {
+        color: #35D0F7 !important;
+    }
+
+    .gcp-line-1 {
+        color: #35D0F7 !important;
     }
 }
+
+
