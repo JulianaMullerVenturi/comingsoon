@@ -1,15 +1,15 @@
 /**
- * build-spritesheet.js — Generate a 10×12 grid sprite sheet from captured frames
+ * build-spritesheet.js — Generate an 8×15 grid sprite sheet from captured frames
  * 
- * Takes 120 captured frames (frame_0000..frame_0119), scales each to 1280×720,
- * and tiles them in a 10-column × 12-row grid with 4px padding between cells.
+ * Takes 120 captured frames (frame_0000..frame_0119), scales each to 1920×1080,
+ * and tiles them in an 8-column × 15-row grid with 4px padding between cells.
  * 
  * Uses a two-pass approach to avoid command-line length limits on Windows:
- *   Pass 1: Build 12 horizontal row strips (10 frames per row)
- *   Pass 2: Stack all 12 row strips vertically into the final grid
+ *   Pass 1: Build 15 horizontal row strips (8 frames per row)
+ *   Pass 2: Stack all 15 row strips vertically into the final grid
  * 
  * Output format matches what script.js expects:
- *   COLS=10, ROWS=12, TOTAL=120, CELL_W=1280, CELL_H=720, PAD=4
+ *   COLS=8, ROWS=15, TOTAL=120, CELL_W=1920, CELL_H=1080, PAD=4
  * 
  * Output: ../background_sprite.webp
  */
@@ -23,11 +23,11 @@ const TEMP_DIR = path.join(__dirname, 'temp_rows');
 const OUTPUT = path.join(__dirname, '..', 'background_sprite.webp');
 
 // Grid configuration — must match script.js sprite driver
-const COLS = 10;
-const ROWS = 12;
+const COLS = 8;
+const ROWS = 15;
 const TOTAL_FRAMES = 120;
-const CELL_W = 1280;
-const CELL_H = 720;
+const CELL_W = 1920;
+const CELL_H = 1080;
 const PAD = 4;
 
 // Verify all frames exist

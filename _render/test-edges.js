@@ -12,8 +12,8 @@ const sharp = require('sharp');
 const path = require('path');
 
 const SPRITE_PATH = path.join(__dirname, '..', 'background_sprite.webp');
-const COLS = 10, ROWS = 12, TOTAL = 120;
-const CELL_W = 1280, CELL_H = 720, PAD = 4;
+const COLS = 8, ROWS = 15, TOTAL = 120;
+const CELL_W = 1920, CELL_H = 1080, PAD = 4;
 
 (async () => {
     console.log('Loading sprite sheet...');

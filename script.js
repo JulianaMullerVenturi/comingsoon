@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
-        const COLS = 10, ROWS = 12, TOTAL = 120;
-        const CELL_W = 1280, CELL_H = 720; // sprite cell dimensions
+        const COLS = 8, ROWS = 15, TOTAL = 120;
+        const CELL_W = 1920, CELL_H = 1080; // sprite cell dimensions (Full HD)
         const PAD = 4;                      // padding between cells in sprite
         const INTERVAL = 8000 / TOTAL;      // ~67ms = 15fps
         let frame = 0;
@@ -36,19 +36,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     const yOffset = -(canvas.height * 0.03);
                     
                     if (window.innerWidth <= 600) {
-                        // Original Mobile Phone Experience: Fixed 405px extraction 
+                        // Original Mobile Phone Experience: Fixed extraction 
                         // The user preferred the specific framing and tiny aesthetic stretching on phones.
-                        ctx.drawImage(spriteImg, sx + 700, sy, 405, CELL_H, 0, yOffset, canvas.width, drawHeight);
+                        // Source offsets scaled 1.5× from 720p (700→1050, 405→608)
+                        ctx.drawImage(spriteImg, sx + 1050, sy, 608, CELL_H, 0, yOffset, canvas.width, drawHeight);
                     } else {
                         // Tablet/iPad Experience: Zero-Squish Object-Fit Cover
                         const destRatio = canvas.width / drawHeight;
-                        const cropCenter = 902.5; 
+                        const cropCenter = 1353.75; // scaled 1.5× from 902.5
                         
                         let cropH = CELL_H;
                         let cropW = cropH * destRatio;
                         
-                        if (cropW > 755) {
-                            cropW = 755;
+                        if (cropW > 1132.5) { // scaled 1.5× from 755
+                            cropW = 1132.5;
                             cropH = cropW / destRatio;
                         }
                         
