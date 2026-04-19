@@ -30,22 +30,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 const sy = row * (CELL_H + PAD);
                 
                 // Smart Crop logic for responsive centering
-                if (window.innerWidth <= 768) {
-                    // Emulate "object-fit: cover" mathematics
-                    const scale = Math.max(canvas.width / CELL_W, canvas.height / CELL_H);
-                    const drawWidth = CELL_W * scale;
-                    const drawHeight = CELL_H * scale;
+                if (window.innerWidth <= 1024) {
+                    // ─── Proportional Smart Crop ───
+                    const drawHeight = canvas.height * 0.88;
+                    const yOffset = -(canvas.height * 0.03);
                     
-                    // Pan Strategy: The logo is located on the right side of the video. 
-                    // Instead of centering (0.5), we pan to 0.8 (80% towards the right edge)
-                    // to perfectly center the logo in the mobile viewport.
-                    const panRatio = 0.8; 
-                    const offsetX = (canvas.width - drawWidth) * panRatio;
+                    if (window.innerWidth <= 600) {
+                        // Original Mobile Phone Experience: Fixed 405px extraction 
+                        // The user preferred the specific framing and tiny aesthetic stretching on phones.
+                        ctx.drawImage(spriteImg, sx + 700, sy, 405, CELL_H, 0, yOffset, canvas.width, drawHeight);
+                    } else {
+                        // Tablet/iPad Experience: Zero-Squish Object-Fit Cover
+                        const destRatio = canvas.width / drawHeight;
+                        const cropCenter = 902.5; 
+                        
+                        let cropH = CELL_H;
+                        let cropW = cropH * destRatio;
+                        
+                        if (cropW > 755) {
+                            cropW = 755;
+                            cropH = cropW / destRatio;
+                        }
+                        
+                        const cropX = cropCenter - (cropW / 2);
+                        const cropY = (CELL_H - cropH) / 2; 
+                        
+                        ctx.drawImage(spriteImg, sx + cropX, sy + cropY, cropW, cropH, 0, yOffset, canvas.width, drawHeight);
+                    }
+
+                    // Subtle Bottom Feathering: Applies to all mobile/tablet views
+                    const gradient = ctx.createLinearGradient(0, drawHeight + yOffset - 60, 0, drawHeight + yOffset);
+                    gradient.addColorStop(0, 'rgba(0, 46, 81, 0)');
+                    gradient.addColorStop(1, 'rgba(0, 46, 81, 1)'); 
                     
-                    // Keep vertical axis perfectly centered
-                    const offsetY = (canvas.height - drawHeight) / 2;
-                    
-                    ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, offsetX, offsetY, drawWidth, drawHeight);
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, drawHeight + yOffset - 61, canvas.width, 62); 
                 } else {
                     // Desktop default: stretch to fit screen bounds
                     ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, 0, 0, canvas.width, canvas.height);
@@ -178,12 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
         kickCursorAnimation();
     });
 
-    document.addEventListener('mousedown', () => {
+    document.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.custom-checkbox-label')) return;
         scaleSpring.setTarget(0.8, 0);
         kickCursorAnimation();
     });
 
-    document.addEventListener('mouseup', () => {
+    document.addEventListener('mouseup', (e) => {
+        if (e.target.closest('.custom-checkbox-label')) return;
         scaleSpring.setTarget(1.0, 0);
         kickCursorAnimation();
     });
@@ -223,6 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
         newDigit.className = 'digit current fade-in';
         if (newValue === '1') {
             newDigit.classList.add('digit-one');
+        } else if (newValue === '0') {
+            newDigit.classList.add('digit-zero');
         }
         newDigit.innerText = newValue;
         wrapper.appendChild(newDigit);
@@ -338,35 +361,68 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        const openSidebar = () => {
+            if (!body.classList.contains('demo-active')) {
+                body.classList.add('demo-active');
+                // Push history state so back button works for closing
+                history.pushState({ sidebar: 'demo' }, '', '#demo');
+            }
+        };
+
+        const closeSidebar = (isPopState = false) => {
+            if (body.classList.contains('demo-active')) {
+                body.classList.remove('demo-active');
+                setTimeout(resetSidebar, 600);
+                
+                // If closing via UI (not back button), go back in history
+                if (!isPopState && window.location.hash === '#demo') {
+                    history.back();
+                }
+            }
+        };
+
+        window.addEventListener('popstate', () => {
+            // Close sidebar if back button is pressed (hash removed)
+            if (body.classList.contains('demo-active') && window.location.hash !== '#demo') {
+                closeSidebar(true);
+            }
+        });
+
         btnBookDemo.addEventListener('click', (e) => {
             e.preventDefault();
-            const wasActive = body.classList.contains('demo-active');
-            body.classList.toggle('demo-active');
-            
-            // Reset state if we just closed it
-            if (wasActive) {
-                setTimeout(resetSidebar, 600); // Wait for transition out
+            if (body.classList.contains('demo-active')) {
+                closeSidebar();
+            } else {
+                openSidebar();
             }
         });
 
         if (closeSidebarBtn) {
             closeSidebarBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                body.classList.remove('demo-active');
-                setTimeout(resetSidebar, 600);
+                closeSidebar();
             });
         }
 
-        // Close sidebar when clicking outside the form area
+        // Close sidebar when clicking outside the form area (Desktop only)
         document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024) return; // Disable on mobile/tablets per user request
+
             const sidebar = document.getElementById('demo-sidebar');
             if (body.classList.contains('demo-active') && 
                 sidebar && !sidebar.contains(e.target) && 
                 btnBookDemo && !btnBookDemo.contains(e.target)) {
-                body.classList.remove('demo-active');
-                setTimeout(resetSidebar, 600);
+                closeSidebar();
             }
         });
+
+        // Close sidebar when clicking the logo (Mobile requirement)
+        const gcpLogo = document.getElementById('gcp-logo');
+        if (gcpLogo) {
+            gcpLogo.addEventListener('click', () => {
+                closeSidebar();
+            });
+        }
 
         // ─── Form Validation Logic ───
         const demoForm = document.getElementById('demo-form');
@@ -410,6 +466,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Wipe the fields and re-validate (disables button)
                 demoForm.reset();
                 validateForm();
+            });
+        }
+    }
+
+    // ─── Mobile Team Overlay Logic ───
+    const btnMeetTeam = document.getElementById('btn-meet-team');
+    const employeeNamesList = document.getElementById('employee-names-list');
+
+    if (btnMeetTeam && employeeNamesList) {
+        // Toggle the overlay
+        btnMeetTeam.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent document click from immediately closing it
+            const isActive = employeeNamesList.classList.toggle('overlay-active');
+            btnMeetTeam.classList.toggle('active', isActive);
+        });
+
+        // Close when clicking anywhere outside the overlay or trigger
+        document.addEventListener('click', (e) => {
+            // Only care if it's currently open
+            if (employeeNamesList.classList.contains('overlay-active')) {
+                // If they clicked outside both the overlay panel and the trigger button
+                if (!employeeNamesList.contains(e.target) && !btnMeetTeam.contains(e.target)) {
+                    employeeNamesList.classList.remove('overlay-active');
+                    btnMeetTeam.classList.remove('active');
+                }
+            }
+        });
+        
+        // Also close the team overlay if they open the Book a Demo sidebar
+        if (btnBookDemo) {
+            btnBookDemo.addEventListener('click', () => {
+                employeeNamesList.classList.remove('overlay-active');
+                btnMeetTeam.classList.remove('active');
             });
         }
     }
