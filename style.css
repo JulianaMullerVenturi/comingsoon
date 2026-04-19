@@ -885,19 +885,20 @@ body.demo-active .demo-sidebar.success-active {
 
 .btn-submit {
     margin-top: clamp(12px, 2.4vh, 24px);
-    padding: clamp(12px, 1.8vh, 16.8px) clamp(19.2px, 3.6vw, 28.8px);
+    padding: 15px clamp(19.2px, 3.6vw, 28.8px); /* Fixed vertical padding for height stability */
     background: transparent;
     border: 1.5px solid rgba(53, 208, 247, 0.4);
     border-radius: 9.6px;
     color: #35D0F7;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: clamp(13.2px, 3vw, 16.8px);
+    font-size: clamp(14px, 3.2vw, 16px);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     align-self: flex-start;
+    flex-shrink: 0; /* Never allow the button to be squashed */
     position: relative;
     overflow: hidden;
 }
@@ -975,27 +976,51 @@ body.demo-active .demo-sidebar.success-active {
 
     /* Mobile Spacing Architecture: Flex-Lock Symmetrical Anchoring */
     :root {
-        --mobile-gutter: clamp(40px, 8vh, 80px);
+        --mobile-gutter: clamp(32px, 11dvh, 120px); /* Lower floor for short screens to prevent content clipping */
         --header-height: calc(52px + clamp(24px, 6.4vw, 38.4px));
     }
 
+    /* Tighten symmetric gaps only when vertical space is scarce (e.g. iPhone SE, iPhone 8) 
+       Threshold set to 700px to exclude devices like S8+ (740px) which fit comfortably. */
+    @media (max-height: 700px) {
+        :root {
+            --mobile-gutter: clamp(18px, 8dvh, 48px);
+        }
+    }
+
+
+
     .demo-sidebar {
-        position: absolute !important;
-        /* Restore original receded margins from screen edges */
-        left: clamp(28.8px, 3vmin + 24px, 57.6px) !important;
-        right: clamp(28.8px, 3vmin + 24px, 57.6px) !important;
-        width: auto !important; /* Allow left/right to define width */
-        
-        /* Pin to exactly one gutter-distance from header and bottom */
+        position: fixed !important; /* Switch to fixed to be viewport-fit browser proof */
         top: calc(var(--header-height) + var(--mobile-gutter)) !important;
         bottom: var(--mobile-gutter) !important;
-        
+        left: clamp(28.8px, 3vmin + 24px, 57.6px) !important;
+        right: clamp(28.8px, 3vmin + 24px, 57.6px) !important;
+        width: auto !important;
         padding: 0 clamp(19.2px, 4.8vw, 48px) !important;
         transform: translate(-60px, 0) !important;
+        overflow: hidden; /* Prevent content from breaking the vertical symmetry Slot */
     }
 
     .sidebar-content {
         justify-content: space-between !important;
+        height: 100% !important;
+    }
+
+    .demo-form {
+        flex-shrink: 1;
+        overflow-y: auto; /* Ensure form doesn't push the Trust Center on short heights like 667px */
+        min-height: 0;
+        scrollbar-width: none; /* Clean look */
+    }
+
+    .demo-form::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-trust-container {
+        flex-shrink: 0; /* Guard the bottom position against form growth */
+        padding-top: 15px;
     }
 
     body.demo-active .demo-sidebar {
