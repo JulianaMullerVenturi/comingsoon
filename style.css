@@ -422,7 +422,7 @@ body.demo-active .btn-demo {
 
 @media (max-width: 767px) {
     .glass-stencil {
-        bottom: clamp(40px, 6vh, 80px); 
+        bottom: 12px; /* copyright flows inside; its bottom edge = 12px from screen */
         left: clamp(16px, 4.2vw, 24px);   
         right: clamp(16px, 4.2vw, 24px); /* Absolute safety bounds on both sides */
         width: auto;
@@ -531,7 +531,7 @@ body.demo-active .btn-demo {
 @media (max-width: 767px) {
     .mobile-team-trigger {
         display: flex;
-        margin-top: clamp(40px, 6vh, 80px);
+        margin-top: 4vh; /* same gap as button→copyright below */
         margin-bottom: 0;
     }
 
@@ -1073,4 +1073,46 @@ body.demo-active .demo-sidebar.success-active {
     }
 }
 
+/* ─── Copyright Footer ─── */
 
+/* Mobile (≤767px): flows inside .glass-stencil as last child — margin-top mirrors button's margin-top exactly */
+.copyright-footer {
+    display: block;
+    margin-top: 4vh; /* SAME value as .mobile-team-trigger margin-top → gaps are physically identical */
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 400;
+    line-height: 1;
+    color: rgba(53, 208, 247, 0.2);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    animation: intro-fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
+}
+
+/* Tablet (768px–1024px): detach from stencil, center-fixed at screen bottom */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .copyright-footer {
+        position: fixed;
+        bottom: 12px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        margin-top: 0;
+    }
+}
+
+/* Desktop (≥1025px): detach from stencil, anchor below Trust Center bottom-right */
+@media (min-width: 1025px) {
+    .copyright-footer {
+        position: fixed;
+        bottom: 10px;
+        right: clamp(28.8px, 3vmin + 24px, 57.6px);
+        left: auto;
+        width: auto;
+        text-align: right;
+        margin-top: 0;
+    }
+}

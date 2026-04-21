@@ -80,7 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 drawFrame();
             }, INTERVAL);
         };
-        spriteImg.src = 'background_sprite.webp';
+        // Load sprite sheet based on device category
+        const isDesktop = window.innerWidth > 1024;
+        spriteImg.src = isDesktop ? 'background_sprite_v2.webp' : 'background_sprite_v1.webp';
     }
 
     // ─── GCP Focal Glow — Non-Linear Orbital Animation ───────────────
