@@ -61,14 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Subtle Bottom Feathering: Applies to all mobile/tablet views
                     const gradient = ctx.createLinearGradient(0, drawHeight + yOffset - 60, 0, drawHeight + yOffset);
-                    gradient.addColorStop(0, 'rgba(0, 46, 81, 0)');
-                    gradient.addColorStop(1, 'rgba(0, 46, 81, 1)'); 
+                    gradient.addColorStop(0, 'rgba(0, 42, 74, 0)');
+                    gradient.addColorStop(1, 'rgba(0, 42, 74, 1)'); // Pre-compensated for CSS brightness(1.1) to match #002E51 body
                     
                     ctx.fillStyle = gradient;
                     ctx.fillRect(0, drawHeight + yOffset - 61, canvas.width, 62); 
 
                     // Fill remaining gap below the sprite to prevent dark strip at bottom
-                    ctx.fillStyle = 'rgba(0, 46, 81, 1)';
+                    ctx.fillStyle = 'rgb(0, 42, 74)'; // Pre-compensated for CSS brightness(1.1)
                     ctx.fillRect(0, drawHeight + yOffset, canvas.width, canvas.height - (drawHeight + yOffset));
                 } else {
                     // Desktop default: stretch to fit screen bounds
