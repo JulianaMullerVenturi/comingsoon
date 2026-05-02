@@ -1010,6 +1010,11 @@ body.demo-active .demo-sidebar.success-active {
     body, html {
         display: flex;
         flex-direction: column;
+        overflow: hidden !important;
+        height: 100% !important;
+        max-height: 100dvh;
+        touch-action: none;
+        overscroll-behavior: none;
     }
     
     .gcp-brand-group {
