@@ -20,6 +20,7 @@ body, html {
     height: 100vh;
     z-index: 1;
     pointer-events: none;
+    filter: brightness(1.1);
 }
 
 /* Ensure all interactive elements hide default cursor */

@@ -213,12 +213,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ─── Countdown Timer Logic ───────────────────────────────────────
-    let countdownState = {
-        days: 30,
-        hours: 6,
-        minutes: 11,
-        seconds: 39
-    };
+    // Target: August 1, 2026 at 00:00:00 CEST (UTC+2)
+    const COUNTDOWN_TARGET = new Date('2026-08-01T00:00:00+02:00').getTime();
 
     function formatDigit(val) {
         return val.toString().padStart(2, '0');
@@ -259,29 +255,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function tickCountdown() {
-        if (countdownState.seconds > 0) {
-            countdownState.seconds--;
-        } else {
-            countdownState.seconds = 59;
-            if (countdownState.minutes > 0) {
-                countdownState.minutes--;
-            } else {
-                countdownState.minutes = 59;
-                if (countdownState.hours > 0) {
-                    countdownState.hours--;
-                } else {
-                    countdownState.hours = 23;
-                    if (countdownState.days > 0) {
-                        countdownState.days--;
-                    }
-                }
-            }
-        }
+        const now = Date.now();
+        let remaining = Math.max(0, COUNTDOWN_TARGET - now);
 
-        const daysStr = formatDigit(countdownState.days);
-        const hoursStr = formatDigit(countdownState.hours);
-        const minutesStr = formatDigit(countdownState.minutes);
-        const secondsStr = formatDigit(countdownState.seconds);
+        const totalSeconds = Math.floor(remaining / 1000);
+        const days    = Math.floor(totalSeconds / 86400);
+        const hours   = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        const daysStr = formatDigit(days);
+        const hoursStr = formatDigit(hours);
+        const minutesStr = formatDigit(minutes);
+        const secondsStr = formatDigit(seconds);
 
         updateDigit('days-tens', daysStr[0]);
         updateDigit('days-ones', daysStr[1]);
@@ -313,6 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    tickCountdown(); // Render correct values immediately on load
     setInterval(tickCountdown, 1000);
 
     // ─── Custom Link Preview Logic ───────────────────────────────────
