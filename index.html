@@ -141,6 +141,11 @@
     <aside id="demo-sidebar" class="demo-sidebar">
         <div class="sidebar-content">
             <form class="demo-form" id="demo-form" novalidate>
+                <input type="hidden" name="access_key" value="40daef95-4529-489d-92b2-1c1c1679bd7f">
+                <input type="hidden" name="subject" value="New Demo Request from xXenta Coming Soon Page">
+                <input type="hidden" name="from_name" value="xXenta Coming Soon">
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
                 <div class="form-group">
                     <input type="text" id="demo-fname" name="fname" placeholder="First Name *" required>
                 </div>
@@ -164,6 +169,7 @@
                 
                 <button type="submit" class="btn-submit disabled" id="btn-submit">Submit Request</button>
                 <div id="demo-success-msg" class="demo-success-msg">Success! Keep an eye on your inbox—a member of our team will get in touch shortly.</div>
+                <div id="demo-error-msg" class="demo-error-msg">Something went wrong. Please try again later.</div>
                 
 
             </form>

@@ -442,20 +442,53 @@ document.addEventListener('DOMContentLoaded', () => {
             demoForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
-                if (btnSubmit.classList.contains('disabled')) return;
+                if (btnSubmit.classList.contains('disabled') || btnSubmit.classList.contains('loading')) return;
                 
-                // Activate the success state via class (handles the opacity transition)
-                demoForm.classList.add('form-success');
-                
-                // Shift the whole sidebar up slightly (handles the transform transition)
-                const demoSidebar = document.getElementById('demo-sidebar');
-                if (demoSidebar) {
-                    demoSidebar.classList.add('success-active');
-                }
-                
-                // Wipe the fields and re-validate (disables button)
-                demoForm.reset();
-                validateForm();
+                // Set loading state
+                btnSubmit.classList.add('loading');
+                const originalBtnText = btnSubmit.innerText;
+                btnSubmit.innerText = 'Sending...';
+                demoForm.classList.remove('form-error');
+
+                const formData = new FormData(demoForm);
+                const object = Object.fromEntries(formData);
+                const json = JSON.stringify(object);
+
+                fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: json
+                })
+                .then(async (response) => {
+                    let json = await response.json();
+                    if (response.status == 200) {
+                        // Activate the success state
+                        demoForm.classList.add('form-success');
+                        
+                        const demoSidebar = document.getElementById('demo-sidebar');
+                        if (demoSidebar) {
+                            demoSidebar.classList.add('success-active');
+                        }
+                        
+                        demoForm.reset();
+                    } else {
+                        console.log(response);
+                        demoForm.classList.add('form-error');
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    demoForm.classList.add('form-error');
+                })
+                .then(() => {
+                    // Reset button state
+                    btnSubmit.classList.remove('loading');
+                    btnSubmit.innerText = originalBtnText;
+                    validateForm();
+                });
             });
         }
     }
