@@ -66,6 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     ctx.fillStyle = gradient;
                     ctx.fillRect(0, drawHeight + yOffset - 61, canvas.width, 62); 
+
+                    // Fill remaining gap below the sprite to prevent dark strip at bottom
+                    ctx.fillStyle = 'rgba(0, 46, 81, 1)';
+                    ctx.fillRect(0, drawHeight + yOffset, canvas.width, canvas.height - (drawHeight + yOffset));
                 } else {
                     // Desktop default: stretch to fit screen bounds
                     ctx.drawImage(spriteImg, sx, sy, CELL_W, CELL_H, 0, 0, canvas.width, canvas.height);
