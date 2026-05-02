@@ -837,6 +837,22 @@ body.demo-active .demo-sidebar.success-active {
     border-bottom-color: #35D0F7;
 }
 
+/* Prevent browser autofill from overriding custom field styling */
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus,
+.form-group input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    -webkit-text-fill-color: #fff !important;
+    transition: background-color 600000s 0s, color 600000s 0s !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: 300 !important;
+    background-color: transparent !important;
+    caret-color: #fff;
+}
+
 .checkbox-group {
     margin-top: 10px;
 }
