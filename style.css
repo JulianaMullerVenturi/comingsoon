@@ -937,23 +937,59 @@ body.demo-active .demo-sidebar.success-active {
     pointer-events: none;
 }
 
-.demo-success-msg {
-    margin-top: clamp(12px, 2.4vh, 18px); /* Micro-adjustment: even closer for perfect integration */
+.demo-success-msg, .demo-error-msg {
+    margin-top: clamp(12px, 2.4vh, 18px); 
     color: #35D0F7;
     font-size: 15.6px;
     font-weight: 400;
     line-height: 1.6;
     text-align: left;
-    opacity: 0; /* Reserved space avoids layout shifts in centered containers */
+    opacity: 0; 
     pointer-events: none;
     transition: opacity 0.4s ease, transform 0.4s ease;
     transform: translateY(-5px);
+    display: none;
+}
+
+.demo-error-msg {
+    color: #ff4d4d; /* Elegant red for errors */
 }
 
 .demo-form.form-success .demo-success-msg {
+    display: block;
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);
+}
+
+.demo-form.form-error .demo-error-msg {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.btn-submit.loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.btn-submit.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    right: 20px;
+    margin-top: -8px;
+    border: 2px solid rgba(53, 208, 247, 0.3);
+    border-top-color: #35D0F7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 @keyframes fadeIn {

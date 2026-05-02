@@ -13,7 +13,10 @@
     <meta property="og:url" content="https://xxenta.com">
     
     <title>xXenta | Empowering Human Potential</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Plus+Jakarta+Sans:wght@100..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -138,6 +141,11 @@
     <aside id="demo-sidebar" class="demo-sidebar">
         <div class="sidebar-content">
             <form class="demo-form" id="demo-form" novalidate>
+                <input type="hidden" name="access_key" value="40daef95-4529-489d-92b2-1c1c1679bd7f">
+                <input type="hidden" name="subject" value="New Demo Request from xXenta Coming Soon Page">
+                <input type="hidden" name="from_name" value="xXenta Coming Soon">
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
                 <div class="form-group">
                     <input type="text" id="demo-fname" name="fname" placeholder="First Name *" required>
                 </div>
@@ -161,6 +169,7 @@
                 
                 <button type="submit" class="btn-submit disabled" id="btn-submit">Submit Request</button>
                 <div id="demo-success-msg" class="demo-success-msg">Success! Keep an eye on your inbox—a member of our team will get in touch shortly.</div>
+                <div id="demo-error-msg" class="demo-error-msg">Something went wrong. Please try again later.</div>
                 
 
             </form>
