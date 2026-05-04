@@ -432,7 +432,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnMeetTeam && employeeNamesList) {
         // Toggle the overlay
         btnMeetTeam.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent document click from immediately closing it
+            e.preventDefault();
+            e.stopImmediatePropagation();
             const isActive = employeeNamesList.classList.toggle('overlay-active');
             btnMeetTeam.classList.toggle('active', isActive);
         });
@@ -465,7 +466,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const trustOverlay = document.getElementById('trust-overlay');
 
     if (trustOverlay) {
-        const openTrust = () => {
+        const openTrust = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
             body.classList.add('trust-active');
             history.pushState({ overlay: 'trust' }, '', '#trust');
         };
