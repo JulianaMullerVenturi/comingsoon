@@ -458,4 +458,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ─── Trust Center Overlay Logic ───
+    const btnTrust = document.getElementById('btn-trust');
+    const btnTrustMobile = document.getElementById('btn-trust-mobile');
+    const closeTrust = document.getElementById('close-trust');
+    const trustOverlay = document.getElementById('trust-overlay');
+
+    if (trustOverlay) {
+        const openTrust = () => {
+            body.classList.add('trust-active');
+            history.pushState({ overlay: 'trust' }, '', '#trust');
+        };
+
+        const hideTrust = (isPopState = false) => {
+            body.classList.remove('trust-active');
+            if (!isPopState && window.location.hash === '#trust') {
+                history.back();
+            }
+        };
+
+        if (btnTrust) btnTrust.addEventListener('click', openTrust);
+        if (btnTrustMobile) btnTrustMobile.addEventListener('click', openTrust);
+        if (closeTrust) closeTrust.addEventListener('click', () => hideTrust());
+
+        // Close on background click
+        trustOverlay.addEventListener('click', (e) => {
+            if (e.target === trustOverlay) hideTrust();
+        });
+
+        // Sync with browser back button
+        window.addEventListener('popstate', (e) => {
+            if (body.classList.contains('trust-active') && window.location.hash !== '#trust') {
+                hideTrust(true);
+            }
+        });
+        
+        // Also close other overlays if Trust is opened
+        [btnTrust, btnTrustMobile].forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    if (employeeNamesList) {
+                        employeeNamesList.classList.remove('overlay-active');
+                        btnMeetTeam.classList.remove('active');
+                    }
+                });
+            }
+        });
+    }
+
 });
