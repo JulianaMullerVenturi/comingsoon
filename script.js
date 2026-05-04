@@ -455,6 +455,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 demoForm.classList.remove('form-error');
 
                 const formData = new FormData(demoForm);
+                
+                // Dynamically update from_name and subject for a better inbox experience
+                const firstName = formData.get('First Name') || '';
+                const lastName = formData.get('Last Name') || '';
+                const company = formData.get('Company') || '';
+                
+                formData.set('from_name', `${firstName} ${lastName}`.trim() || 'xXenta Demo Request');
+                formData.set('subject', `Demo Request: ${company} — ${firstName} ${lastName}`);
+                
+                // Ensure the "Reply" button in your email client works correctly
+                const email = formData.get('Email');
+                if (email) {
+                    formData.set('replyto', email);
+                }
+
                 const object = Object.fromEntries(formData);
                 const json = JSON.stringify(object);
 
