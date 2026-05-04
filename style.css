@@ -676,10 +676,6 @@ body.demo-active .btn-demo {
     display: none;
 }
 
-.trust-link .trust-icon {
-    /* No default drop-shadow */
-}
-
 @media (hover: hover) {
     .trust-link:hover {
         color: #000;
@@ -1220,6 +1216,525 @@ body.demo-active .demo-sidebar.success-active {
         left: auto;
         width: auto;
         text-align: right;
-        margin-top: 0;
+    }
+}
+
+.demo-form.form-success .demo-success-msg {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.demo-form.form-error .demo-error-msg {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.btn-submit.loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.btn-submit.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    right: 20px;
+    margin-top: -8px;
+    border: 2px solid rgba(53, 208, 247, 0.3);
+    border-top-color: #35D0F7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Mobile Dynamic Even Spacing Fix --- */
+@media (max-width: 1024px) {
+    body, html {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden !important;
+        height: 100% !important;
+        max-height: 100dvh;
+        touch-action: none;
+        overscroll-behavior: none;
+    }
+    
+    .gcp-brand-group {
+        position: relative !important;
+        flex-shrink: 0;
+    }
+    
+    .countdown-container {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: auto !important; /* Perfectly balances vertical space above and below */
+        order: 2 !important;
+    }
+    
+    .glass-stencil {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        padding-left: clamp(16px, 4.2vw, 24px);
+        padding-right: clamp(16px, 4.2vw, 24px);
+        padding-bottom: clamp(30px, 6vh, 60px);
+        margin: 0 !important;
+        order: 3 !important;
+        flex-shrink: 0;
+    }
+
+    /* Mobile Spacing Architecture: Flex-Lock Symmetrical Anchoring */
+    :root {
+        --mobile-gutter: clamp(32px, 11dvh, 120px); /* Lower floor for short screens to prevent content clipping */ /* tested */
+        --header-height: calc(52px + clamp(24px, 6.4vw, 38.4px));
+    }
+
+    /* Tighten symmetric gaps only when vertical space is scarce (e.g. iPhone SE, iPhone 8) 
+       Threshold set to 700px to exclude devices like S8+ (740px) which fit comfortably. */
+    @media (max-height: 700px) {
+        :root {
+            --mobile-gutter: clamp(18px, 8dvh, 48px);
+        }
+    }
+
+
+
+    .demo-sidebar {
+        position: fixed !important; /* Switch to fixed to be viewport-fit browser proof */
+        top: calc(var(--header-height) + var(--mobile-gutter)) !important;
+        bottom: var(--mobile-gutter) !important;
+        left: clamp(28.8px, 3vmin + 24px, 57.6px) !important;
+        right: clamp(28.8px, 3vmin + 24px, 57.6px) !important;
+        width: auto !important;
+        padding: 0 clamp(19.2px, 4.8vw, 48px) !important;
+        transform: translate(-60px, 0) !important;
+        overflow: hidden; /* Prevent content from breaking the vertical symmetry Slot */
+    }
+
+    .sidebar-content {
+        justify-content: space-between !important;
+        height: 100% !important;
+    }
+
+    .demo-form {
+        flex-shrink: 1;
+        overflow-y: auto; /* Ensure form doesn't push the Trust Center on short heights like 667px */
+        min-height: 0;
+        scrollbar-width: none; /* Clean look */
+    }
+
+    .demo-form::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-trust-container {
+        flex-shrink: 0; /* Guard the bottom position against form growth */
+        padding-top: 15px;
+    }
+
+    body.demo-active .demo-sidebar {
+        transform: translate(0, 0) !important;
+    }
+
+    /* Precision Text Alignment: Remove inherited field padding so text starts exactly at the gutter boundary */
+    .demo-form .form-group:first-child input {
+        padding-top: 0 !important;
+    }
+}/* --- Tablet Hybrid Refinements (768px - 1024px) --- */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .keyword-pill {
+        color: #35D0F7 !important;
+        border-color: #35D0F7 !important;
+    }
+    
+    .name {
+        color: #000 !important; /* Keep names black for contrast against bright backgrounds */
+    }
+
+    .name:hover {
+        color: #35D0F7 !important;
+    }
+
+    .gcp-line-1 {
+        color: #35D0F7 !important;
+    }
+}
+
+/* ─── Copyright Footer ────────────────────────────────────────── */
+.copyright-footer {
+    display: block;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 400;
+    line-height: 1;
+    color: rgba(53, 208, 247, 0.2);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    animation: intro-fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
+}
+
+@media (max-width: 767px) {
+    .copyright-footer {
+        margin-top: 4vh;
+        text-align: center;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .copyright-footer {
+        position: fixed;
+        bottom: 12px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (min-width: 1025px) {
+    .copyright-footer {
+        position: fixed;
+        bottom: 10px;
+        right: clamp(28.8px, 3vmin + 24px, 57.6px);
+        left: auto;
+        width: auto;
+        text-align: right;
+    }
+}
+
+/* ─── Trust Center Overlay ─────────────────────────────────────── */
+.trust-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 18, 32, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    padding: 20px;
+    pointer-events: none; /* Block interactions when hidden */
+}
+
+body.trust-active .trust-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto; /* Enable interactions when active */
+}
+
+.trust-panel {
+    background: rgba(10, 31, 51, 0.7);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    width: 100%;
+    max-width: 860px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transform: translateY(30px) scale(0.98);
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+body.trust-active .trust-panel {
+    transform: translateY(0) scale(1);
+}
+
+.trust-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.trust-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.trust-content {
+    padding: 60px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.trust-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.trust-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.trust-header {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.trust-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(53, 208, 247, 0.1);
+    border: 1px solid rgba(53, 208, 247, 0.2);
+    color: #35D0F7;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.trust-header h1 {
+    font-size: 42px;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    color: #fff;
+    letter-spacing: -1px;
+}
+
+.trust-subtitle {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.trust-sections section {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 40px 0;
+}
+
+.trust-sections section:last-of-type {
+    border-bottom: none;
+}
+
+.trust-sections h3 {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    letter-spacing: -0.02em;
+}
+
+.trust-sections p {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.85;
+    font-size: 15px;
+    margin: 0 0 28px 0;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.trust-sections ul, .trust-sections ol {
+    margin: 0 0 32px 0;
+    padding: 0 0 0 24px; /* Move everything to the right */
+    list-style: none;
+}
+
+.trust-sections li {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14.5px;
+    padding-left: 32px;
+    position: relative;
+    margin-bottom: 22px; /* More space between items */
+    line-height: 1.75;
+}
+
+.trust-sections ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    background: #35D0F7;
+    border-radius: 50%;
+}
+
+.trust-sections ol {
+    counter-reset: trust-counter;
+}
+
+.trust-sections ol li {
+    counter-increment: trust-counter;
+    padding-left: 32px;
+}
+
+.trust-sections ol li::before {
+    content: counter(trust-counter) ".";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #35D0F7;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.trust-contact-section {
+    background: rgba(53, 208, 247, 0.03);
+    padding: 50px 30px !important;
+    border-radius: 24px;
+    border: 1px solid rgba(53, 208, 247, 0.1) !important;
+    text-align: center;
+}
+
+.contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contact-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 800;
+}
+
+.contact-pill {
+    padding: 14px 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.contact-pill:hover {
+    background: #fff;
+    color: #001220;
+    transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+    .trust-panel {
+        max-height: 92vh;
+        border-radius: 30px 30px 0 0;
+        bottom: 0;
+        top: auto;
+    }
+    .trust-content {
+        padding: 40px 24px;
+    }
+    .trust-header h1 {
+        font-size: 32px;
+    }
+}
+
+/* ─── Trust Trigger Buttons (Final Fix) ─────────────────── */
+.trust-anchor {
+    position: fixed !important;
+    bottom: clamp(28.8px, 3vmin + 24px, 57.6px); 
+    right: clamp(28.8px, 3vmin + 24px, 57.6px);
+    z-index: 99999 !important;
+    pointer-events: auto !important;
+    opacity: 0;
+    animation: intro-fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+    display: block !important;
+}
+
+button.trust-link, .mobile-trust-btn {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font: inherit !important;
+    color: #35D0F7 !important; /* Cyan Blue Default */
+    opacity: 1 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    pointer-events: auto !important;
+}
+
+.trust-link svg, .mobile-trust-btn svg {
+    stroke: currentColor !important;
+    width: 20px;
+    height: 20px;
+    transition: stroke 0.3s ease;
+}
+
+.trust-link:hover, .mobile-trust-btn:hover {
+    color: #000 !important; /* Black on hover */
+    background: transparent !important;
+}
+
+@media (max-width: 1024px) {
+    .trust-anchor {
+        display: none !important;
+    }
+    .mobile-trust-container {
+        display: block;
+        margin-top: 15px;
+    }
+    .mobile-trust-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        color: #35D0F7 !important;
     }
 }
