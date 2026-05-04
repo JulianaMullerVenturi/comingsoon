@@ -12,7 +12,7 @@ body, html {
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-#bg-canvas {
+#bg-video {
     position: fixed;
     top: 0;
     left: 0;
@@ -20,7 +20,49 @@ body, html {
     height: 100vh;
     z-index: 1;
     pointer-events: none;
+    object-fit: cover;
     filter: brightness(1.1);
+    object-position: center;
+}
+
+/* Portrait Orientation (Desktop Portrait & Mobile) */
+@media (orientation: portrait) {
+    #bg-video {
+        /* Technique: Make video larger and scale down to "zoom out" without borders */
+        width: 140vw; 
+        height: 140vh;
+        top: -20vh;
+        left: -20vw;
+        transform: scale(0.715); /* 1 / 1.4 = 0.714... Brings it back to 100% screen fill */
+        
+        /* Shift focus to the right where the blobs are centered in the source */
+        object-position: 80% center;
+    }
+}
+
+/* Tablet / iPad Specific (Matches original layout logic) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #bg-video {
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        transform: none;
+        object-position: 72% center;
+    }
+}
+
+/* Mobile Specific (Applying the zoom-out technique) */
+@media (max-width: 767px) {
+    #bg-video {
+        width: 150vw; 
+        height: 150vh;
+        top: -25vh;
+        left: -25vw;
+        transform: scale(0.667); /* 1 / 1.5 = 0.66... Brings it back to 100% screen fill */
+        
+        object-position: 80% center;
+    }
 }
 
 /* Ensure all interactive elements hide default cursor */
