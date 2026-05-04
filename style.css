@@ -31,9 +31,9 @@ body, html {
         /* Technique: Make video larger and scale down to "zoom out" without borders */
         width: 140vw; 
         height: 140vh;
-        top: -20vh;
-        left: -20vw;
-        transform: scale(0.715); /* 1 / 1.4 = 0.714... Brings it back to 100% screen fill */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.715); /* 1 / 1.4 = 0.714... Brings it back to 100% screen fill */
         
         /* Shift focus to the right where the blobs are centered in the source */
         object-position: 80% center;
@@ -57,9 +57,9 @@ body, html {
     #bg-video {
         width: 150vw; 
         height: 150vh;
-        top: -25vh;
-        left: -25vw;
-        transform: scale(0.667); /* 1 / 1.5 = 0.66... Brings it back to 100% screen fill */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.667); /* 1 / 1.5 = 0.66... Brings it back to 100% screen fill */
         
         object-position: 80% center;
     }
