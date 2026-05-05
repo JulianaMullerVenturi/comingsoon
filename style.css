@@ -2,9 +2,15 @@
     color-scheme: only light;
 }
 
-* {
+/* Hide cursor only when loader is active */
+#premium-loader, #premium-loader *, 
+body.loading-active, body.loading-active * {
     cursor: none !important;
     box-sizing: border-box;
+}
+
+body.loading-active .custom-cursor {
+    display: none !important;
 }
 
 body, html {
@@ -28,6 +34,45 @@ body, html {
     overflow: hidden;
     pointer-events: none;
 }
+
+/* Premium Minimalist Loading Screen */
+#premium-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 46, 81, 0.4);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    z-index: 9999;
+    cursor: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+#premium-loader.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader-progress-container {
+    width: 120px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.loader-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #0992d1, #35D0F7);
+    transition: width 0.1s linear;
+}
+
 
 #bg-video {
     position: absolute;

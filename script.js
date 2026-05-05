@@ -1,6 +1,75 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ─── Premium Minimalist Loader ─────────
+    const loader = document.getElementById('premium-loader');
+    const loaderBar = document.querySelector('.loader-progress-bar');
+    const bgVideo = document.getElementById('bg-video');
+    let currentProgress = 3;
+    let targetProgress = 85; // Initial target to reach slowly while loading
+    let isAssetLoaded = false;
+    
+    function updateLoader() {
+        if (currentProgress < 100) {
+            let speed = 0;
+            if (isAssetLoaded) {
+                // Once asset is ready, move steadily to 100%
+                speed = Math.max(0.4, (100 - currentProgress) * 0.1);
+            } else {
+                // While waiting, crawl towards targetProgress but never stop
+                speed = (targetProgress - currentProgress) * 0.008 + 0.02;
+            }
+            
+            currentProgress += speed;
+            if (currentProgress > 100) currentProgress = 100;
+            
+            if (loaderBar) {
+                loaderBar.style.width = `${currentProgress}%`;
+            }
+            
+            if (currentProgress < 100) {
+                requestAnimationFrame(updateLoader);
+            } else {
+                // Final check to ensure asset is actually ready before reveal
+                if (isAssetLoaded) {
+                    revealPage();
+                }
+            }
+        }
+    }
+    
+    function revealPage() {
+        // Extra milliseconds for a premium feel
+        setTimeout(() => {
+            if (loader) {
+                loader.classList.add('fade-out');
+                document.body.classList.remove('loading-active');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 800);
+            }
+        }, 500);
+    }
+    
+    // Check if video is already loaded enough to play
+    if (bgVideo) {
+        if (bgVideo.readyState >= 3) {
+            isAssetLoaded = true;
+        } else {
+            bgVideo.addEventListener('canplaythrough', () => {
+                isAssetLoaded = true;
+                if (currentProgress >= 100) {
+                    revealPage();
+                }
+            }, { once: true });
+        }
+    } else {
+        // Fallback if no video found
+        isAssetLoaded = true;
+    }
 
+    // Start the animation loop immediately
+    document.body.classList.add('loading-active');
+    requestAnimationFrame(updateLoader);
 
     // ─── GCP Focal Glow — Non-Linear Orbital Animation ───────────────
     // A seamless 8-second clockwise lap with a "Keplerian" speed profile:
