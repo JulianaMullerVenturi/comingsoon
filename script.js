@@ -551,8 +551,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        if (btnTrust) btnTrust.addEventListener('click', openTrust);
-        if (btnTrustMobile) btnTrustMobile.addEventListener('click', openTrust);
+        if (btnTrust) btnTrust.addEventListener('click', (e) => {
+            if (window.innerWidth > 1024) openTrust(e);
+        });
+        if (btnTrustMobile) btnTrustMobile.addEventListener('click', (e) => {
+            if (body.classList.contains('demo-active')) openTrust(e);
+        });
         if (closeTrust) closeTrust.addEventListener('click', () => hideTrust());
 
         // Close on background click
